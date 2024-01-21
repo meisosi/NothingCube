@@ -1,6 +1,6 @@
 import { Telegraf } from "telegraf";
-import { TextExampleModule } from "./examples/modules/textExampleModule";
-import { KeyboardExampleModule } from "./examples/modules/keyboardExampleModule";
+import { TextExampleModule } from "./src/examples/modules/textExampleModule";
+import { KeyboardExampleModule } from "./src/examples/modules/keyboardExampleModule";
 
 export class Bot {
     constructor(private readonly telegraf: Telegraf) {

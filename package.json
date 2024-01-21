@@ -11,6 +11,7 @@
   "dependencies": {
     "dotenv": "^16.3.2",
     "module-alias": "^2.2.3",
+    "mysql2": "^3.7.1",
     "telegraf": "^4.15.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
