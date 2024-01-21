@@ -1,0 +1,22 @@
+{
+  "name": "duels",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tsc && node index.js"
+  },
+  "author": "sparkez",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.2",
+    "module-alias": "^2.2.3",
+    "telegraf": "^4.15.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/module-alias": "^2.0.4",
+    "@types/node": "^20.11.5"
+  }
+}
