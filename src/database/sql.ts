@@ -1,6 +1,10 @@
 import * as mysql from "mysql2/promise";
 
+import { User } from "../interfaces/user";
 import { getUser } from "./query/getUser";
+import { deleteUser } from "./query/deleteUser";
+import { createUser } from "./query/createUser";
+
 
 
 export class Database {
@@ -23,6 +27,18 @@ export class Database {
   async getUser(userId: number) {
     return getUser(this, userId);
   }
+  async deleteUser(userId: number) {
+    return deleteUser(this, userId);
+  }
+  async createUser(userId: number, username: string, premium: number | null) {
+    const user: User = {
+      id: userId,
+      username: username,
+      premium: premium,
+    };
+    return createUser(this, user);
+  }
+  
   
   /**
    * Выполняет заданый SQL запрос и возвращает его результат
