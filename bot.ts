@@ -1,15 +1,31 @@
 import { Telegraf } from "telegraf";
-import { TextExampleModule } from "./src/examples/modules/textExampleModule";
-import { KeyboardExampleModule } from "./src/examples/modules/keyboardExampleModule";
+import { ErrorModule } from "./src/errorLogger/errorModule";
+import { Config } from "./src/utils/yaml";
+import { TextModuleExample } from "./src/examples/textExample/textModule";
 
 export class Bot {
-    constructor(private readonly telegraf: Telegraf) {
-        this.launch();
+    private configs : Map<string, Config> = new Map();
+
+    public getConfig(fileName: string) {
+        return this.configs.get(fileName);
+    };
+
+    constructor(
+        private readonly telegraf: Telegraf,
+        private readonly configDirectory: string
+    ) { }
+
+    public launch() {
+        this.addConfig('messages.yaml');
+        this.addConfig('abbreviations.yaml');
+
+        new ErrorModule().init(this, this.telegraf);
+        new TextModuleExample().init(this, this.telegraf);
+
+        this.telegraf.launch();
     }
 
-    private launch() {
-        new TextExampleModule().init(this.telegraf);
-        new KeyboardExampleModule().init(this.telegraf);
-        this.telegraf.launch();
+    private addConfig(fileName: string) {
+        this.configs.set(fileName, new Config(this.configDirectory + fileName));
     }
 }

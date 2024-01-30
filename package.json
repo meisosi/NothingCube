@@ -1,5 +1,5 @@
 {
-  "name": "duels",
+  "name": "nothing_cube",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,7 +14,9 @@
     "mysql2": "^3.7.1",
     "telegraf": "^4.15.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "yaml": "^2.3.4",
+    "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
     "@types/module-alias": "^2.0.4",
