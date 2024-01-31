@@ -1,9 +1,14 @@
 import * as mysql from "mysql2/promise";
 
-import { User } from "../interfaces/user";
-import { getUser } from "./query/getUser";
-import { deleteUser } from "./query/deleteUser";
-import { createUser } from "./query/createUser";
+import { getUser } from "./query/users/getUser";
+import { createUser } from "./query/users/createUser";
+import { deleteUser } from "./query/users/deleteUser";
+import { createPromocode } from "./query/promocodes/createPromocode"
+import { getPromocode } from "./query/promocodes/getPromocode"
+import { getUserInventory } from "./query/inventory/getInventory"
+
+import { User } from "src/interface/user";
+import { Promocode } from "src/interface/promocode";
 
 
 
@@ -12,10 +17,10 @@ export class Database {
 
   constructor() {
     const dbConfig: mysql.PoolOptions = {
-      host: "your_database_host",
-      user: "your_database_user",
-      password: "your_database_password",
-      database: "your_database_name",
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
@@ -24,22 +29,34 @@ export class Database {
   }
 
   // Импорт всех запросов
-  async getUser(userId: number) {
+  public async getUser(userId: number) {
     return getUser(this, userId);
   }
-  async deleteUser(userId: number) {
+  public async deleteUser(userId: number) {
     return deleteUser(this, userId);
   }
-  async createUser(userId: number, username: string, premium: number | null) {
-    const user: User = {
-      id: userId,
-      username: username,
-      premium: premium,
-    };
+  public async createUser(user: User) {
     return createUser(this, user);
   }
-  
-  
+
+  public async getPromocode(promoId: number) {
+    return getPromocode(this, promoId);
+  }
+  public async createPromocode(promocode: Promocode) {
+    return createPromocode(this, promocode);
+  }
+
+  public async getUserInventory(userId: number) {
+    return getUserInventory(this, userId);
+  }
+  public async getUserRolls(userId: number) {
+    return (await getUserInventory(this, userId)).rolls;
+  }
+  public async getUserCoins(userId: number) {
+    return (await getUserInventory(this, userId)).coins;
+  }
+
+
   /**
    * Выполняет заданый SQL запрос и возвращает его результат
    * @param {string} sqlQuery - SQL запрос для выполнения
