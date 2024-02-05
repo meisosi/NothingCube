@@ -41,8 +41,8 @@ export class Database {
     return createUser(this, user);
   }
 
-  public async getPromocode(promoId: number) {
-    return getPromocode(this, promoId);
+  public async getPromocode(promo: string) {
+    return getPromocode(this, promo);
   }
   public async createPromocode(promocode: Promocode) {
     return createPromocode(this, promocode);

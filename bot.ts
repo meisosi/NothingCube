@@ -2,6 +2,7 @@ import { Telegraf } from "telegraf";
 import { ErrorModule } from "./src/errorLogger/errorModule";
 import { Config } from "./src/utils/yaml";
 import { TextModuleExample } from "./src/examples/textExample/textModule";
+import { BotUtils } from './src/utils/utils'
 
 export class Bot {
     private configs : Map<string, Config> = new Map();
@@ -9,6 +10,7 @@ export class Bot {
     public getConfig(fileName: string) {
         return this.configs.get(fileName);
     };
+    public utils : BotUtils = new BotUtils();
 
     constructor(
         private readonly telegraf: Telegraf,
