@@ -3,7 +3,7 @@ import { Database } from '../../sql';
 import { User } from '../../../interface/user'
 
 export async function createUser(db: Database, user: User): Promise<User | null> {
-    if(!user.id || !user.name) {
+    if(!user.user_id || !user.name) {
         throw new Error("User id and name is required for create a new user")
     }
     user.premium = user.premium || 0;
@@ -12,7 +12,7 @@ export async function createUser(db: Database, user: User): Promise<User | null>
     user.isBan = user.isBan || false;
     const sqlQuery = "INSERT INTO users (id, name, premium, status_id, guild_id, isBan) VALUES (?, ?, ?)";
     return db.executeQuery(sqlQuery, [
-        user.id,
+        user.user_id,
         user.name,
         user.premium,
         user.status_id,

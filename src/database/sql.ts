@@ -3,12 +3,14 @@ import * as mysql from "mysql2/promise";
 import { getUser } from "./query/users/getUser";
 import { createUser } from "./query/users/createUser";
 import { deleteUser } from "./query/users/deleteUser";
-import { createPromocode } from "./query/promocodes/createPromocode"
 import { getPromocode } from "./query/promocodes/getPromocode"
+import { createPromocode } from "./query/promocodes/createPromocode"
 import { getUserInventory } from "./query/inventory/getInventory"
+import { updateUserInventory } from "./query/inventory/updateInventory"
 
 import { User } from "src/interface/user";
 import { Promocode } from "src/interface/promocode";
+import { Inventory } from "src/interface/inventory";
 
 
 
@@ -39,8 +41,8 @@ export class Database {
     return createUser(this, user);
   }
 
-  public async getPromocode(promoId: number) {
-    return getPromocode(this, promoId);
+  public async getPromocode(promo: string) {
+    return getPromocode(this, promo);
   }
   public async createPromocode(promocode: Promocode) {
     return createPromocode(this, promocode);
@@ -54,6 +56,15 @@ export class Database {
   }
   public async getUserCoins(userId: number) {
     return (await getUserInventory(this, userId)).coins;
+  }
+  public async updateUserInventory(userId: number, type: keyof Omit<Inventory, 'user_id'>, value: number) {
+    return (await updateUserInventory(this, userId, type, value));
+  }
+  public async updateUserRolls(userId: number, value: number) {
+    return (await updateUserInventory(this, userId, 'rolls', value));
+  }
+  public async updateUserCoins(userId: number, value: number) {
+    return (await updateUserInventory(this, userId, 'coins', value));
   }
 
 

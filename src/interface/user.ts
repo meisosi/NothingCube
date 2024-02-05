@@ -1,5 +1,5 @@
 export interface User{
-    id: number,
+    user_id: number,
     name: string,
     premium: number,
     status_id: number,
