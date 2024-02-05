@@ -5,8 +5,12 @@ import { createUser } from "./query/users/createUser";
 import { deleteUser } from "./query/users/deleteUser";
 import { getPromocode } from "./query/promocodes/getPromocode"
 import { createPromocode } from "./query/promocodes/createPromocode"
+import { getPromocodeUsage } from "./query/promocodes/getPromocodeUsage"
 import { getUserInventory } from "./query/inventory/getInventory"
 import { updateUserInventory } from "./query/inventory/updateInventory"
+import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions'
+import { setUserSubscriptions } from './query/subscriptions/setUserSubscriptions'
+import { getRequiredChannels } from './query/subscriptions/getRequiredChannels'
 
 import { User } from "src/interface/user";
 import { Promocode } from "src/interface/promocode";
@@ -47,25 +51,31 @@ export class Database {
   public async createPromocode(promocode: Promocode) {
     return createPromocode(this, promocode);
   }
+  public async getPromocodeUsage(userId: number, code: string) {
+    return getPromocodeUsage(this, userId, code);
+  }
 
-  public async getUserInventory(userId: number) {
+  public async getUserInventory(userId: number, type?: keyof Omit<Inventory, 'user_id'>) {
+    if(type)
+      return (await getUserInventory(this, userId)[type]);
     return getUserInventory(this, userId);
-  }
-  public async getUserRolls(userId: number) {
-    return (await getUserInventory(this, userId)).rolls;
-  }
-  public async getUserCoins(userId: number) {
-    return (await getUserInventory(this, userId)).coins;
   }
   public async updateUserInventory(userId: number, type: keyof Omit<Inventory, 'user_id'>, value: number) {
     return (await updateUserInventory(this, userId, type, value));
   }
-  public async updateUserRolls(userId: number, value: number) {
-    return (await updateUserInventory(this, userId, 'rolls', value));
+
+  public async getUserSubscriptions(userId: number) {
+    return getUserSubscriptions(this, userId);
   }
-  public async updateUserCoins(userId: number, value: number) {
-    return (await updateUserInventory(this, userId, 'coins', value));
+  public async setUserSubscriptions(userId: number, newChannels: Array<number>) {
+    return setUserSubscriptions(this, userId, newChannels);
   }
+  public async getRequiredChannels() {
+    return getRequiredChannels(this);
+  }
+
+
+
 
 
   /**

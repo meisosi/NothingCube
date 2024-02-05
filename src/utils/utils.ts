@@ -1,5 +1,8 @@
 import { User } from 'src/interface/user';
 import { Database } from '../database/sql';
+import { Promocode, PromocodeType } from 'src/interface/promocode';
+import { Inventory } from 'src/interface/inventory';
+import { Channal } from 'src/interface/channal';
 
 export class BotUtils {
     private database: Database = new Database();
@@ -25,8 +28,64 @@ export class BotUtils {
     async getPromocode(code: string) {
         return await this.database.getPromocode(code);
     }
-
-    refreshUserSubscriptionChannals(userId: number) {
-
+    async createPromocode(code: string, type: PromocodeType, activations: number, count: number, expires_at: Date | boolean) {
+        const promocode : Promocode = {
+            code: code ?? null,
+            type: type ?? PromocodeType.coins,
+            activations: activations ?? 0,
+            count: count ?? 0,
+            expires_at: expires_at ?? false
+        }
+        return await this.database.createPromocode(promocode);
     }
+    async getPromocodeUsage(userId: number, code: string): Promise<boolean> {
+        const promoUsage = await this.database.getPromocodeUsage(userId, code);
+        return promoUsage !== null && promoUsage > 0;
+    }
+
+    async getUserInventory(userId: number,  type?: keyof Omit<Inventory, 'user_id'> ) {
+        if(type)
+            return (await this.database.getUserInventory(userId, type));
+        return await this.database.getUserInventory(userId);
+    }
+    async getUserRolls(userId: number) {
+        return (await this.database.getUserInventory(userId)).rolls;
+      }
+    async getUserCoins(userId: number) {
+        return (await this.database.getUserInventory(userId)).coins;
+    }
+    async updateUserInventory(userId: number, type: keyof Omit<Inventory, 'user_id'>, value: number) {
+        return (await this.database.updateUserInventory(userId, type, value));
+    }
+    async updateUserRolls(userId: number, value: number) {
+        return (await this.database.updateUserInventory(userId, 'rolls', value));
+    }
+    async updateUserCoins(userId: number, value: number) {
+        return (await this.database.updateUserInventory(userId, 'coins', value));
+    }
+
+    async refreshUserSubscriptionChannals(userId: number) {
+        const currentSubscriptions = await this.database.getUserSubscriptions(userId);
+
+        if (currentSubscriptions === null) {
+            throw new Error('Failed to fetch user subscriptions.');
+        }
+
+        const reqChannelsIds = await this.database.getRequiredChannels()
+            .then(channels => channels.map(channel => channel.id));
+
+        const newChannels = updateSubscriptions(currentSubscriptions.сhannals, reqChannelsIds);
+
+        if (newChannels.length > 0) {
+            await this.database.setUserSubscriptions(userId, newChannels);
+            return newChannels.length;
+        } else {
+            return 0;
+        }
+    }
+}
+
+function updateSubscriptions(currentChannels: number[], reqChannels: number[]): number[] {
+    const newChannels = reqChannels.filter(channel => !currentChannels.includes(channel));
+    return [...currentChannels, ...newChannels];
 }
