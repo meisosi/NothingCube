@@ -8,5 +8,5 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 const telegraf : Telegraf = new Telegraf(process.env.BOT_TOKEN); 
-const bot : Bot = new Bot(telegraf, "./configs/");
+const bot : Bot = new Bot(telegraf);
 bot.launch();
