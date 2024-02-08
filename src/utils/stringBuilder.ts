@@ -27,7 +27,7 @@ export class StringBuilder {
      * @param {any[]} args Значения, вставляемые в строку `formattedString`.
      * @returns {string} Строка, с заменёнными подстроками.
      */
-    public static format(@NotNull formattedString : string, ...args : any[]) : string {
+    static format(@NotNull formattedString : string, ...args : any[]) : string {
         if(formattedString == null || typeof formattedString === 'undefined') {
             throw new Error(this.name);
         }
