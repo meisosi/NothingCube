@@ -2,9 +2,11 @@ import { User } from 'src/interface/user';
 import { Database } from '../database/sql';
 import { Promocode, PromocodeType } from 'src/interface/promocode';
 import { Inventory } from 'src/interface/inventory';
-import { Channal } from 'src/interface/channal';
+import { Channel } from 'src/interface/channel';
 
-export class BotUtils {
+import { Bot } from 'bot'
+
+export class BotUtils extends Bot {
     private database: Database = new Database();
 
     async getUser(userId: number) {
@@ -64,7 +66,7 @@ export class BotUtils {
         return (await this.database.updateUserInventory(userId, 'coins', value));
     }
 
-    async refreshUserSubscriptionChannals(userId: number) {
+    async refreshUserSubscriptionChannels(userId: number) {
         const currentSubscriptions = await this.database.getUserSubscriptions(userId);
 
         if (currentSubscriptions === null) {
@@ -74,7 +76,7 @@ export class BotUtils {
         const reqChannelsIds = await this.database.getRequiredChannels()
             .then(channels => channels.map(channel => channel.id));
 
-        const newChannels = updateSubscriptions(currentSubscriptions.сhannals, reqChannelsIds);
+        const newChannels = await updateSubscriptions(userId, currentSubscriptions.сhannals, reqChannelsIds);
 
         if (newChannels.length > 0) {
             await this.database.setUserSubscriptions(userId, newChannels);
@@ -85,7 +87,19 @@ export class BotUtils {
     }
 }
 
-function updateSubscriptions(currentChannels: number[], reqChannels: number[]): number[] {
-    const newChannels = reqChannels.filter(channel => !currentChannels.includes(channel));
-    return [...currentChannels, ...newChannels];
+async function updateSubscriptions(userId: number, currentChannels: number[], reqChannels: number[]): Promise<number[]> {
+    const newChannels: number[] = [];
+
+    for (const channelId of reqChannels) {
+        if (!currentChannels.includes(channelId) && await checkSubscribe(userId, channelId)) {
+            newChannels.push(channelId);
+        }
+    }
+
+    return newChannels;
+}
+
+async function checkSubscribe(userId: number, channelId: number): Promise<boolean> {
+    const chatMember = await this.telegraf.getChatMember(channelId, userId);
+    return ['member', 'administrator', 'creator'].includes(chatMember.status);
 }

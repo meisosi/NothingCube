@@ -5,7 +5,7 @@ import { TextModuleExample } from "./src/examples/textExample/textModule";
 import { BotUtils } from './src/utils/utils'
 
 export class Bot {
-    protected utils : BotUtils = new BotUtils();
+    protected utils : BotUtils = new BotUtils(this.telegraf);
     protected configurations: Map<string, Configuration> = new Map();
     private defaultConfigCreator: DefaultConfigCreator = new DefaultConfigCreator();
     
