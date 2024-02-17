@@ -3,6 +3,5 @@ export interface User{
     name: string,
     premium: number,
     status_id: number,
-    guild_id: number,
-    isBan: boolean
+    guild_id: number
 }

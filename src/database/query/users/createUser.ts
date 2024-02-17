@@ -9,7 +9,6 @@ export async function createUser(db: Database, user: User): Promise<User | null>
     user.premium = user.premium || 0;
     user.status_id = user.status_id || -1;
     user.guild_id = user.guild_id || -1;
-    user.isBan = user.isBan || false;
     const sqlQuery = "INSERT INTO users (id, name, premium, status_id, guild_id, isBan) VALUES (?, ?, ?)";
     return db.executeQuery(sqlQuery, [
         user.user_id,
@@ -17,6 +16,5 @@ export async function createUser(db: Database, user: User): Promise<User | null>
         user.premium,
         user.status_id,
         user.guild_id,
-        user.isBan
     ]);
 }

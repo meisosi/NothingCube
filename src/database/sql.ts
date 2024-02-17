@@ -11,6 +11,7 @@ import { updateUserInventory } from "./query/inventory/updateInventory"
 import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions'
 import { setUserSubscriptions } from './query/subscriptions/setUserSubscriptions'
 import { getRequiredChannels } from './query/subscriptions/getRequiredChannels'
+import { getStats } from './query/stats/getStats'
 
 import { User } from "src/interface/user";
 import { Promocode } from "src/interface/promocode";
@@ -72,6 +73,9 @@ export class Database {
   }
   public async getRequiredChannels() {
     return getRequiredChannels(this);
+  }
+  public async getUserStats(userId: number) {
+    return getStats(this, userId);
   }
 
 

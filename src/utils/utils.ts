@@ -5,6 +5,8 @@ import { Inventory } from 'src/interface/inventory';
 import { Channel } from 'src/interface/channel';
 
 import { Bot } from 'bot'
+import { StatusType } from 'src/interface/stats';
+import { AccessLevel } from 'src/interface/security';
 
 export class BotUtils extends Bot {
     private database: Database = new Database();
@@ -15,16 +17,22 @@ export class BotUtils extends Bot {
     async deleteUser(userId: number) {
         return await this.database.deleteUser(userId);
     }
-    async createUser(userId: number, username: string, premium_days: number, status: number, guild: number, ban: boolean) {
+    async createUser(userId: number, username: string, premium_days: number, status: number, guild: number) {
         const user : User = {
             user_id: userId || null,
             name: username || null,
             premium: premium_days || 0,
             status_id: status || -1,
-            guild_id: guild || -1,
-            isBan: ban || false
+            guild_id: guild || -1
         }
         return await this.database.createUser(user);
+    }
+
+    async getUserStats(userId: number) {
+        return await this.database.getUserStats(userId);
+    }
+    async getUserStatus(userId: number) {
+        return (await this.database.getUserStats(userId)).status;
     }
 
     async getPromocode(code: string) {
@@ -85,6 +93,10 @@ export class BotUtils extends Bot {
             return 0;
         }
     }
+
+    checkAccess(role: string, level: number) {
+        return getAccessLevel(role) > level;
+    }
 }
 
 async function updateSubscriptions(userId: number, currentChannels: number[], reqChannels: number[]): Promise<number[]> {
@@ -102,4 +114,22 @@ async function updateSubscriptions(userId: number, currentChannels: number[], re
 async function checkSubscribe(userId: number, channelId: number): Promise<boolean> {
     const chatMember = await this.telegraf.getChatMember(channelId, userId);
     return ['member', 'administrator', 'creator'].includes(chatMember.status);
+}
+
+function getAccessLevel(status: string) {
+    let userAccessLevel = -1;
+    switch (status) {
+        case StatusType.admin:
+            userAccessLevel = AccessLevel.admin;
+            break;
+        case StatusType.support:
+            userAccessLevel = AccessLevel.support;
+            break;
+        case StatusType.user:
+            userAccessLevel = AccessLevel.user;
+            break;
+        default:
+            userAccessLevel = AccessLevel.null;
+    }
+    return userAccessLevel;
 }
