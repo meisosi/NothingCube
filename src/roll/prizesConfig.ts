@@ -13,8 +13,7 @@ export class PrizesConfiguration extends Configuration {
     private prizes: Record<number, Prize> = { };
 
     load(file: Buffer | string, encoding: BufferEncoding = 'utf-8'): this {
-        super.load(file, encoding);
-        console.log('Получение призов')
+        super.load(file, encoding); // Тут ошибка
         this.prizes = this.getPrizesFromConfig();
         return this;
     }
