@@ -14,6 +14,7 @@ export class PrizesConfiguration extends Configuration {
 
     load(file: Buffer | string, encoding: BufferEncoding = 'utf-8'): this {
         super.load(file, encoding);
+        console.log('Получение призов')
         this.prizes = this.getPrizesFromConfig();
         return this;
     }
@@ -63,10 +64,11 @@ export class PrizesConfiguration extends Configuration {
 export class PrizesConfigCreator extends ConfigurationCreator<PrizesConfiguration> {
     create(file: string | Buffer, encoding: BufferEncoding = 'utf-8', checkFileType: boolean = true): PrizesConfiguration {
         if(checkFileType && typeof file === 'string') {
+            console.log('Не нашли файл')
             if(!this.checkFileType(file)) throw new Error('File type Not Correct');
         }
         let configuration: PrizesConfiguration = new PrizesConfiguration();
-        
+        console.log('Запуск загрузки')
         return configuration.load(file, encoding);
     }
 }

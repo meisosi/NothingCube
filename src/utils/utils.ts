@@ -1,14 +1,12 @@
-import { User } from 'src/interface/user';
+import { User } from '../../src/interface/user';
 import { Database } from '../database/sql';
-import { Promocode, PromocodeType } from 'src/interface/promocode';
-import { Inventory } from 'src/interface/inventory';
-import { Channel } from 'src/interface/channel';
+import { Promocode, PromocodeType } from '../../src/interface/promocode';
+import { Inventory } from '../../src/interface/inventory';
 
-import { Bot } from 'bot'
-import { StatusType } from 'src/interface/stats';
-import { AccessLevel } from 'src/interface/security';
+import { StatusType } from '../../src/interface/stats';
+import { AccessLevel } from '../../src/interface/security';
 
-export class BotUtils extends Bot {
+export class BotUtils {
     private database: Database = new Database();
 
     async getUser(userId: number) {

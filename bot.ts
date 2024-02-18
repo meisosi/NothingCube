@@ -1,11 +1,11 @@
 import { Telegraf } from "telegraf";
 import { ErrorModule } from "./src/errorLogger/errorModule";
 import { Configuration, DefaultConfigCreator, FILE_REGEX } from "./src/utils/yaml";
-import { TextModuleExample } from "./src/examples/textExample/textModule";
 import { BotUtils } from './src/utils/utils'
+import { RollModule } from "./src/roll/rollModule";
 
 export class Bot {
-    protected utils : BotUtils = new BotUtils(this.telegraf);
+    protected utils : BotUtils = new BotUtils();
     protected configurations: Map<string, Configuration> = new Map();
     private defaultConfigCreator: DefaultConfigCreator = new DefaultConfigCreator();
     
@@ -37,7 +37,7 @@ export class Bot {
         this.addConfig('configs/abbreviations.yaml');
 
         new ErrorModule().init(this, this.telegraf);
-        new TextModuleExample().init(this, this.telegraf);
+        new RollModule(this).init("CUBE");
 
         this.telegraf.launch();
     }
