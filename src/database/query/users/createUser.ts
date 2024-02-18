@@ -7,14 +7,14 @@ export async function createUser(db: Database, user: User): Promise<User | null>
         throw new Error("User id and name is required for create a new user")
     }
     user.premium = user.premium || 0;
-    user.status_id = user.status_id || -1;
+    user.title_id = user.title_id || -1;
     user.guild_id = user.guild_id || -1;
-    const sqlQuery = "INSERT INTO users (id, name, premium, status_id, guild_id, isBan) VALUES (?, ?, ?)";
+    const sqlQuery = "INSERT INTO users (id, name, premium, title_id, guild_id) VALUES (?, ?, ?, ?, ?)";
     return db.executeQuery(sqlQuery, [
         user.user_id,
         user.name,
         user.premium,
-        user.status_id,
+        user.title_id,
         user.guild_id,
     ]);
 }

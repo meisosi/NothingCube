@@ -17,12 +17,12 @@ export class BotUtils extends Bot {
     async deleteUser(userId: number) {
         return await this.database.deleteUser(userId);
     }
-    async createUser(userId: number, username: string, premium_days: number, status: number, guild: number) {
+    async createUser(userId: number, username: string, premium_days: number, title: number, guild: number) {
         const user : User = {
             user_id: userId || null,
             name: username || null,
             premium: premium_days || 0,
-            status_id: status || -1,
+            title_id: title || -1,
             guild_id: guild || -1
         }
         return await this.database.createUser(user);
@@ -95,7 +95,7 @@ export class BotUtils extends Bot {
     }
 
     checkAccess(role: string, level: number) {
-        return getAccessLevel(role) > level;
+        return getAccessLevel(role) >= level;
     }
 }
 

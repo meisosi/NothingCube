@@ -73,3 +73,15 @@ export class MailingEvent extends BotEvent {
         super.execute(context, argument);
     }
 }
+
+export class PromocodeCreateEvent extends BotEvent {
+    static execute(
+        @NotNull context: Context, 
+        argument: any,
+    ): void {
+        if(context == null) {
+            return;
+        }
+        super.execute(context, argument);
+    }
+}
