@@ -14,41 +14,38 @@ import {
   UserBigGemsChangeEvent,
   PromocodeCreateEvent,
 } from "./adminEvent";
-import { AccessLevel } from "src/interface/security";
-import { Promocode, PromocodeType } from "src/interface/promocode";
+import { AccessLevel } from "../../src/interface/security";
+import { Promocode, PromocodeType } from "../../src/interface/promocode";
 
 export class AdminModule implements Module {
   constructor(private readonly bot: Bot) {}
 
-  init(@NotNull path: string): void {
-    if (!path || path === StringBuilder.empty) {
-      return;
-    }
+  init(): void {
 
     EventHandler.Handler.addListener(new AdminListener(this));
     this.bot.Telegraf.command("changecoins", async (context) => {
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
-        UserCoinsChangeEvent.execute(context, context.args[0]);
+        UserCoinsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("changerolls", async (context) => {
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
-        UserRollsChangeEvent.execute(context, context.args[0]);
+        UserRollsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("changegems", async (context) => {
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
-        UserGemsChangeEvent.execute(context, context.args[0]);
+        UserGemsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("changemoons", async (context) => {
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
-        UserMoonsChangeEvent.execute(context, context.args[0]);
+        UserMoonsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("changebiggems", async (context) => {
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
-        UserBigGemsChangeEvent.execute(context, context.args[0]);
+        UserBigGemsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("createpromocode", async (context) => {
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.streamer))
-        PromocodeCreateEvent.execute(context, context.args[0]);
+        PromocodeCreateEvent.execute(context, context.args);
       });
   }
 
@@ -112,7 +109,7 @@ export class AdminModule implements Module {
     }
   }
 
-  async createPromocode(code: string, type: PromocodeType, count: number, activations: number, expires_at: Date | boolean): Promise<Promocode> {
+  async createPromocode(code: string, type: PromocodeType, count: number, activations: number, expires_at: Date | null): Promise<Promocode> {
     const allowedCharacters = /[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]/g;
     code = code.replace(new RegExp(`[^${allowedCharacters.source}]`, 'g'), '');
     return await this.bot.Utils.createPromocode(code, type, activations, count, expires_at)

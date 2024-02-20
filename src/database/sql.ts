@@ -6,6 +6,7 @@ import { deleteUser } from "./query/users/deleteUser";
 import { getPromocode } from "./query/promocodes/getPromocode"
 import { createPromocode } from "./query/promocodes/createPromocode"
 import { getPromocodeUsage } from "./query/promocodes/getPromocodeUsage"
+import { foundUnactivePromo } from "./query/promocodes/foundUnactivePromo"
 import { getUserInventory } from "./query/inventory/getInventory"
 import { updateUserInventory } from "./query/inventory/updateInventory"
 import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions'
@@ -54,6 +55,9 @@ export class Database {
   }
   public async getPromocodeUsage(userId: number, code: string) {
     return getPromocodeUsage(this, userId, code);
+  }
+  public async foundUnactivePromo(promo: string) {
+    return foundUnactivePromo(this, promo);
   }
 
   public async getUserInventory(userId: number, type?: keyof Omit<Inventory, 'user_id'>) {

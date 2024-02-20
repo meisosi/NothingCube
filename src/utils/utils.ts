@@ -5,6 +5,7 @@ import { Inventory } from '../../src/interface/inventory';
 
 import { StatusType } from '../../src/interface/stats';
 import { AccessLevel } from '../../src/interface/security';
+import { expressPromocode } from 'src/interface/expressPromo';
 
 export class BotUtils {
     private database: Database = new Database();
@@ -33,10 +34,10 @@ export class BotUtils {
         return (await this.database.getUserStats(userId)).status;
     }
 
-    async getPromocode(code: string) {
+    async getPromocode(code: string): Promise<Promocode | null> {
         return await this.database.getPromocode(code);
     }
-    async createPromocode(code: string, type: PromocodeType, activations: number, count: number, expires_at: Date | boolean) {
+    async createPromocode(code: string, type: PromocodeType, activations: number, count: number, expires_at: Date | null) {
         const promocode : Promocode = {
             code: code ?? null,
             type: type ?? PromocodeType.coins,
@@ -49,6 +50,9 @@ export class BotUtils {
     async getPromocodeUsage(userId: number, code: string): Promise<boolean> {
         const promoUsage = await this.database.getPromocodeUsage(userId, code);
         return promoUsage !== null && promoUsage > 0;
+    }
+    async foundUnactivePromo(code: string): Promise<expressPromocode | null> {
+        return (await this.database.foundUnactivePromo(code));
     }
 
     async getUserInventory(userId: number,  type?: keyof Omit<Inventory, 'user_id'> ) {

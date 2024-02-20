@@ -3,6 +3,7 @@ import { ErrorModule } from "./src/errorLogger/errorModule";
 import { Configuration, DefaultConfigCreator, FILE_REGEX } from "./src/utils/yaml";
 import { BotUtils } from './src/utils/utils'
 import { RollModule } from "./src/roll/rollModule";
+import { AdminModule } from "./src/admin/adminModule";
 
 export class Bot {
     protected utils : BotUtils = new BotUtils();
@@ -37,7 +38,8 @@ export class Bot {
         this.addConfig('configs/abbreviations.yaml');
 
         new ErrorModule().init(this, this.telegraf);
-        new RollModule(this).init("CUBE");
+        new RollModule(this).init("configs/prizes.yaml");
+        new AdminModule(this).init();
 
         this.telegraf.launch();
     }

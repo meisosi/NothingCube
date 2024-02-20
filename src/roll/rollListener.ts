@@ -43,7 +43,7 @@ export class RollListener extends Listener {
             return;
         }
         if(countRolls > inventory.rolls) {
-            return context.sendMessage(this.module.getMessage('notEnough'));;
+            return context.sendMessage(this.module.getMessage('notEnough'));
         }
         let result : number = 0;
         let prize : Prize;

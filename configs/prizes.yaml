@@ -25,5 +25,5 @@ rolls:
     type: 'coins'
     value: 20
   (6):
-    type: 'coins',
+    type: 'coins'
     value: 25

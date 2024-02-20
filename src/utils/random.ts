@@ -1,3 +1,5 @@
+import { createHash, randomBytes } from 'crypto';
+
 export class Random {
     static getSumRandomArray(count: number, from?: number, to?: number) {
         return Random.getRandomArray(count, from, to).reduce((a, b) => a + b);
@@ -15,21 +17,29 @@ export class Random {
         if(Number.isInteger(from) && Number.isInteger(to)) {
             return Random.getRandomInteger(from, to);
         } else {
-            return 
+            return Random.getRandomNumber(from, to);
         }
     }
 
+    static generateRandomSeed(length: number): string {
+        return randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+    }
+
     static getRandomInteger(from: number, to: number) {
-        let random = Math.random();
-
-        from = Math.ceil(from);
-        to = Math.floor(to);
-
-        return Math.floor(this.getRandomNumber(from, to));
+        const seed = this.generateRandomSeed(16);
+        const hash = createHash('sha256');
+        hash.update(seed);
+        const hashValue = hash.digest('hex');
+        const randomNumber = parseInt(hashValue.substring(0, 16), 16);
+        return Math.floor(from + (randomNumber % (to - from + 1)));
     }
 
     static getRandomNumber(from: number, to: number) {
-        let random = Math.random();
-        return random * (to - from) + from;
+        const seed = this.generateRandomSeed(16);
+        const hash = createHash('sha256');
+        hash.update(seed);
+        const hashValue = hash.digest('hex');
+        const randomNumber = parseInt(hashValue.substring(0, 16), 16);
+        return from + (randomNumber / 0xFFFFFFFFFFFFFFFF) * (to - from);
     }
 }
