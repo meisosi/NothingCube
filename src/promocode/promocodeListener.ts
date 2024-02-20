@@ -28,8 +28,8 @@ export class PromocodeListener extends Listener {
         let inventory = await this.module.getInventory(context.from.id);
         inventory[type] += count;
         //Вычитать использование промокода
-        this.module.updateUserInventory(inventory.user_id,type,inventory[type]);
-        return context.sendMessage(this.module.getMessage("sucsess",count,type,inventory[type] + count)
+        this.module.updateUserInventory(inventory.user_id, type, inventory[type]);
+        return context.sendMessage(this.module.getMessage("sucsess", count, type, inventory[type] + count)
         );
       }
     } else {

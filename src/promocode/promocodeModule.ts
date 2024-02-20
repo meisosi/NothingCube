@@ -31,6 +31,16 @@ export class PromocodeModule implements Module {
     }
     return await this.bot.Utils.getUserInventory(userId);
   }
+  async updateUserInventory(
+    userId: number,
+    type: keyof Omit<Inventory, 'user_id'>,
+    value: number
+) {
+    if(!userId || isNaN(userId)) {
+        throw new Error(`Not found Inventory: (id: ${userId})`);
+    }
+    return await this.bot.Utils.updateUserInventory(userId, type, value);
+}
 
   async checkPromocode(code: string): Promise<Promocode | null> {
     let promocode: Promocode = await this.bot.Utils.getPromocode(code);
