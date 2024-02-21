@@ -10,5 +10,5 @@ export interface Promocode {
     type: PromocodeType;
     activations: number;
     count: number;
-    expires_at: Date | boolean;
+    expires_at: Date;
 }

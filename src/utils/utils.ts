@@ -37,22 +37,28 @@ export class BotUtils {
     async getPromocode(code: string): Promise<Promocode | null> {
         return await this.database.getPromocode(code);
     }
-    async createPromocode(code: string, type: PromocodeType, activations: number, count: number, expires_at: Date | null) {
+    async createPromocode(code: string, type: PromocodeType, activations: number, count: number, expires_at: string | null) {
         const promocode : Promocode = {
             code: code ?? null,
             type: type ?? PromocodeType.coins,
-            activations: activations ?? 0,
-            count: count ?? 0,
-            expires_at: expires_at ?? false
+            activations: isNaN(activations) ? 0 : activations,
+            count: isNaN(count) ? 0 : count,
+            expires_at: isNaN(parseDate(expires_at).getTime()) ? new Date(9999, 11) : parseDate(expires_at)
         }
         return await this.database.createPromocode(promocode);
     }
     async getPromocodeUsage(userId: number, code: string): Promise<boolean> {
         const promoUsage = await this.database.getPromocodeUsage(userId, code);
-        return promoUsage !== null && promoUsage > 0;
+        return ((promoUsage[Object.keys(promoUsage)[0]] !== null) && (promoUsage[Object.keys(promoUsage)[0]] > 0));
+    }
+    async usagePromocode(userId: number, code: string) {
+        return await this.database.usagePromocode(userId, code);
     }
     async foundUnactivePromo(code: string): Promise<expressPromocode | null> {
         return (await this.database.foundUnactivePromo(code));
+    }
+    async deductPromocode(promocode: Promocode) {
+        return await this.database.deductPromocode(promocode);
     }
 
     async getUserInventory(userId: number,  type?: keyof Omit<Inventory, 'user_id'> ) {
@@ -134,4 +140,32 @@ function getAccessLevel(status: string) {
             userAccessLevel = AccessLevel.null;
     }
     return userAccessLevel;
+}
+
+function parseDate(input: string): Date {
+    const currentDate = new Date();
+    const parts = input.split('-');
+
+    const dateParts = parts[0].split('.');
+    let month = parseInt(dateParts[0], 10);
+    let day = parseInt(dateParts[1], 10);
+    let year = currentDate.getFullYear();
+
+    if (dateParts.length === 3) {
+        year = parseInt(dateParts[2], 10);
+    }
+
+    let hours = currentDate.getHours() + 1;
+    let minutes = 30;
+
+    if (parts.length === 2) {
+        const timeParts = parts[1].split('.');
+        if (timeParts.length >= 1) {
+            hours = parseInt(timeParts[0], 10);
+        }
+        if (timeParts.length === 2) {
+            minutes = parseInt(timeParts[1], 10);
+        }
+    }
+    return new Date(year, month - 1, day, hours, minutes);
 }

@@ -109,9 +109,9 @@ export class AdminModule implements Module {
     }
   }
 
-  async createPromocode(code: string, type: PromocodeType, count: number, activations: number, expires_at: Date | null): Promise<Promocode> {
+  async createPromocode(code: string, type: PromocodeType, activations: number, count: number,  expires_at: string | null): Promise<Promocode> {
     const allowedCharacters = /[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]/g;
     code = code.replace(new RegExp(`[^${allowedCharacters.source}]`, 'g'), '');
-    return await this.bot.Utils.createPromocode(code, type, activations, count, expires_at)
+    return await this.bot.Utils.createPromocode(code, type, activations, count, expires_at);
   }
 }

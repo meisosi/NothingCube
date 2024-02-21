@@ -5,11 +5,11 @@ import { PromocodeListener } from "./promocodeListener";
 import { PromocodeUse } from "./promocodeEvent";
 import { AccessLevel } from "../interface/security";
 import { Promocode } from "../interface/promocode";
-import { StringBuilder } from "src/utils/stringBuilder";
-import { YAML_PATH_SEPARATOR } from "src/utils/yaml";
-import { expressPromocode } from "src/interface/expressPromo";
-import { NotNull } from "src/utils/decorators";
-import { Inventory } from "src/interface/inventory";
+import { StringBuilder } from "../../src/utils/stringBuilder";
+import { YAML_PATH_SEPARATOR } from "../../src/utils/yaml";
+import { expressPromocode } from "../../src/interface/expressPromo";
+import { NotNull } from "../../src/utils/decorators";
+import { Inventory } from "../../src/interface/inventory";
 
 type PromocodeMessages = 'sucsess' | 'notFound' | 'express' | 'noActivations' | 'used';
 
@@ -51,7 +51,13 @@ export class PromocodeModule implements Module {
     return promocode ? promocode : null;
   }
   async getPromocodeUsage(userId: number, code: string) {
-    return this.bot.Utils.getPromocodeUsage(userId, code);
+    return await this.bot.Utils.getPromocodeUsage(userId, code);
+  }
+  async deductPromocode(promocode: Promocode) {
+    return await this.bot.Utils.deductPromocode(promocode)
+  }
+  async usagePromocode(userId: number, code: string) {
+    return await this.bot.Utils.usagePromocode(userId, code)
   }
 
   getMessage(message: PromocodeMessages, ...params: any) : string {

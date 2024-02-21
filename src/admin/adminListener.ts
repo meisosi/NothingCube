@@ -12,7 +12,7 @@ import {
     PromocodeCreateEvent
 } from "./adminEvent";
 import { NotNull } from "../../src/utils/decorators";
-import { PromocodeType } from "../../src/interface/promocode";
+import { Promocode, PromocodeType } from "../../src/interface/promocode";
 
 export class AdminListener extends Listener {
   constructor(private readonly module: AdminModule) {
@@ -69,20 +69,27 @@ export class AdminListener extends Listener {
     );
   }
 
-  @EventHandler.Handler.handle(MailingEvent)
-
   @EventHandler.Handler.handle(PromocodeCreateEvent)
   private async onCreatePromocode(@NotNull context: Context, argument: any) {
+    const code: string = argument[0];
+    const type: PromocodeType = argument[1] ?? PromocodeType.coins;
+    const activations: number = parseInt(argument[2]);
+    const count: number = parseInt(argument[3]);
+    const expires_at: string|null = argument[4] ?? null;
+    const promocode: Promocode|null = await this.module.createPromocode(code, type, activations, count, expires_at);
+    if(promocode)
+      await context.reply(`Successfully create promocode \`${promocode.code}\``, {parse_mode:"MarkdownV2"});
+    else 
+      await context.reply(`Failed to create a promo code \`${code}\``, {parse_mode: "MarkdownV2"});
+  }
+  
+  @EventHandler.Handler.handle(MailingEvent)
+  private async onMailing(@NotNull context: Context, argument: any) {
     const code: string = argument[0];
     const type: PromocodeType = argument[1] ?? PromocodeType.coins;
     const count: number = parseInt(argument[2]);
     const activations: number = parseInt(argument[3]);
     const expires_at: Date|null = new Date(argument[4]) ?? null;
-    const promocode = await this.module.createPromocode(code, type, count, activations, expires_at);
-    if(promocode)
-      await context.reply(`Successfully create promocode ${promocode}.`);
-    else 
-      await context.reply(`Failed to create a promo code ${promocode}.`);
   }
 
 }

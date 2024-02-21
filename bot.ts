@@ -4,6 +4,7 @@ import { Configuration, DefaultConfigCreator, FILE_REGEX } from "./src/utils/yam
 import { BotUtils } from './src/utils/utils'
 import { RollModule } from "./src/roll/rollModule";
 import { AdminModule } from "./src/admin/adminModule";
+import { PromocodeModule } from "./src/promocode/promocodeModule";
 
 export class Bot {
     protected utils : BotUtils = new BotUtils();
@@ -40,6 +41,7 @@ export class Bot {
         new ErrorModule().init(this, this.telegraf);
         new RollModule(this).init("configs/prizes.yaml");
         new AdminModule(this).init();
+        new PromocodeModule(this).init();
 
         this.telegraf.launch();
     }

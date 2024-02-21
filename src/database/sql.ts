@@ -6,7 +6,9 @@ import { deleteUser } from "./query/users/deleteUser";
 import { getPromocode } from "./query/promocodes/getPromocode"
 import { createPromocode } from "./query/promocodes/createPromocode"
 import { getPromocodeUsage } from "./query/promocodes/getPromocodeUsage"
+import { usagePromocode } from './query/promocodes/usagePromocode'
 import { foundUnactivePromo } from "./query/promocodes/foundUnactivePromo"
+import { deductPromocode } from './query/promocodes/deductPromocode'
 import { getUserInventory } from "./query/inventory/getInventory"
 import { updateUserInventory } from "./query/inventory/updateInventory"
 import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions'
@@ -52,6 +54,12 @@ export class Database {
   }
   public async createPromocode(promocode: Promocode) {
     return createPromocode(this, promocode);
+  }
+  public async deductPromocode(promocode: Promocode) {
+    return deductPromocode(this, promocode.code);
+  }
+  public async usagePromocode(userId: number, promocode: string) {
+    return usagePromocode(this, userId, promocode);
   }
   public async getPromocodeUsage(userId: number, code: string) {
     return getPromocodeUsage(this, userId, code);
