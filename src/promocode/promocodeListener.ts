@@ -18,39 +18,28 @@ export class PromocodeListener extends Listener {
     const userId: number = context.from.id;
 
     const promocode: Promocode = await this.module.checkPromocode(inputPromo);
+    if (await this.module.getPromocodeUsage(userId, inputPromo)) {
+      return context.sendMessage(this.module.getMessage("used"));
+    }
     if (promocode) {
-      if (await this.module.getPromocodeUsage(userId, inputPromo)) {
-        return context.sendMessage(this.module.getMessage("used"));
-      } else {
-        if(promocode.activations === 0 || new Date(promocode.expires_at) < new Date()) {
-          this.module.setPromocodeInacive(promocode);
-          if (promocode.activations == 0) {
-            return context.sendMessage(this.module.getMessage("noActivations"));
-          } else {
-            return context.sendMessage(this.module.getMessage("express"));
-          }
-        }
-        const count = promocode.count;
-        const type = promocode.type;
-        let inventory = await this.module.getInventory(context.from.id);
-        inventory[type] += count;
-        this.module.usagePromocode(userId, promocode.code);
-        this.module.deductPromocode(promocode);
-        this.module.updateUserInventory(inventory.user_id, type, inventory[type]);
-        return context.sendMessage(this.module.getMessage("sucsess", count, type, inventory[type] + count)
-        );
-      }
-    } else {
-      const expressPromo: expressPromocode = await this.module.foundInactivePromo(inputPromo);
-      if (expressPromo) {
-        if (expressPromo.activations == 0) {
+      if (promocode.activations === 0 || new Date(promocode.expires_at) < new Date()) {
+        this.module.setPromocodeInacive(promocode);
+        if (promocode.activations == 0) {
           return context.sendMessage(this.module.getMessage("noActivations"));
         } else {
           return context.sendMessage(this.module.getMessage("express"));
         }
-      } else {
-        return context.sendMessage(this.module.getMessage("notFound"));
       }
+      const count = promocode.count;
+      const type = promocode.type;
+      let inventory = await this.module.getInventory(context.from.id);
+      inventory[type] += count;
+      this.module.usagePromocode(userId, promocode.code);
+      this.module.deductPromocode(promocode);
+      this.module.updateUserInventory(inventory.user_id, type, inventory[type]);
+      return context.sendMessage(
+        this.module.getMessage("sucsess", count, type, inventory[type] + count)
+      );
     }
   }
 }
