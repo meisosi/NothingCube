@@ -110,8 +110,8 @@ export class AdminModule implements Module {
   }
 
   async createPromocode(code: string, type: PromocodeType, activations: number, count: number,  expires_at: string | null): Promise<Promocode> {
-    const allowedCharacters = /[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]/g;
-    code = code.replace(new RegExp(`[^${allowedCharacters.source}]`, 'g'), '');
+    const allowedCharacters = /[a-zA-Z_-]/g;
+    code = code.replace(new RegExp(`[^${allowedCharacters.source}]`, 'g'), '').substring(0, 30);
     return await this.bot.Utils.createPromocode(code, type, activations, count, expires_at);
   }
 }

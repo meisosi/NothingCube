@@ -20,8 +20,8 @@ export class PromocodeModule implements Module {
 
     EventHandler.Handler.addListener(new PromocodeListener(this));
     this.bot.Telegraf.command("promocode", async (context) => {
-      if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
-        PromocodeUse.execute(context, context.args);
+      if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user))
+        PromocodeUse.execute(context, context.args[0]);
     });
   }
 
@@ -62,6 +62,7 @@ export class PromocodeModule implements Module {
   async setPromocodeInacive(promocode: Promocode) {
     return await this.bot.Utils.setInactivePromo(promocode)
   }
+
 
   getMessage(message: PromocodeMessages, ...params: any) : string {
     return StringBuilder.format(

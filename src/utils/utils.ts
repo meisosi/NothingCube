@@ -43,7 +43,7 @@ export class BotUtils {
             type: type ?? PromocodeType.coins,
             activations: isNaN(activations) ? 0 : activations,
             count: isNaN(count) ? 0 : count,
-            expires_at: isNaN(parseDate(expires_at).getTime()) ? new Date(9999, 11) : parseDate(expires_at)
+            expires_at: parseDate(expires_at) ? new Date(9999, 11) : parseDate(expires_at)
         }
         return await this.database.createPromocode(promocode);
     }
@@ -152,7 +152,8 @@ function getAccessLevel(status: string) {
     return userAccessLevel;
 }
 
-function parseDate(input: string): Date {
+function parseDate(input: string): Date|null {
+    if(!input) return null
     const currentDate = new Date();
     const parts = input.split('-');
 
