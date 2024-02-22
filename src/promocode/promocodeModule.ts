@@ -46,8 +46,8 @@ export class PromocodeModule implements Module {
     let promocode: Promocode = await this.bot.Utils.getPromocode(code);
     return promocode ? promocode : null;
   }
-  async foundUnactivePromo(code: string): Promise<expressPromocode | null> {
-    let promocode: expressPromocode | null = await this.bot.Utils.foundUnactivePromo(code);
+  async foundInactivePromo(code: string): Promise<expressPromocode | null> {
+    let promocode: expressPromocode | null = await this.bot.Utils.foundInactivePromo(code);
     return promocode ? promocode : null;
   }
   async getPromocodeUsage(userId: number, code: string) {
@@ -58,6 +58,9 @@ export class PromocodeModule implements Module {
   }
   async usagePromocode(userId: number, code: string) {
     return await this.bot.Utils.usagePromocode(userId, code)
+  }
+  async setPromocodeInacive(promocode: Promocode) {
+    return await this.bot.Utils.setInactivePromo(promocode)
   }
 
   getMessage(message: PromocodeMessages, ...params: any) : string {

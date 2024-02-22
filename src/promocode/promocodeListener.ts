@@ -22,6 +22,14 @@ export class PromocodeListener extends Listener {
       if (await this.module.getPromocodeUsage(userId, inputPromo)) {
         return context.sendMessage(this.module.getMessage("used"));
       } else {
+        if(promocode.activations === 0 || new Date(promocode.expires_at) < new Date()) {
+          this.module.setPromocodeInacive(promocode);
+          if (promocode.activations == 0) {
+            return context.sendMessage(this.module.getMessage("noActivations"));
+          } else {
+            return context.sendMessage(this.module.getMessage("express"));
+          }
+        }
         const count = promocode.count;
         const type = promocode.type;
         let inventory = await this.module.getInventory(context.from.id);
@@ -33,7 +41,7 @@ export class PromocodeListener extends Listener {
         );
       }
     } else {
-      const expressPromo: expressPromocode = await this.module.foundUnactivePromo(inputPromo);
+      const expressPromo: expressPromocode = await this.module.foundInactivePromo(inputPromo);
       if (expressPromo) {
         if (expressPromo.activations == 0) {
           return context.sendMessage(this.module.getMessage("noActivations"));

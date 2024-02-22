@@ -51,14 +51,24 @@ export class BotUtils {
         const promoUsage = await this.database.getPromocodeUsage(userId, code);
         return ((promoUsage[Object.keys(promoUsage)[0]] !== null) && (promoUsage[Object.keys(promoUsage)[0]] > 0));
     }
+    async deletePromo(code: string) {
+        return await this.database.deletePromo(code);
+    }
     async usagePromocode(userId: number, code: string) {
         return await this.database.usagePromocode(userId, code);
     }
-    async foundUnactivePromo(code: string): Promise<expressPromocode | null> {
-        return (await this.database.foundUnactivePromo(code));
+    async foundInactivePromo(code: string): Promise<expressPromocode | null> {
+        return (await this.database.foundInactivePromo(code));
     }
     async deductPromocode(promocode: Promocode) {
         return await this.database.deductPromocode(promocode);
+    }
+    async createInactivePromo(promocode: Promocode) {
+        return await this.database.createInactivePromo(promocode);
+    }
+    async setInactivePromo(promocode: Promocode) {
+        await this.deletePromo(promocode.code);
+        return await this.createInactivePromo(promocode);
     }
 
     async getUserInventory(userId: number,  type?: keyof Omit<Inventory, 'user_id'> ) {
