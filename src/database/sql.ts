@@ -18,9 +18,14 @@ import { setUserSubscriptions } from './query/subscriptions/setUserSubscriptions
 import { getRequiredChannels } from './query/subscriptions/getRequiredChannels'
 import { getStats } from './query/stats/getStats'
 
-import { User } from "src/interface/user";
-import { Promocode } from "src/interface/promocode";
-import { Inventory } from "src/interface/inventory";
+import { User } from "../interface/user";
+import { Promocode } from "../interface/promocode";
+import { Inventory } from "../interface/inventory";
+import { WithdrawUser } from "../interface/withdraw";
+import { deleteWithdrawPromocode, linkWithdrawPromocode, tryPutQueue } from "./query/withdraw/queueMethods";
+import { getWithdrawUsers } from "./query/withdraw/getWithdrawUsers";
+import { hasWithdrawUsers } from "./query/withdraw/hasWithdrawUsers";
+import { hasWithdrawPromocodes } from "./query/withdraw/hasWithdrawPromocodes";
 
 
 
@@ -98,9 +103,24 @@ export class Database {
     return getStats(this, userId);
   }
 
-
-
-
+  public async tryPutQueue(user: WithdrawUser) {
+    return tryPutQueue(this, user);
+  }
+  public async deleteWithdrawPromocode(code: string) {
+    return deleteWithdrawPromocode(this, code);
+  }
+  public async linkWithdrawPromocode(user: WithdrawUser) {
+    return linkWithdrawPromocode(this, user);
+  }
+  public async getWithdrawUsers() {
+    return getWithdrawUsers(this);
+  }
+  public async hasWithdrawUsers() {
+    return hasWithdrawUsers(this);
+  }
+  public async hasWithdrawPromocodes() {
+    return hasWithdrawPromocodes(this);
+  }
 
   /**
    * Выполняет заданый SQL запрос и возвращает его результат
@@ -117,6 +137,23 @@ export class Database {
       connection.release();
 
       if (Array.isArray(rows)) return rows.length > 0 ? (rows[0] as T) : null;
+      else return null;
+    } catch (error) {
+      console.error("Error executing query:", error);
+      return null;
+    }
+  }
+
+  public async executeQueryArray<T>(
+    sqlQuery: string,
+    params?: any[]
+  ): Promise<T[] | null> {
+    try {
+      const connection = await this._pool.getConnection();
+      const [rows] = await connection.execute(sqlQuery, params);
+      connection.release();
+
+      if (Array.isArray(rows)) return rows.length > 0 ? (rows as T[]) : null;
       else return null;
     } catch (error) {
       console.error("Error executing query:", error);

@@ -5,7 +5,8 @@ import { Inventory } from '../../src/interface/inventory';
 
 import { StatusType } from '../../src/interface/stats';
 import { AccessLevel } from '../../src/interface/security';
-import { expressPromocode } from 'src/interface/expressPromo';
+import { expressPromocode } from '../interface/expressPromo';
+import { WithdrawUser } from '../interface/withdraw';
 
 export class BotUtils {
     private database: Database = new Database();
@@ -110,6 +111,25 @@ export class BotUtils {
         } else {
             return 0;
         }
+    }
+
+    async tryPutQueue(user: WithdrawUser) {
+        return this.database.tryPutQueue(user);
+    }
+    async deleteWithdrawPromocode(code: string) {
+        return this.database.deleteWithdrawPromocode(code);
+    }
+    async linkWithdrawPromocode(user: WithdrawUser) {
+        return this.database.linkWithdrawPromocode(user);
+    }
+    async getWithdrawUsers() {
+        return this.database.getWithdrawUsers();
+    }
+    public async hasWithdrawUsers() {
+        return this.database.hasWithdrawUsers();
+    }
+    public async hasWithdrawPromocodes() {
+        return this.database.hasWithdrawPromocodes();
     }
 
     checkAccess(role: string, level: number) {
