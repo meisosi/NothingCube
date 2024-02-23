@@ -270,8 +270,8 @@ class RussianRouletteCase {
       if (ctx.message.text === 'Сделать выстрел') {
         const lost = Math.random() * 100 < this.shotsChances[currentShot];
         if (lost) {
-          ctx.reply('Вы проиграли.', { /* стик */ });
-          // Здесь должен быть код для выдачи стика
+          ctx.reply('Вы проиграли.');
+          ctx.replyWithSticker("CAACAgIAAxkBAAEDsx5l2My5eogfxjEt0T6_uiX6uqQNBQACGi0AAiEL6ElPYSE3ilVrDTQE");
           return;
         }
 
@@ -292,7 +292,8 @@ class RussianRouletteCase {
         const lost = Math.random() * 100 < this.finalShotChance;
 
         if (lost) {
-          ctx.reply('Вы проиграли на последнем выстреле.', { /* тут стик */ });
+          ctx.reply('Вы проиграли на последнем выстреле.');
+          ctx.replyWithSticker("CAACAgIAAxkBAAEDsx5l2My5eogfxjEt0T6_uiX6uqQNBQACGi0AAiEL6ElPYSE3ilVrDTQE");
         } else {
           await botUtils.updateUserCoins(userId, this.bonusPrize);
           ctx.reply(`Поздравляем! Вы выиграли ${this.bonusPrize} монет.`);

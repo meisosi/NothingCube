@@ -14,7 +14,7 @@ export class BotUtils {
         return await this.database.deleteUser(userId);
     }
     async createUser(userId: number, username: string, premium_days: number, status: number, guild: number, ban: boolean) {
-        const user : User = {
+        const user: User = {
             user_id: userId || null,
             name: username || null,
             premium: premium_days || 0,
@@ -29,7 +29,7 @@ export class BotUtils {
         return await this.database.getPromocode(code);
     }
     async createPromocode(code: string, type: PromocodeType, activations: number, count: number, expires_at: Date | boolean) {
-        const promocode : Promocode = {
+        const promocode: Promocode = {
             code: code ?? null,
             type: type ?? PromocodeType.coins,
             activations: activations ?? 0,
@@ -43,14 +43,14 @@ export class BotUtils {
         return promoUsage !== null && promoUsage > 0;
     }
 
-    async getUserInventory(userId: number,  type?: keyof Omit<Inventory, 'user_id'> ) {
-        if(type)
+    async getUserInventory(userId: number, type?: keyof Omit<Inventory, 'user_id'>) {
+        if (type)
             return (await this.database.getUserInventory(userId, type));
         return await this.database.getUserInventory(userId);
     }
     async getUserRolls(userId: number) {
         return (await this.database.getUserInventory(userId)).rolls;
-      }
+    }
     async getUserCoins(userId: number) {
         return (await this.database.getUserInventory(userId)).coins;
     }
