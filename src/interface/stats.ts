@@ -8,7 +8,7 @@ export enum StatusType {
 }
 
 export interface Stats {
-    user_id: string;
+    user_id: number;
     status: StatusType;
     cases: number;
     rolls: number;
@@ -16,5 +16,6 @@ export interface Stats {
     win: number;
     gems_earn: number;
     moons_earn: number;
-    created_at: Date | boolean;
+    referalId: number|null;
+    created_at: Date;
 }

@@ -9,6 +9,7 @@ import { PrizesConfigCreator, PrizesConfiguration } from "./prizesConfig";
 import { SendRollTryEvent } from "./rollEvent";
 import { RollListener } from "./rollListener";
 import { Prize } from "./rollTypes";
+import { AccessLevel } from "../../src/interface/security";
 
 type RollMessages = 'notEnough' | 'win';
 
@@ -26,24 +27,18 @@ export class RollModule implements Module {
         this.prizesConfig = configCreator.create(path, 'utf-8', false);
 
         EventHandler.Handler.addListener(new RollListener(this));
-        this.bot.Telegraf.command('roll', context => SendRollTryEvent.execute(context, context.args[0]));
+        this.bot.Telegraf.command('roll', async context => {
+            await this.bot.Utils.initUser(context.from.id, context.from.first_name);
+            if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user))
+              SendRollTryEvent.execute(context, context.args[0])
+        });
     }
 
     async getInventory(@NotNull userId: number) : Promise<Inventory> {
-        if(!userId || isNaN(userId)) {
-            throw new Error(`Not found Inventory: (id: ${userId})`);
-        }
         return await this.bot.Utils.getUserInventory(userId);
     }
 
-    async updateUserInventory(
-        userId: number,
-        type: keyof Omit<Inventory, 'user_id'>,
-        value: number
-    ) {
-        if(!userId || isNaN(userId)) {
-            throw new Error(`Not found Inventory: (id: ${userId})`);
-        }
+    async updateUserInventory(@NotNull userId: number, type: keyof Omit<Inventory, 'user_id'>,value: number) {
         return await this.bot.Utils.updateUserInventory(userId, type, value);
     }
 

@@ -6,6 +6,7 @@ import { RollModule } from "./src/roll/rollModule";
 import { AdminModule } from "./src/admin/adminModule";
 import { PromocodeModule } from "./src/promocode/promocodeModule";
 import { StartModule } from "./src/start/startModule";
+import { ReferalModule } from "./src/referal/referalModule";
 
 export class Bot {
     protected utils : BotUtils = new BotUtils();
@@ -44,6 +45,7 @@ export class Bot {
         new AdminModule(this).init();
         new PromocodeModule(this).init();
         new StartModule(this).init();
+        new ReferalModule(this).init()
 
         this.telegraf.launch();
     }

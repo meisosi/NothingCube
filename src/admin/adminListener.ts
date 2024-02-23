@@ -76,11 +76,16 @@ export class AdminListener extends Listener {
     const activations: number = parseInt(argument[2]);
     const count: number = parseInt(argument[3]);
     const expires_at: string|null = argument[4] ?? null;
-    const promocode: Promocode|null = await this.module.createPromocode(code, type, activations, count, expires_at);
-    if(promocode)
-      await context.reply(`Successfully create promocode \`${promocode.code}\``, {parse_mode:"MarkdownV2"});
-    else 
-      await context.reply(`Failed to create a promo code \`${code}\``, {parse_mode: "MarkdownV2"});
+    if(this.module.checkPromocode(code) || this.module.foundInactivePromo(code)) {
+      await context.reply(`Невозможно созздать \`${code}\`. Такой промокод уже существовал`, {parse_mode: "MarkdownV2"});
+    }
+    else {
+      const promocode: Promocode|null = await this.module.createPromocode(code, type, activations, count, expires_at);
+      if(promocode)
+        await context.reply(`Создан \`${promocode.code}\``, {parse_mode:"MarkdownV2"});
+      else 
+        await context.reply(`Ошибка при создании \`${code}\``, {parse_mode: "MarkdownV2"});
+    }
   }
   
   @EventHandler.Handler.handle(MailingEvent)

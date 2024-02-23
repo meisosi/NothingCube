@@ -6,9 +6,28 @@ import { Inventory } from '../../src/interface/inventory';
 import { StatusType } from '../../src/interface/stats';
 import { AccessLevel } from '../../src/interface/security';
 import { expressPromocode } from 'src/interface/expressPromo';
+import { NotNull } from './decorators';
 
 export class BotUtils {
     private database: Database = new Database();
+
+    async initUser(@NotNull userId: number, @NotNull username: string) {
+        let userDB = await this.getUser(userId);
+        let userInventory = await this.getUserInventory(userId);
+        let userStat = await this.getUserStats(userId);
+        if(!userDB) {
+          await this.createUser(userId, username, 0, -1, -1);
+          userDB = await this.getUser(userId);
+        }
+        if(!userInventory) {
+          await this.createUserInventory(userId);
+          userInventory = await this.getUserInventory(userId);
+        }
+        if(!userStat) {
+          await this.createUserStats(userId);
+          userStat = await this.getUserStats(userId);
+        }
+      }
 
     async getUser(userId: number) {
         return await this.database.getUser(userId);
@@ -29,6 +48,9 @@ export class BotUtils {
 
     async getUserStats(userId: number) {
         return await this.database.getUserStats(userId);
+    }
+    async createUserStats(userId: number) {
+        return await this.database.createUserStats(userId);
     }
     async getUserStatus(userId: number) {
         return (await this.database.getUserStats(userId)).status;
@@ -78,7 +100,7 @@ export class BotUtils {
     }
     async getUserRolls(userId: number) {
         return (await this.database.getUserInventory(userId)).rolls;
-      }
+    }
     async getUserCoins(userId: number) {
         return (await this.database.getUserInventory(userId)).coins;
     }
@@ -90,6 +112,13 @@ export class BotUtils {
     }
     async updateUserCoins(userId: number, value: number) {
         return (await this.database.updateUserInventory(userId, 'coins', value));
+    }
+    async createUserInventory(userId: number) {
+        return await this.database.createUserInventory(userId);
+    }
+
+    async addAdViews(adcode: string) {
+        return await this.database.addAdViews(adcode);
     }
 
     async refreshUserSubscriptionChannels(userId: number) {
@@ -112,8 +141,42 @@ export class BotUtils {
         }
     }
 
+    public async createUserRef(userId: number) {
+        return this.database.createUserRef(userId);
+    }
+    public async addReferal(userId: number, referalId: number) {
+        return this.database.addReferal(userId, referalId);
+    }
+    public async removeReferal(userId: number, referalId: number) {
+        return this.database.removeReferal(userId, referalId);
+    }
+    public async getReferal(userId: number) {
+        return this.database.getReferal(userId);
+    }
+    public async linkReferal(userId: number, referalId: number) {
+        return this.database.linkReferal(userId, referalId)
+    }
+
     checkAccess(role: string, level: number) {
-        return getAccessLevel(role) >= level;
+        return this.getAccessLevel(role) >= level;
+    }
+
+    getAccessLevel(status: string) {
+        let userAccessLevel = -1;
+        switch (status) {
+            case StatusType.admin:
+                userAccessLevel = AccessLevel.admin;
+                break;
+            case StatusType.support:
+                userAccessLevel = AccessLevel.support;
+                break;
+            case StatusType.user:
+                userAccessLevel = AccessLevel.user;
+                break;
+            default:
+                userAccessLevel = AccessLevel.null;
+        }
+        return userAccessLevel;
     }
 }
 
@@ -134,23 +197,6 @@ async function checkSubscribe(userId: number, channelId: number): Promise<boolea
     return ['member', 'administrator', 'creator'].includes(chatMember.status);
 }
 
-function getAccessLevel(status: string) {
-    let userAccessLevel = -1;
-    switch (status) {
-        case StatusType.admin:
-            userAccessLevel = AccessLevel.admin;
-            break;
-        case StatusType.support:
-            userAccessLevel = AccessLevel.support;
-            break;
-        case StatusType.user:
-            userAccessLevel = AccessLevel.user;
-            break;
-        default:
-            userAccessLevel = AccessLevel.null;
-    }
-    return userAccessLevel;
-}
 
 function parseDate(input: string): Date|null {
     if(!input) return null

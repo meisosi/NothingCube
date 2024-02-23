@@ -16,6 +16,7 @@ import {
 } from "./adminEvent";
 import { AccessLevel } from "../../src/interface/security";
 import { Promocode, PromocodeType } from "../../src/interface/promocode";
+import { expressPromocode } from "../../src/interface/expressPromo";
 
 export class AdminModule implements Module {
   constructor(private readonly bot: Bot) {}
@@ -24,35 +25,39 @@ export class AdminModule implements Module {
 
     EventHandler.Handler.addListener(new AdminListener(this));
     this.bot.Telegraf.command("changecoins", async (context) => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
         UserCoinsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("changerolls", async (context) => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
         UserRollsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("changegems", async (context) => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
         UserGemsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("changemoons", async (context) => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
         UserMoonsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("changebiggems", async (context) => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.support))
         UserBigGemsChangeEvent.execute(context, context.args);
     });
     this.bot.Telegraf.command("createpromocode", async (context) => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.streamer))
         PromocodeCreateEvent.execute(context, context.args);
       });
   }
 
   async changeCoins(userId: number, amount: number): Promise<void> {
-    const userInventory: Inventory = await this.bot.Utils.getUserInventory(
-      userId
-    );
+    const userInventory: Inventory = await this.bot.Utils.getUserInventory(userId);
     if (userInventory) {
       const updatedCoins: number = userInventory.coins + amount;
       await this.bot.Utils.updateUserCoins(userId, updatedCoins);
@@ -62,9 +67,7 @@ export class AdminModule implements Module {
   }
 
   async changeRolls(userId: number, amount: number): Promise<void> {
-    const userInventory: Inventory = await this.bot.Utils.getUserInventory(
-      userId
-    );
+    const userInventory: Inventory = await this.bot.Utils.getUserInventory(userId);
     if (userInventory) {
       const updatedRolls: number = userInventory.rolls + amount;
       await this.bot.Utils.updateUserRolls(userId, updatedRolls);
@@ -74,9 +77,7 @@ export class AdminModule implements Module {
   }
 
   async changeGems(userId: number, amount: number): Promise<void> {
-    const userInventory: Inventory = await this.bot.Utils.getUserInventory(
-      userId
-    );
+    const userInventory: Inventory = await this.bot.Utils.getUserInventory(userId);
     if (userInventory) {
       const updatedGems: number = userInventory.gems + amount;
       await this.bot.Utils.updateUserInventory(userId, "gems", updatedGems);
@@ -86,9 +87,7 @@ export class AdminModule implements Module {
   }
 
   async changeMoons(userId: number, amount: number): Promise<void> {
-    const userInventory: Inventory = await this.bot.Utils.getUserInventory(
-      userId
-    );
+    const userInventory: Inventory = await this.bot.Utils.getUserInventory(userId);
     if (userInventory) {
       const updatedMoons: number = userInventory.moons + amount;
       await this.bot.Utils.updateUserInventory(userId, "moons", updatedMoons);
@@ -98,9 +97,7 @@ export class AdminModule implements Module {
   }
 
   async changeBigGems(userId: number, amount: number): Promise<void> {
-    const userInventory: Inventory = await this.bot.Utils.getUserInventory(
-      userId
-    );
+    const userInventory: Inventory = await this.bot.Utils.getUserInventory(userId);
     if (userInventory) {
       const updatedGems: number = userInventory.big_gems + amount;
       await this.bot.Utils.updateUserInventory(userId, "big_gems", updatedGems);
@@ -113,5 +110,13 @@ export class AdminModule implements Module {
     const allowedCharacters = /[a-zA-Z_-]/g;
     code = code.replace(new RegExp(`[^${allowedCharacters.source}]`, 'g'), '').substring(0, 30);
     return await this.bot.Utils.createPromocode(code, type, activations, count, expires_at);
+  }
+  async checkPromocode(code: string): Promise<Promocode | null> {
+    let promocode: Promocode = await this.bot.Utils.getPromocode(code);
+    return promocode ? promocode : null;
+  }
+  async foundInactivePromo(code: string): Promise<expressPromocode | null> {
+    let promocode: expressPromocode | null = await this.bot.Utils.foundInactivePromo(code);
+    return promocode ? promocode : null;
   }
 }
