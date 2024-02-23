@@ -1,6 +1,27 @@
 import * as mysql from "mysql2/promise";
 
-import { getUser } from "./query/getUser";
+import { getUser } from "./query/users/getUser";
+import { createUser } from "./query/users/createUser";
+import { deleteUser } from "./query/users/deleteUser";
+import { getPromocode } from "./query/promocodes/getPromocode"
+import { createPromocode } from "./query/promocodes/createPromocode"
+import { getPromocodeUsage } from "./query/promocodes/getPromocodeUsage"
+import { usagePromocode } from './query/promocodes/usagePromocode'
+import { createInactivePromo } from "./query/promocodes/createInactivePromo"
+import { foundInactivePromo } from "./query/promocodes/foundInactivePromo"
+import { deductPromocode } from './query/promocodes/deductPromocode'
+import { deletePromo } from './query/promocodes/deletePromo'
+import { getUserInventory } from "./query/inventory/getInventory"
+import { updateUserInventory } from "./query/inventory/updateInventory"
+import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions'
+import { setUserSubscriptions } from './query/subscriptions/setUserSubscriptions'
+import { getRequiredChannels } from './query/subscriptions/getRequiredChannels'
+import { getStats } from './query/stats/getStats'
+
+import { User } from "src/interface/user";
+import { Promocode } from "src/interface/promocode";
+import { Inventory } from "src/interface/inventory";
+
 
 
 export class Database {
@@ -8,10 +29,10 @@ export class Database {
 
   constructor() {
     const dbConfig: mysql.PoolOptions = {
-      host: "your_database_host",
-      user: "your_database_user",
-      password: "your_database_password",
-      database: "your_database_name",
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
@@ -20,10 +41,67 @@ export class Database {
   }
 
   // Импорт всех запросов
-  async getUser(userId: number) {
+  public async getUser(userId: number) {
     return getUser(this, userId);
   }
-  
+  public async deleteUser(userId: number) {
+    return deleteUser(this, userId);
+  }
+  public async createUser(user: User) {
+    return createUser(this, user);
+  }
+
+  public async getPromocode(promo: string) {
+    return getPromocode(this, promo);
+  }
+  public async createPromocode(promocode: Promocode) {
+    return createPromocode(this, promocode);
+  }
+  public async deductPromocode(promocode: Promocode) {
+    return deductPromocode(this, promocode.code);
+  }
+  public async deletePromo(code: string) {
+    return deletePromo(this, code);
+  }
+  public async usagePromocode(userId: number, promocode: string) {
+    return usagePromocode(this, userId, promocode);
+  }
+  public async getPromocodeUsage(userId: number, code: string) {
+    return getPromocodeUsage(this, userId, code);
+  }
+  public async createInactivePromo(promocode: Promocode) {
+    return createInactivePromo(this, promocode);
+  }
+  public async foundInactivePromo(promo: string) {
+    return foundInactivePromo(this, promo);
+  }
+
+  public async getUserInventory(userId: number, type?: keyof Omit<Inventory, 'user_id'>) {
+    if(type)
+      return (await getUserInventory(this, userId)[type]);
+    return getUserInventory(this, userId);
+  }
+  public async updateUserInventory(userId: number, type: keyof Omit<Inventory, 'user_id'>, value: number) {
+    return (await updateUserInventory(this, userId, type, value));
+  }
+
+  public async getUserSubscriptions(userId: number) {
+    return getUserSubscriptions(this, userId);
+  }
+  public async setUserSubscriptions(userId: number, newChannels: Array<number>) {
+    return setUserSubscriptions(this, userId, newChannels);
+  }
+  public async getRequiredChannels() {
+    return getRequiredChannels(this);
+  }
+  public async getUserStats(userId: number) {
+    return getStats(this, userId);
+  }
+
+
+
+
+
   /**
    * Выполняет заданый SQL запрос и возвращает его результат
    * @param {string} sqlQuery - SQL запрос для выполнения
