@@ -5,7 +5,6 @@ import { Inventory } from '../../src/interface/inventory';
 
 import { StatusType } from '../../src/interface/stats';
 import { AccessLevel } from '../../src/interface/security';
-import { expressPromocode } from '../interface/expressPromo';
 import { WithdrawUser } from '../interface/withdraw';
 import { expressPromocode } from 'src/interface/expressPromo';
 
@@ -163,7 +162,7 @@ export class BotUtils {
     }
     public async hasWithdrawPromocodes() {
         return this.database.hasWithdrawPromocodes();
-
+    }
     public async createUserRef(userId: number) {
         return this.database.createUserRef(userId);
     }
