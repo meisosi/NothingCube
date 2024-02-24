@@ -36,7 +36,7 @@ export class PromocodeListener extends Listener {
       this.module.deductPromocode(promocode);
       this.module.updateUserInventory(inventory.user_id, type, inventory[type]);
       return context.sendMessage(
-        this.module.getMessage("sucsess", count, type, inventory[type] + count)
+        this.module.getMessage("sucsess", count, type, inventory[type])
       );
     }
     else {

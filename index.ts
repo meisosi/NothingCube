@@ -2,8 +2,6 @@ import { Telegraf } from "telegraf";
 import { Bot } from "./bot";
 import * as dotenv from 'dotenv'
 
-// Регистрация расширений
-
 // Регистрация переменных окружения
 dotenv.config()
 

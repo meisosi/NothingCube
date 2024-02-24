@@ -1,27 +1,26 @@
 import { Bot } from "../../bot";
 import { Module } from "../../module";
 import { EventHandler } from "../events/eventHandler";
-import { StartListener } from "./startListener";
+import { ReferalListener } from "./referalListener";
 import { StringBuilder } from "../utils/stringBuilder";
-import { NotNull } from "../../src/utils/decorators";
-import { StartEvent} from "./startEvent";
+import { NotNull } from "../utils/decorators";
+import { CreateReferalLinkEvent, ReferalEvent} from "./referalEvent";
 import { AccessLevel } from "../interface/security";
-import { YAML_PATH_SEPARATOR } from "../../src/utils/yaml";
-import { Inventory } from "../../src/interface/inventory";
+import { YAML_PATH_SEPARATOR } from "../utils/yaml";
+import { Inventory } from "../interface/inventory";
 
-type StrartMessages = 'sucsessRef' | 'newRef' | 'startUser' | 'noActivations' | 'used';
+type ReferalMessages = 'createRefLink' | 'noRefLink' | 'myRefs' | 'sucsessRef' | 'newRef' | 'noRefs';
 
-export class StartModule implements Module {
+export class ReferalModule implements Module {
   constructor(private readonly bot: Bot) {}
 
   init(): void {
 
-    EventHandler.Handler.addListener(new StartListener(this));
-    this.bot.Telegraf.command("start", async (context) => {
+    EventHandler.Handler.addListener(new ReferalListener(this));
+    this.bot.Telegraf.command("referal", async (context) => {
       await this.bot.Utils.initUser(context.from.id, context.from.first_name);
-      if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user)) {
-        StartEvent.execute(context, context.args[0]);
-      }
+      if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user))
+      ReferalEvent.execute(context, context.args[0]);
     });
   }
 
@@ -59,11 +58,18 @@ export class StartModule implements Module {
   async addAdViews(@NotNull adcode: string) {
     return this.bot.Utils.addAdViews(adcode);
   }
+
+  async createReferalLink(userId: number) {
+    return this.bot.Utils.createUserRef(userId);
+  }
+  async linkReferal(userId: number, referalId: number) {
+    return this.bot.Utils.linkReferal(userId, referalId)
+  }
   
-  getMessage(message: StrartMessages, ...params: any) : string {
+  getMessage(message: ReferalMessages, ...params: any) : string {
     return StringBuilder.format(
         this.bot.getConfig('messages.yaml').
-        get(`start${YAML_PATH_SEPARATOR}${message}`) as string, ...params
+        get(`ref${YAML_PATH_SEPARATOR}${message}`) as string, ...params
     );
   }
 

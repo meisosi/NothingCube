@@ -3,29 +3,44 @@ import * as mysql from "mysql2/promise";
 import { getUser } from "./query/users/getUser";
 import { createUser } from "./query/users/createUser";
 import { deleteUser } from "./query/users/deleteUser";
-import { getPromocode } from "./query/promocodes/getPromocode"
-import { createPromocode } from "./query/promocodes/createPromocode"
-import { getPromocodeUsage } from "./query/promocodes/getPromocodeUsage"
-import { usagePromocode } from './query/promocodes/usagePromocode'
-import { createInactivePromo } from "./query/promocodes/createInactivePromo"
-import { foundInactivePromo } from "./query/promocodes/foundInactivePromo"
-import { deductPromocode } from './query/promocodes/deductPromocode'
-import { deletePromo } from './query/promocodes/deletePromo'
-import { getUserInventory } from "./query/inventory/getInventory"
-import { updateUserInventory } from "./query/inventory/updateInventory"
-import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions'
-import { setUserSubscriptions } from './query/subscriptions/setUserSubscriptions'
-import { getRequiredChannels } from './query/subscriptions/getRequiredChannels'
-import { getStats } from './query/stats/getStats'
+
+import { getPromocode } from "./query/promocodes/getPromocode";
+import { createPromocode } from "./query/promocodes/createPromocode";
+import { getPromocodeUsage } from "./query/promocodes/getPromocodeUsage";
+import { usagePromocode } from './query/promocodes/usagePromocode';
+import { createInactivePromo } from "./query/promocodes/createInactivePromo";
+import { foundInactivePromo } from "./query/promocodes/foundInactivePromo";
+import { deductPromocode } from './query/promocodes/deductPromocode';
+import { deletePromo } from './query/promocodes/deletePromo';
+
+import { getUserInventory } from "./query/inventory/getInventory";
+import { createUserInventory } from "./query/inventory/createInventory";
+import { updateUserInventory } from "./query/inventory/updateInventory";
+import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions';
+
+import { setUserSubscriptions } from './query/subscriptions/setUserSubscriptions';
+import { getRequiredChannels } from './query/subscriptions/getRequiredChannels';
+
+import { createStats } from "./query/stats/createStats";
+import { getStats } from './query/stats/getStats';
+import { createReferal } from "./query/referals/createUserRef";
+
+import { addReferal } from "./query/referals/addReferal";
+import { removeReferal } from "./query/referals/removeReferal";
+import { getReferal } from "./query/referals/getReferals";
+import { linkReferal } from "./query/referals/linkReferal";
+import { addAdViews } from './query/ad/addViews';
+
+import { deleteWithdrawPromocode, linkWithdrawPromocode, tryPutQueue } from "./query/withdraw/queueMethods";
+import { getWithdrawUsers } from "./query/withdraw/getWithdrawUsers";
+import { hasWithdrawUsers } from "./query/withdraw/hasWithdrawUsers";
+import { hasWithdrawPromocodes } from "./query/withdraw/hasWithdrawPromocodes";
 
 import { User } from "../interface/user";
 import { Promocode } from "../interface/promocode";
 import { Inventory } from "../interface/inventory";
 import { WithdrawUser } from "../interface/withdraw";
-import { deleteWithdrawPromocode, linkWithdrawPromocode, tryPutQueue } from "./query/withdraw/queueMethods";
-import { getWithdrawUsers } from "./query/withdraw/getWithdrawUsers";
-import { hasWithdrawUsers } from "./query/withdraw/hasWithdrawUsers";
-import { hasWithdrawPromocodes } from "./query/withdraw/hasWithdrawPromocodes";
+
 
 
 
@@ -87,7 +102,10 @@ export class Database {
     return getUserInventory(this, userId);
   }
   public async updateUserInventory(userId: number, type: keyof Omit<Inventory, 'user_id'>, value: number) {
-    return (await updateUserInventory(this, userId, type, value));
+    return await updateUserInventory(this, userId, type, value);
+  }
+  public async createUserInventory(userId: number) {
+    return await createUserInventory(this, userId);
   }
 
   public async getUserSubscriptions(userId: number) {
@@ -102,6 +120,10 @@ export class Database {
   public async getUserStats(userId: number) {
     return getStats(this, userId);
   }
+  public async createUserStats(userId: number) {
+    return createStats(this, userId);
+  }
+
 
   public async tryPutQueue(user: WithdrawUser) {
     return tryPutQueue(this, user);
@@ -121,6 +143,27 @@ export class Database {
   public async hasWithdrawPromocodes() {
     return hasWithdrawPromocodes(this);
   }
+
+  public async createUserRef(userId: number) {
+    return createReferal(this, userId);
+  }
+  public async addReferal(userId: number, referalId: number) {
+    return addReferal(this, userId, referalId);
+  }
+  public async removeReferal(userId: number, referalId: number) {
+    return removeReferal(this, userId, referalId);
+  }
+  public async getReferal(userId: number) {
+    return getReferal(this, userId);
+  }
+  public async linkReferal(userId: number, referalId: number) {
+    return linkReferal(this, userId, referalId);
+  }
+
+  public async addAdViews(adcode: string) {
+    return addAdViews(this, adcode);
+  }
+
 
   /**
    * Выполняет заданый SQL запрос и возвращает его результат

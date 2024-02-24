@@ -2,7 +2,7 @@ import { Context } from "telegraf";
 import { BotEvent } from "../events/botEvent";
 import { NotNull } from "../utils/decorators";
 
-export class StartEvent extends BotEvent {
+export class HRCaseEvent extends BotEvent {
     static execute(
         @NotNull context: Context, 
         argument: any,
@@ -14,11 +14,11 @@ export class StartEvent extends BotEvent {
     }
 }
 
-export class InitUserEvent extends BotEvent {
+export class HRPremCaseEvent extends BotEvent {
     static execute(
         @NotNull context: Context, 
         argument: any,
-    ): Promise<void> {
+    ): void {
         if(context == null) {
             return;
         }

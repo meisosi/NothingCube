@@ -20,27 +20,18 @@ export class PromocodeModule implements Module {
 
     EventHandler.Handler.addListener(new PromocodeListener(this));
     this.bot.Telegraf.command("promocode", async (context) => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user))
         PromocodeUse.execute(context, context.args[0]);
     });
   }
 
   async getInventory(@NotNull userId: number) : Promise<Inventory> {
-    if(!userId || isNaN(userId)) {
-        throw new Error(`Not found Inventory: (id: ${userId})`);
-    }
     return await this.bot.Utils.getUserInventory(userId);
   }
-  async updateUserInventory(
-    userId: number,
-    type: keyof Omit<Inventory, 'user_id'>,
-    value: number
-) {
-    if(!userId || isNaN(userId)) {
-        throw new Error(`Not found Inventory: (id: ${userId})`);
-    }
+  async updateUserInventory(userId: number, type: keyof Omit<Inventory, 'user_id'>, value: number) {
     return await this.bot.Utils.updateUserInventory(userId, type, value);
-}
+  }
 
   async checkPromocode(code: string): Promise<Promocode | null> {
     let promocode: Promocode = await this.bot.Utils.getPromocode(code);
@@ -69,5 +60,5 @@ export class PromocodeModule implements Module {
         this.bot.getConfig('messages.yaml').
         get(`promocode${YAML_PATH_SEPARATOR}${message}`) as string, ...params
     );
-}
+  }
 }
