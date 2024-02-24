@@ -16,10 +16,12 @@ import { deletePromo } from './query/promocodes/deletePromo';
 import { getUserInventory } from "./query/inventory/getInventory";
 import { createUserInventory } from "./query/inventory/createInventory";
 import { updateUserInventory } from "./query/inventory/updateInventory";
-import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions';
 
+import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions';
 import { setUserSubscriptions } from './query/subscriptions/setUserSubscriptions';
 import { getRequiredChannels } from './query/subscriptions/getRequiredChannels';
+import { getChannel } from "./query/subscriptions/getChannel";
+import { createUserSubscriptions } from './query/subscriptions/createUserSubscriptions';
 
 import { createStats } from "./query/stats/createStats";
 import { getStats } from './query/stats/getStats';
@@ -109,14 +111,21 @@ export class Database {
   }
 
   public async getUserSubscriptions(userId: number) {
-    return getUserSubscriptions(this, userId);
+    return await getUserSubscriptions(this, userId);
   }
   public async setUserSubscriptions(userId: number, newChannels: Array<number>) {
-    return setUserSubscriptions(this, userId, newChannels);
+    return await setUserSubscriptions(this, userId, newChannels);
   }
   public async getRequiredChannels() {
-    return getRequiredChannels(this);
+    return await getRequiredChannels(this);
   }
+  public async getChannel(channelId: number) {
+    return await getChannel(this, channelId);
+  }
+  public async createUserSubscriptions(userId: number) {
+    return await createUserSubscriptions(this, userId);
+  }
+
   public async getUserStats(userId: number) {
     return getStats(this, userId);
   }

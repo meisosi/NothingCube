@@ -127,6 +127,12 @@ export class BotUtils {
     async getRequiredChannels() {
         return await this.database.getRequiredChannels()
     }
+    async getChannel(channelId: number) {
+        return await this.database.getChannel(channelId);
+    }
+    async createUserSubscriptions(userId) {
+        return await this.database.createUserSubscriptions(userId);
+    }
 
     async tryPutQueue(user: WithdrawUser) {
         return this.database.tryPutQueue(user);
@@ -157,14 +163,14 @@ export class BotUtils {
         return this.database.removeReferal(userId, referalId);
     }
     public async getReferal(userId: number) {
-        return this.database.getReferal(userId);
+        return await this.database.getReferal(userId);
     }
     public async linkReferal(userId: number, referalId: number) {
         return this.database.linkReferal(userId, referalId)
     }
 
     public async getUserSubscriptions(userId: number) {
-        return this.database.getUserSubscriptions(userId)
+        return await this.database.getUserSubscriptions(userId);
     }
 
     public async setUserSubscriptions(userId: number, newChannelsIds: Array<number>) {
