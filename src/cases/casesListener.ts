@@ -34,9 +34,15 @@ export class CaseListener extends Listener {
     return context.reply(this.module.getMessage("caseMenu"), {
       reply_markup: Markup.inlineKeyboard([
         [
-          Markup.button.callback(this.module.getMessage('open_btn'), `HRopen`),
-          Markup.button.callback(this.module.getMessage('home_btn'), `home`)
-        ]
+          Markup.button.callback(this.module.getMessage('open_btn'), `caseHR`),
+          Markup.button.callback(this.module.getMessage('home_btn'), `caseHRP`),
+          Markup.button.callback(this.module.getMessage('open_btn'), `caseNT`),
+        ],
+        [
+          Markup.button.callback(this.module.getMessage('open_btn'), `caseHR`),
+          Markup.button.callback(this.module.getMessage('home_btn'), `caseHRP`),
+          Markup.button.callback(this.module.getMessage('open_btn'), `caseNT`),
+        ],
       ]).reply_markup
     })
   }
