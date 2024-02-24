@@ -3,6 +3,7 @@ import * as mysql from "mysql2/promise";
 import { getUser } from "./query/users/getUser";
 import { createUser } from "./query/users/createUser";
 import { deleteUser } from "./query/users/deleteUser";
+
 import { getPromocode } from "./query/promocodes/getPromocode";
 import { createPromocode } from "./query/promocodes/createPromocode";
 import { getPromocodeUsage } from "./query/promocodes/getPromocodeUsage";
@@ -11,24 +12,35 @@ import { createInactivePromo } from "./query/promocodes/createInactivePromo";
 import { foundInactivePromo } from "./query/promocodes/foundInactivePromo";
 import { deductPromocode } from './query/promocodes/deductPromocode';
 import { deletePromo } from './query/promocodes/deletePromo';
+
 import { getUserInventory } from "./query/inventory/getInventory";
+import { createUserInventory } from "./query/inventory/createInventory";
 import { updateUserInventory } from "./query/inventory/updateInventory";
 import { getUserSubscriptions } from './query/subscriptions/getUserSubscriptions';
+
 import { setUserSubscriptions } from './query/subscriptions/setUserSubscriptions';
 import { getRequiredChannels } from './query/subscriptions/getRequiredChannels';
+
 import { createStats } from "./query/stats/createStats";
 import { getStats } from './query/stats/getStats';
 import { createReferal } from "./query/referals/createUserRef";
+
 import { addReferal } from "./query/referals/addReferal";
 import { removeReferal } from "./query/referals/removeReferal";
 import { getReferal } from "./query/referals/getReferals";
-import { addAdViews } from './query/ad/addViews'
-
-import { User } from "src/interface/user";
-import { Promocode } from "src/interface/promocode";
-import { Inventory } from "src/interface/inventory";
-import { createUserInventory } from "./query/inventory/createInventory";
 import { linkReferal } from "./query/referals/linkReferal";
+import { addAdViews } from './query/ad/addViews';
+
+import { deleteWithdrawPromocode, linkWithdrawPromocode, tryPutQueue } from "./query/withdraw/queueMethods";
+import { getWithdrawUsers } from "./query/withdraw/getWithdrawUsers";
+import { hasWithdrawUsers } from "./query/withdraw/hasWithdrawUsers";
+import { hasWithdrawPromocodes } from "./query/withdraw/hasWithdrawPromocodes";
+
+import { User } from "../interface/user";
+import { Promocode } from "../interface/promocode";
+import { Inventory } from "../interface/inventory";
+import { WithdrawUser } from "../interface/withdraw";
+
 
 
 
@@ -112,6 +124,26 @@ export class Database {
     return createStats(this, userId);
   }
 
+
+  public async tryPutQueue(user: WithdrawUser) {
+    return tryPutQueue(this, user);
+  }
+  public async deleteWithdrawPromocode(code: string) {
+    return deleteWithdrawPromocode(this, code);
+  }
+  public async linkWithdrawPromocode(user: WithdrawUser) {
+    return linkWithdrawPromocode(this, user);
+  }
+  public async getWithdrawUsers() {
+    return getWithdrawUsers(this);
+  }
+  public async hasWithdrawUsers() {
+    return hasWithdrawUsers(this);
+  }
+  public async hasWithdrawPromocodes() {
+    return hasWithdrawPromocodes(this);
+  }
+
   public async createUserRef(userId: number) {
     return createReferal(this, userId);
   }
@@ -133,8 +165,6 @@ export class Database {
   }
 
 
-
-
   /**
    * Выполняет заданый SQL запрос и возвращает его результат
    * @param {string} sqlQuery - SQL запрос для выполнения
@@ -150,6 +180,23 @@ export class Database {
       connection.release();
 
       if (Array.isArray(rows)) return rows.length > 0 ? (rows[0] as T) : null;
+      else return null;
+    } catch (error) {
+      console.error("Error executing query:", error);
+      return null;
+    }
+  }
+
+  public async executeQueryArray<T>(
+    sqlQuery: string,
+    params?: any[]
+  ): Promise<T[] | null> {
+    try {
+      const connection = await this._pool.getConnection();
+      const [rows] = await connection.execute(sqlQuery, params);
+      connection.release();
+
+      if (Array.isArray(rows)) return rows.length > 0 ? (rows as T[]) : null;
       else return null;
     } catch (error) {
       console.error("Error executing query:", error);
