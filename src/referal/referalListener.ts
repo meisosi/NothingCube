@@ -22,6 +22,7 @@ export class ReferalListener extends Listener {
   private async onReferal(@NotNull context: Context, argument: any) {
     const userId: number = context.from.id;
     const refs = await this.module.getReferal(userId)
+    const userInventory = await this.module.getInventory(userId)
     if(refs) {
       if(refs.referals) {
         let refTxt: string = "";
@@ -34,7 +35,7 @@ export class ReferalListener extends Listener {
             const user = await this.module.getUser(ref);
             refTxt += user.name + '\n';
         }
-        return context.sendMessage(this.module.getMessage('myRefs', refTxt))
+        return context.sendMessage(this.module.getMessage('myRefs', refTxt, userInventory.friend_coins))
       }
       else {
         return context.sendMessage(this.module.getMessage('noRefs'))

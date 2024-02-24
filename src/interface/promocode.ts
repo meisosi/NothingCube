@@ -3,6 +3,8 @@ export enum PromocodeType {
     gems = 'gems',
     moons = 'moons',
     bigGems = 'big_gems',
+    friend_coins = 'friend_coins',
+    rolls = 'rolls'
 }
 
 export interface Promocode {

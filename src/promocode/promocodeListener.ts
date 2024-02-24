@@ -35,8 +35,32 @@ export class PromocodeListener extends Listener {
       this.module.usagePromocode(userId, promocode.code);
       this.module.deductPromocode(promocode);
       this.module.updateUserInventory(inventory.user_id, type, inventory[type]);
+      let ruType: string;
+      switch (type) {
+        case "coins": 
+          ruType = "монеток"
+          break;
+        case "gems": 
+          ruType = "паков по 60 гемов"
+          break;
+        case "rolls": 
+          ruType = "бросков"
+          break;
+        case "moons": 
+          ruType = "лун"
+          break;
+        case "big_gems":
+          ruType = "паков по 1090 гемов"
+          break;
+        case "friend_coins":
+          ruType = "монеток дружбы"
+          break;
+        default:
+          ruType = "воздуха"
+          break;
+      }
       return context.sendMessage(
-        this.module.getMessage("sucsess", count, type, inventory[type])
+        this.module.getMessage("sucsess", count, ruType, inventory[type])
       );
     }
     else {

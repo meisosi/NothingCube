@@ -9,7 +9,7 @@ import {
   FAQGlobalEvent, FAQMiniGamesEvent, FAQOnlineEvent, FAQRefEvent, 
 } from "./faqEvent";
 
-type FAQMessages = 'global' | 'mini_games' | 'cases' | 'online' | 'ref' | 'mini_games_btn' | 'ref_btn' | 'cases_btn' | 'online_btn';
+type FAQMessages = 'global' | 'mini_games' | 'cases' | 'online' | 'ref' | 'mini_games_btn' | 'ref_btn' | 'cases_btn' | 'online_btn' | 'home_btn';
 
 export class FAQModule implements Module {
   constructor(private readonly bot: Bot) {}

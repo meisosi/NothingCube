@@ -8,9 +8,10 @@ import { AddRollsMenuEvent, CheckChannelSubsEvent, CollcetRollsEvent } from "./a
 import { Channel } from "../../src/interface/channel";
 import { Markup } from "telegraf";
 import { Inventory } from "src/interface/inventory";
+import { Subscriptions } from "src/interface/subscriptions";
 
 type AddRollsMessages = 'sucsess' | 'noSubs' | 'allCollected' | 'main' | 'sub_btn' | 
-'allreadySub' | 'subsReqwest' | 'collect_btn' | 'home';
+'allreadySub' | 'subsReqwest' | 'collect_btn' | 'home_btn';
 
 export class AddRollsModule implements Module {
   constructor(private readonly bot: Bot) {}
@@ -62,18 +63,17 @@ export class AddRollsModule implements Module {
     }
     keyboard.push([
       Markup.button.callback(this.getMessage('collect_btn'), `collcetRolls`),
-      Markup.button.callback(this.getMessage('home'), `home`)
+      Markup.button.callback(this.getMessage('home_btn'), `home`)
     ])
     return keyboard;
   }
 
-  async refreshUserSubscriptionChannels(userId: number) {
-    let currentSubscriptions = await this.getUserSubscriptions(userId);
+  async refreshUserSubscriptionChannels(userId: number, currentSubscriptions: Subscriptions, reqChannels: Array<Channel>) {
     if(!currentSubscriptions.channels) {
       currentSubscriptions.channels = []
     }
     
-    const reqChannelsIds = await this.getRequiredChannels().then(channels => channels.map(channel => channel.id));
+    const reqChannelsIds = reqChannels.map(channel => channel.id);
 
     const newChannels = await this.updateSubscriptions(userId, currentSubscriptions.channels, reqChannelsIds);
     let updateChannels = currentSubscriptions.channels.concat(newChannels);

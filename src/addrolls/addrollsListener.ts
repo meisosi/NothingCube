@@ -47,16 +47,17 @@ export class AddRollsListener extends Listener {
   private async onRollsCollect(@NotNull context: Context, argument: any) {
     const userId = context.from.id;
     let nowSubs = await this.module.getUserSubscriptions(userId);
+    let reqChannels = await this.module.getRequiredChannels();
     if(nowSubs) {
       if(nowSubs.channels)
-        if((await this.module.getRequiredChannels()).length <= nowSubs.channels.length) {
+        if(reqChannels.length <= nowSubs.channels.length) {
           return context.reply(this.module.getMessage("allCollected"))
         }
     }
     else {
       await this.module.createUserSubscriptions(userId)
     }
-    const userSubs = await this.module.refreshUserSubscriptionChannels(userId)
+    const userSubs = await this.module.refreshUserSubscriptionChannels(userId, nowSubs, reqChannels)
     if(userSubs == 0) {
       return context.reply(this.module.getMessage("noSubs"))
     }
@@ -65,7 +66,7 @@ export class AddRollsListener extends Listener {
       return context.reply(this.module.getMessage("sucsess", userSubs), {
         reply_markup: Markup.inlineKeyboard([
         [
-          Markup.button.callback(this.module.getMessage("home"),`home`)
+          Markup.button.callback(this.module.getMessage("home_btn"),`home`)
         ],
       ]).reply_markup})
     }
