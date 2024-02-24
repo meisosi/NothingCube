@@ -9,7 +9,8 @@ import { AccessLevel } from "../interface/security";
 import { YAML_PATH_SEPARATOR } from "../../src/utils/yaml";
 import { Inventory } from "../../src/interface/inventory";
 
-type StrartMessages = 'sucsessRef' | 'newRef' | 'startUser' | 'noActivations' | 'used';
+type StrartMessages = 'sucsessRef' | 'newRef' | 'startUser' | 'noActivations' | 'used' 
+| 'profile_btn' | 'mini_games_btn' | 'withdraw_btn' | 'faq_btn' | 'addroll_btn' | 'shopGD_btn' | 'subscribe_btn';
 
 export class StartModule implements Module {
   constructor(private readonly bot: Bot) {}
@@ -19,9 +20,13 @@ export class StartModule implements Module {
     EventHandler.Handler.addListener(new StartListener(this));
     this.bot.Telegraf.command("start", async (context) => {
       await this.bot.Utils.initUser(context.from.id, context.from.first_name);
-      if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user)) {
+      if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user))
         StartEvent.execute(context, context.args[0]);
-      }
+    });
+    this.bot.Telegraf.action('home', async context => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
+      if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user))
+        StartEvent.execute(context, 0)
     });
   }
 

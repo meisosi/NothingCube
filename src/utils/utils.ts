@@ -124,26 +124,9 @@ export class BotUtils {
         return await this.database.addAdViews(adcode);
     }
 
-    async refreshUserSubscriptionChannels(userId: number) {
-        const currentSubscriptions = await this.database.getUserSubscriptions(userId);
-
-        if (currentSubscriptions === null) {
-            throw new Error('Failed to fetch user subscriptions.');
-        }
-
-        const reqChannelsIds = await this.database.getRequiredChannels()
-            .then(channels => channels.map(channel => channel.id));
-
-        const newChannels = await updateSubscriptions(userId, currentSubscriptions.сhannals, reqChannelsIds);
-
-        if (newChannels.length > 0) {
-            await this.database.setUserSubscriptions(userId, newChannels);
-            return newChannels.length;
-        } else {
-            return 0;
-        }
+    async getRequiredChannels() {
+        return await this.database.getRequiredChannels()
     }
-
 
     async tryPutQueue(user: WithdrawUser) {
         return this.database.tryPutQueue(user);
@@ -163,6 +146,7 @@ export class BotUtils {
     public async hasWithdrawPromocodes() {
         return this.database.hasWithdrawPromocodes();
     }
+
     public async createUserRef(userId: number) {
         return this.database.createUserRef(userId);
     }
@@ -177,6 +161,14 @@ export class BotUtils {
     }
     public async linkReferal(userId: number, referalId: number) {
         return this.database.linkReferal(userId, referalId)
+    }
+
+    public async getUserSubscriptions(userId: number) {
+        return this.database.getUserSubscriptions(userId)
+    }
+
+    public async setUserSubscriptions(userId: number, newChannelsIds: Array<number>) {
+        return this.database.setUserSubscriptions(userId, newChannelsIds)
     }
 
     checkAccess(role: string, level: number) {
@@ -200,23 +192,6 @@ export class BotUtils {
         }
         return userAccessLevel;
     }
-}
-
-async function updateSubscriptions(userId: number, currentChannels: number[], reqChannels: number[]): Promise<number[]> {
-    const newChannels: number[] = [];
-
-    for (const channelId of reqChannels) {
-        if (!currentChannels.includes(channelId) && await checkSubscribe(userId, channelId)) {
-            newChannels.push(channelId);
-        }
-    }
-
-    return newChannels;
-}
-
-async function checkSubscribe(userId: number, channelId: number): Promise<boolean> {
-    const chatMember = await this.telegraf.getChatMember(channelId, userId);
-    return ['member', 'administrator', 'creator'].includes(chatMember.status);
 }
 
 

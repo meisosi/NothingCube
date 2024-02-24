@@ -9,7 +9,7 @@ import { AccessLevel } from "../interface/security";
 import { YAML_PATH_SEPARATOR } from "../utils/yaml";
 import { Inventory } from "../interface/inventory";
 
-type ReferalMessages = 'createRefLink' | 'noRefLink' | 'myRefs' | 'sucsessRef' | 'newRef' | 'noRefs';
+type ReferalMessages = 'createRefLink' | 'noRefLink' | 'myRefs' | 'sucsessRef' | 'newRef' | 'noRefs' | 'newLink_btn';
 
 export class ReferalModule implements Module {
   constructor(private readonly bot: Bot) {}
@@ -17,10 +17,15 @@ export class ReferalModule implements Module {
   init(): void {
 
     EventHandler.Handler.addListener(new ReferalListener(this));
-    this.bot.Telegraf.command("referal", async (context) => {
+    this.bot.Telegraf.action('referal_menu', async context => {
       await this.bot.Utils.initUser(context.from.id, context.from.first_name);
       if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user))
-      ReferalEvent.execute(context, context.args[0]);
+      ReferalEvent.execute(context, 1)
+    });
+    this.bot.Telegraf.action('referal_linkCreate', async context => {
+      await this.bot.Utils.initUser(context.from.id, context.from.first_name);
+      if (this.bot.Utils.checkAccess(await this.bot.Utils.getUserStatus(context.from.id),AccessLevel.user))
+      CreateReferalLinkEvent.execute(context, 0)
     });
   }
 

@@ -7,18 +7,22 @@ import { AdminModule } from "./src/admin/adminModule";
 import { PromocodeModule } from "./src/promocode/promocodeModule";
 import { StartModule } from "./src/start/startModule";
 import { ReferalModule } from "./src/referal/referalModule";
+import { QueueModule } from "./src/queue/queueModule";
+import { FAQModule } from "./src/faq/faqModule";
+import { ProfileModule } from "./src/profile/profileModule";
+import { AddRollsModule } from "./src/addrolls/addrollsModule";
 
 export class Bot {
     protected utils : BotUtils = new BotUtils();
     protected configurations: Map<string, Configuration> = new Map();
     private defaultConfigCreator: DefaultConfigCreator = new DefaultConfigCreator();
     
-    get Utils() : BotUtils {
-        return this.utils;
-    }
-    
     get Telegraf() : Telegraf {
         return this.telegraf;
+    }
+
+    get Utils() : BotUtils {
+        return this.utils;
     }
 
     constructor(
@@ -45,7 +49,11 @@ export class Bot {
         new AdminModule(this).init();
         new PromocodeModule(this).init();
         new StartModule(this).init();
-        new ReferalModule(this).init()
+        new ReferalModule(this).init();
+        new QueueModule(this).init("0 0 * * *");
+        new FAQModule(this).init();
+        new ProfileModule(this).init();
+        new AddRollsModule(this).init();
 
         this.telegraf.launch();
     }

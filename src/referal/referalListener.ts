@@ -1,4 +1,4 @@
-import { Context } from "telegraf";
+import { Context, Markup } from "telegraf";
 import { EventHandler } from "../events/eventHandler";
 import { Listener } from "../events/listener";
 import { ReferalModule } from "./referalModule";
@@ -24,8 +24,8 @@ export class ReferalListener extends Listener {
     const refs = await this.module.getReferal(userId)
     if(refs) {
       if(refs.referals) {
-        let refTxt: string;
-        const page: number = parseInt(argument[0]) || 1;
+        let refTxt: string = "";
+        const page: number = parseInt(argument) || 1;
         const itemsPerPage = 15;
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
@@ -41,7 +41,17 @@ export class ReferalListener extends Listener {
       }
     }
     else {
-      return context.sendMessage(this.module.getMessage('noRefLink'))
+      return context.sendMessage(this.module.getMessage('noRefLink'), 
+      {
+        reply_markup: Markup.inlineKeyboard([
+          [
+            Markup.button.callback(
+              this.module.getMessage("newLink_btn"),
+              `referal_linkCreate`
+            )
+          ],
+        ]).reply_markup
+      })
     }
   }
 
@@ -72,9 +82,9 @@ export class ReferalListener extends Listener {
           await this.module.updateUserInventory(userId, 'coins',  userInventory.coins)
           const refInventory = await this.module.getInventory(referalId);
           refInventory.rolls = refInventory.rolls + 1;
-          refInventory.refs = refInventory.refs + 1;
+          refInventory.friend_coins = refInventory.friend_coins + 1;
           await this.module.updateUserInventory(referalId, 'rolls',  refInventory.rolls)
-          await this.module.updateUserInventory(referalId, 'refs',  refInventory.refs)
+          await this.module.updateUserInventory(referalId, 'friend_coins',  refInventory.friend_coins)
           context.telegram.sendMessage(referalId, this.module.getMessage("newRef", username))
         }
       }

@@ -1,7 +1,7 @@
 import { Markup } from "telegraf";
 import { Bot } from "bot";
 import { EventHandler } from "../events/eventHandler";
-import { Module } from "module";
+import { Module } from "../../module";
 import { StringBuilder } from "../utils/stringBuilder";
 import { YAML_PATH_SEPARATOR } from "../utils/yaml";
 import { QueueCommandEvent, QueueGivePromocodeEvent } from "./queueEvents";

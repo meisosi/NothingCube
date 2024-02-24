@@ -5,5 +5,5 @@ export interface Inventory{
     gems: number,
     big_gems: number,
     moons: number,
-    refs: number
+    friend_coins: number
 }
