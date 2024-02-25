@@ -33,16 +33,11 @@
         }
     },
 
-    "add_tryes": {
+    "to_bot": {
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "GenshinDrop❤️", "url": "https://t.me/genshindropcom"}, { "text": "Примогемчик", "url": "https://t.me/+AlgTBS57sQYwZTk6"}, {"text": "Проклятие Каэнриаха", "url": "https://t.me/+b9U_f9_v2X8zMmUy"}],
-                [{ "text": "ПомПом", "url": "https://t.me/+2RhZa62uLM9iNzBi"}, { "text": "Логово Байлу", "url": "https://t.me/+3g2cAyMdVh05MzUy"}, {"text":"Что за персонаж? ","url":"https://t.me/+3phtyXFIKalmZjcy"}],
-                [{ "text": "Гейшит", "url": "https://t.me/+QSFrLY50sf42Mjhi"}, { "text": "Ветер", "url": "https://t.me/+2k88_rzoJQAzYTMy"}, { "text": "Мир HoYoLAB", "url": "https://t.me/+0_FgnT5sWQ01Nzhi"}],
-                [{ "text": "Сокровищница Genshin Impact", "url": "https://t.me/+vcvkVR-UNlo4MTQy"}, {"text":"Genshin Impact Leaks","url":"https://t.me/+I7wI6y3dnIdhZjk6"}],
-
-                [{ "text": "➕ Собрать броски", "callback_data": "check_check_subscription"}, { "text": "🏠 Домой", "callback_data": "back_to_menu"}]
+                [{"text": "В бота", "url": "https://t.me/nothing_cube_game_bot"}]
             ]
         }
     },

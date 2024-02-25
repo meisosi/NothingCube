@@ -29,8 +29,9 @@ composer.action("drop_all_dice", async (ctx) => {
         let userRolls = user.rolls;
         let userCoins = user.coins;
         let allResult = 0;
+        let rollCount = 0
 
-        while (userRolls > 0) {
+        while (userRolls > 0 || rollCount < 5) {
             const diceResult = await ctx.replyWithDice();
             userRolls -= 1;
             const selectedResult = diceResult.dice.value;
@@ -43,12 +44,13 @@ composer.action("drop_all_dice", async (ctx) => {
         
             allResult += reward;
             userCoins += reward;
+            rollCount += 1;
 
             await utils.increaseUserRolls(ctx.from.id);
-            await utils.increaseUserEarned(ctx.from.id, reward);
-            await utils.updateUserData(ctx.from.id, 'coins', userCoins);
-            await utils.updateUserData(ctx.from.id, 'rolls', userRolls);
         }
+        await utils.increaseUserEarned(ctx.from.id, allResult);
+        await utils.updateUserData(ctx.from.id, 'coins', userCoins);
+        await utils.updateUserData(ctx.from.id, 'rolls', userRolls);
 
         setTimeout(async () => {
             let resultMessage = `Ты бросил ${user.rolls} кубиков 🎲\n\n`;
