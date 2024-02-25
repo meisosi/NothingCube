@@ -5,6 +5,13 @@ const http = require('http')
 
 const token = process.env.TOKEN_BOT
 const bot = new Telegraf(token)
+const queue_1 = require("./queue/queue");
+
+new queue_1.Queue(
+    '',                         // Время в формате `cron`
+    '',                         // Часовой пояс или `UTC(\d)`
+    bot
+);
 
 bot.use(require('./composers/start.composer')) //start
 bot.use(require('./composers/drop_dice.composer')) //drop dice
