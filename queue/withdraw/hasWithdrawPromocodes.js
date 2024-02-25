@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hasWithdrawPromocodes = void 0;
-const HAS_PROMOCODES_QUERY = 'SELECT EXISTS(SELECT * FROM `withdraw_{0}_promocodes` WHERE `userId` IS NOT NULL)';
+const HAS_PROMOCODES_QUERY = 'SELECT EXISTS(SELECT * FROM `withdraw_{0}_promocodes` WHERE `userId` IS NULL)';
 function hasWithdrawPromocodes(db, status = 'default') {
     return __awaiter(this, void 0, void 0, function* () {
         return db.executeQuery(HAS_PROMOCODES_QUERY.replace('{0}', status));

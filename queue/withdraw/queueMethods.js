@@ -13,7 +13,7 @@ exports.linkWithdrawPromocode = exports.deleteWithdrawPromocode = exports.tryPut
 const getWithdrawPromocode_1 = require("./getWithdrawPromocode");
 const hasWithdrawUsers_1 = require("./hasWithdrawUsers");
 const LINK_PROMOCODE_QUERY = 'UPDATE `withdraw_{0}_promocodes` SET userId = ? WHERE code = ?';
-const USER_ADD_QUERY = 'INSERT INTO `withdraw_{0}s_users` VALUES (?, ?)';
+const USER_ADD_QUERY = 'INSERT INTO `withdraw_{0}s_users` VALUES (?, ?, NOW())';
 const GIVE_PROMOCODE_QUERY = 'SELECT * FROM `withdraw_{0}_promocodes` WHERE code = ? ORDER BY `data` LIMIT 1';
 const DELETE_PROMOCODE_QUERY = 'DELETE FROM `withdraw_{0}_promocodes` WHERE code = ?';
 const KICK_USER_QUERY = 'DELETE FROM `withdraw_{0}_users` WHERE id = ?';

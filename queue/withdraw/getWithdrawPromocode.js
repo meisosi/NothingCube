@@ -10,13 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getWithdrawPromocode = exports.getWithdrawPromocodes = void 0;
-const GET_PROMOCODES_QUERY = 'SELECT * FROM `withdraw_{0}_promocodes` WHERE type = ? ORDER BY `data`';
+const GET_PROMOCODES_QUERY = 'SELECT * FROM `withdraw_{0}_promocodes` WHERE type = ?';
 function getWithdrawPromocodes(db, type, linked, status = 'default') {
     return __awaiter(this, void 0, void 0, function* () {
         let query = GET_PROMOCODES_QUERY.replace('{0}', status);
         if (typeof linked === 'boolean') {
             query += ` AND userId ${linked ? 'IS NOT NULL' : 'IS NULL'}`;
         }
+        query += ' ORDER BY `data`'
         return db.executeQueryArray(query, [type]);
     });
 }

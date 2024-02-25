@@ -5,7 +5,7 @@ const kb = require("../../../keyboars.json");
 
 composer.action("inventory", async (ctx) => {
   try {
-    const user = await utils.getUserData(ctx.chat.id);
+    const user = await utils.getUserData(ctx.from.id);
     if (!user) {
       await ctx.editMessageText(
         "Произошла ошибка при получении данных о вашем инвентаре. Пожалуйста, перезапустите бота и попробуйте снова.",

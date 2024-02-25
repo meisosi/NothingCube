@@ -133,6 +133,14 @@ const wizard_scenes = new Scenes.WizardScene(
               "дней подписки"
             );
             break;
+          case "friend_coin":
+            txtType = await utils.getDeclension(
+              promo.count,
+              "монетку друга",
+              "монетки друга",
+              "монеток друга"
+            );
+            break;
           default:
             txtType = await getDeclension(
               promo.count,

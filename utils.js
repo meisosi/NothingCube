@@ -436,7 +436,99 @@ class utils {
             bot.telegram.sendMessage(userId, "Произошла ошибка.");
             reject(err);
           } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+  }
+
+  async createReferalLink(userId) {
+    return new Promise((resolve, reject) => {
+      this.connection.query(
+        `INSERT INTO referals (user_id, referals) VALUES (${userId}, NULL);`,
+        (err, results) => {
+          if (err) {
+            console.error("Ошибка при выполнении запроса: " + err.stack);
+            bot.telegram.sendMessage(userId, "Произошла ошибка.");
+            reject(err);
+          } else {
             resolve(true);
+          }
+        }
+      );
+    });
+  }
+
+  async addReferal(userId, referalId) {
+    return new Promise((resolve, reject) => {
+      this.connection.query(
+`
+UPDATE referals
+SET referals = CASE
+  WHEN referals IS NULL OR JSON_TYPE(referals) <> 'ARRAY'
+  THEN JSON_ARRAY('${userId}')
+  ELSE JSON_ARRAY_APPEND(referals, '$', '${userId}')
+  END
+WHERE user_id = '${referalId}';`,
+        (err, results) => {
+          if (err) {
+            console.error("Ошибка при выполнении запроса: " + err.stack);
+            bot.telegram.sendMessage(userId, "Произошла ошибка.");
+            reject(err);
+          } else {
+            resolve(true);
+          }
+        }
+      );
+    });
+  }
+
+  async getReferals(userId) {
+    return new Promise((resolve, reject) => {
+      this.connection.query(
+        `SELECT referals FROM referals WHERE user_id = ${userId};`,
+        (err, results) => {
+          if (err) {
+            console.error("Ошибка при выполнении запроса: " + err.stack);
+            bot.telegram.sendMessage(userId, "Произошла ошибка.");
+            reject(err);
+          } else {
+            resolve(results[0]);
+          }
+        }
+      );
+    });
+  }
+
+  async linkReferal(userId, referalId) {
+    return new Promise((resolve, reject) => {
+      this.connection.query(
+        `UPDATE users SET referal_id = ${referalId} WHERE tg_id = ${userId}`,
+        (err, results) => {
+          if (err) {
+            console.error("Ошибка при выполнении запроса: " + err.stack);
+            bot.telegram.sendMessage(userId, "Произошла ошибка.");
+            reject(err);
+          } else {
+            resolve(true);
+          }
+        }
+      );
+    });
+  }
+
+  async addAdViews(adId) {
+    return new Promise((resolve, reject) => {
+      this.connection.query(
+        `UPDATE ad SET views = views + 1 WHERE ad_code = ${adId};`,
+        (err, results) => {
+          if (err) {
+            console.error("Ошибка при выполнении запроса: " + err.stack);
+            bot.telegram.sendMessage(userId, "Произошла ошибка.");
+            reject(err);
+          } else {
+            resolve(results[0]);
           }
         }
       );

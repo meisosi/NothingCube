@@ -42,6 +42,23 @@
         }
     },
 
+    "create_ref_link": {
+        "parse_mode": "HTML",
+        "reply_markup": {
+            "inline_keyboard": [
+                [{"text": "Создать", "callback_data": "create_ref_link"}, {"text": "⬅️ Назад", "callback_data": "profile"}]
+            ]
+        }
+    },
+    "ref": {
+        "parse_mode": "HTML",
+        "reply_markup": {
+            "inline_keyboard": [
+                [{"text": "⬅️ Назад", "callback_data": "profile"}]
+            ]
+        }
+    },
+
     "add_tryes_success": {
         "parse_mode": "HTML",
         "reply_markup": {
@@ -168,9 +185,8 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🎒 Мои предметы", "callback_data": "inventory"}, { "text": "🌟 Промокод", "callback_data": "promocode"}],
-                [{ "text": "📖 Статистика", "callback_data": "statistic"}, { "text": "💱 Обменник", "callback_data": "exchanger"}],
-                [{ "text": "🏠 Домой", "callback_data": "back_to_menu"}, { "text": "🔙 Назад", "callback_data": "back_to_menu"}]
+                [{ "text": "🎒 Рефералка", "callback_data": "referal"}, { "text": "🌟 Промокод", "callback_data": "promocode"}],
+                [{ "text": "🏠 Домой", "callback_data": "back_to_menu"}]
             ]
         }
     },
