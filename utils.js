@@ -132,9 +132,13 @@ class utils {
     });
   }
 
-  async sendSubscribeKeyboard(ctx, edit = false) {
+  async sendSubscribeKeyboard(ctx, args, edit = false) {
     const subscribeMessage =
       "Для использования функционала бота, пожалуйста, подпишитесь на наш канал:";
+    let action = "";
+    if(args) {
+      action = "-" + args;
+    }
     const keyboard = {
       reply_markup: {
         inline_keyboard: [
@@ -144,7 +148,7 @@ class utils {
               url: `https://t.me/${process.env.MAIN_CHANEL}`,
             },
           ],
-          [{ text: "Проверить", callback_data: `back_to_menu` }],
+          [{ text: "Проверить", callback_data: `back_to_menu` + action }],
         ],
       },
     };

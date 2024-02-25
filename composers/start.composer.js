@@ -76,9 +76,9 @@ composer.command("start", async (ctx) => {
       chatMember.status !== "administrator" &&
       chatMember.status !== "creator"
     ) {
-      await utils.sendSubscribeKeyboard(ctx);
-      return;
+      return await utils.sendSubscribeKeyboard(ctx, ctx.args[0]);
     }
+
     await getMenu(ctx);
   } catch (e) {
     console.log(e);
@@ -148,7 +148,7 @@ composer.command("roll", async (ctx) => {
 });
 
 
-composer.action("back_to_menu", async (ctx) => {
+composer.action(/back_to_menu(?:-[\w\d]+)?/, async (ctx) => {
   try {
     const chatMember = await bot.telegram.getChatMember(
       `@${process.env.MAIN_CHANEL}`,
