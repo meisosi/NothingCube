@@ -14,11 +14,11 @@ const rewards = {
 
 composer.action("drop_dice", async (ctx) => {
     try {
-        const user = await utils.getUserData(ctx.chat.id);
-        const stat = await utils.getUserStats(ctx.chat.id);
+        const user = await utils.getUserData(ctx.from.id);
+        const stat = await utils.getUserStats(ctx.from.id);
 
         if (!stat) {
-            await utils.createUserStats(ctx.chat.id);
+            await utils.createUserStats(ctx.from.id);
         }
 
         if (user['rolls'] <= 0) {
@@ -37,11 +37,11 @@ composer.action("drop_dice", async (ctx) => {
             return;
         }
 
-        await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] + reward);
-        await utils.updateUserData(ctx.chat.id, 'rolls', user['rolls'] - 1);
+        await utils.updateUserData(ctx.from.id, 'coins', user['coins'] + reward);
+        await utils.updateUserData(ctx.from.id, 'rolls', user['rolls'] - 1);
 
-        await utils.increaseUserRolls(ctx.chat.id);
-        await utils.increaseUserEarned(ctx.chat.id, reward);
+        await utils.increaseUserRolls(ctx.from.id);
+        await utils.increaseUserEarned(ctx.from.id, reward);
 
         // Устанавливаем таймер для отправки сообщения с поздравлением через 5 секунд
         setTimeout(async () => {

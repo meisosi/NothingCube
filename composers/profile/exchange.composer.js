@@ -32,15 +32,15 @@ composer.on("callback_query", async (ctx) => {
     try {
         const params = ctx.callbackQuery.data.split("_")
         if ((params.length === 2) && ((params[0] === "genshin") || (params[0] === "honkai"))){
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
             const item = await prepareName(params[0], params[1]); // Получаем всю команду целиком
             const itemCost = await utils.getShopCosts(item); // Получаем стоимость товара из базы данных
         
 
             if (user.coins >= itemCost) {
                 user.coins -= itemCost;
-                await utils.updateUserData(ctx.chat.id, 'coins', user.coins); // Обновляем баланс монет в базе данных
-                await utils.updateUserData(ctx.chat.id, 'items', user.items + 1); // Обновляем предметы в базе данных
+                await utils.updateUserData(ctx.from.id, 'coins', user.coins); // Обновляем баланс монет в базе данных
+                await utils.updateUserData(ctx.from.id, 'items', user.items + 1); // Обновляем предметы в базе данных
                 await ctx.editMessageText(`Успешно! В вашем 🎒 Инвентаре появилось ${item}!`, kb.back_to_inventory);
             } else {
                 let keyboard = null

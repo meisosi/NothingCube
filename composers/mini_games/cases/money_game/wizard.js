@@ -5,7 +5,7 @@ const utils = require('../../../../utils')
 const back = async (ctx, edit = true) => {
     try {
         await ctx.scene.leave()
-        const stat = await utils.getUserStats(ctx.chat.id)
+        const stat = await utils.getUserStats(ctx.from.id)
 
         let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
         txt += 'Здесь кейсы на любой вкус и выбор\n'
@@ -27,7 +27,7 @@ const wizard_scenes = new Scenes.WizardScene(
     "money_game",
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
 
             let txt = 'Самый бюджетный наш кейс, но достаточно щедрый\n\n'
             txt += `Твой баланс: ${user.coins} 💰`
@@ -44,7 +44,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
             cb_data = ctx.callbackQuery.data
             const possibleResults = [
                 { number: 1, reward: 5, chance: 35 },
@@ -58,11 +58,11 @@ const wizard_scenes = new Scenes.WizardScene(
             if (cb_data === 'start_case') {
                 if (user.coins >= 19) {
                     user['coins'] -= 19
-                    await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] );
+                    await utils.updateUserData(ctx.from.id, 'coins', user['coins'] );
                     const selectedResult = await utils.getRandomResult(possibleResults);
-                    await utils.increaseUserCaseOpened(ctx.chat.id)
+                    await utils.increaseUserCaseOpened(ctx.from.id)
                     user['coins'] += selectedResult.reward
-                    await utils.updateUserData(ctx.chat.id, 'coins', user['coins']);
+                    await utils.updateUserData(ctx.from.id, 'coins', user['coins']);
                     let txt = `Ты открыл кейс и тебе выпало: ${selectedResult.reward}\n\n`
                     txt += `Твой баланс: ${user['coins']} 💰\n`
                     txt += 'Откроем ещё?'
@@ -88,7 +88,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
             cb_data = ctx.callbackQuery.data
 
             if ( (cb_data === 'try_again')) {

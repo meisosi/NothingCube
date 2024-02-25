@@ -5,20 +5,21 @@ const utils = require('../../../utils')
 
 composer.use(session())
 composer.use(require('./cases.stage'))
+composer.use(require('./craft.composer'))
 
 composer.action("cases_menu", async (ctx) => {
     try {
-        let user = await utils.getUserData(ctx.chat.id)
-        let stat = await utils.getUserStats(ctx.chat.id)
+        let user = await utils.getUserData(ctx.from.id)
+        let stat = await utils.getUserStats(ctx.from.id)
 
         if (!user) {
-            await utils.createUser(ctx.chat.id, ctx.chat.username)
-            user = await utils.getUserData(ctx.chat.id)
+            await utils.createUser(ctx.from.id, ctx.from.username)
+            user = await utils.getUserData(ctx.from.id)
         }
 
         if (!stat) {
-            await utils.createUserStats(ctx.chat.id)
-            stat = await utils.getUserStats(ctx.chat.id)
+            await utils.createUserStats(ctx.from.id)
+            stat = await utils.getUserStats(ctx.from.id)
         }
 
 

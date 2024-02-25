@@ -7,21 +7,21 @@ const { Telegraf } = require("telegraf");
 const bot = new Telegraf(process.env.TOKEN_BOT);
 
 const getMenu = async (ctx, edit = false) => {
-  let user = await utils.getUserData(ctx.chat.id);
-  let stat = await utils.getUserStats(ctx.chat.id);
+  let user = await utils.getUserData(ctx.from.id);
+  let stat = await utils.getUserStats(ctx.from.id);
 
   if (!user) {
-    let username = ctx.chat.username || ctx.chat.first_name;
-    await utils.createUser(ctx.chat.id, username);
-    user = await utils.getUserData(ctx.chat.id);
+    let username = ctx.from.username || ctx.from.first_name;
+    await utils.createUser(ctx.from.id, username);
+    user = await utils.getUserData(ctx.from.id);
   }
 
   if (!stat) {
-    await utils.createUserStats(ctx.chat.id);
-    stat = await utils.getUserStats(ctx.chat.id);
+    await utils.createUserStats(ctx.from.id);
+    stat = await utils.getUserStats(ctx.from.id);
   }
 
-  let txt = `🫡Привет, ${ctx.chat.username}!\n\n`;
+  let txt = `🫡Привет, ${ctx.from.username}!\n\n`;
   txt +=
     "Крути кубик 🎲 , собирай доп. Броски 🎯 или попробуй наши-мини игры 🎰 !\n\n";
   txt +=
@@ -48,7 +48,7 @@ composer.command("start", async (ctx) => {
   try {
     const chatMember = await bot.telegram.getChatMember(
       `@${process.env.MAIN_CHANEL}`,
-      ctx.chat.id
+      ctx.from.id
     );
 
     if (
@@ -67,7 +67,7 @@ composer.command("start", async (ctx) => {
 
 composer.command("id", async (ctx) => {
   try {
-    await ctx.reply(`Ваш id ${ctx.chat.id}`, kb.back_call_menu);
+    await ctx.reply(`Ваш id ${ctx.from.id}`, kb.back_call_menu);
   } catch (e) {
     console.log(e);
   }
@@ -77,7 +77,7 @@ composer.action("back_to_menu", async (ctx) => {
   try {
     const chatMember = await bot.telegram.getChatMember(
       `@${process.env.MAIN_CHANEL}`,
-      ctx.chat.id
+      ctx.from.id
     );
     if (
       chatMember.status !== "member" &&

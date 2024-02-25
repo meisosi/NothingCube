@@ -5,16 +5,16 @@ const utils = require('../../utils')
 
 composer.action("statistic", async (ctx) => {
     try {
-        const user = await utils.getUserData(ctx.chat.id)
-        const stat = await utils.getUserStats(ctx.chat.id)
+        const user = await utils.getUserData(ctx.from.id)
+        const stat = await utils.getUserStats(ctx.from.id)
 
         if (!stat) {
-            await utils.createUserStats(ctx.chat.id)
+            await utils.createUserStats(ctx.from.id)
         }
         const today = new Date()
         const delta_days = parseInt(Math.floor((today - user.created_at)) / (1000 * 60 * 60 * 24))
 
-        let txt = `${ctx.chat.username}, мы с тобой кидаем кубик уже ${delta_days} дней.\n\n`
+        let txt = `${ctx.from.username}, мы с тобой кидаем кубик уже ${delta_days} дней.\n\n`
         txt += `Бросков кубика: ${stat.rolls} раз\n`
         txt += `Кейсов открыто: ${stat.cases_opened} раз\n`
         txt += `Выпало: ${stat.earned} 💰.\n\n`

@@ -108,7 +108,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🪙 ???", "callback_data": "on_dev"}, { "text": "🍀 Счастливый дроп (1999)", "callback_data": "lucky_drop"}],
+                [{ "text": "🪙 Крафт", "callback_data": "craft"}, { "text": "🍀 Счастливый дроп (1999)", "callback_data": "lucky_drop"}],
                 [{ "text": "💥 High risk (99)", "callback_data": "high_risk"}, { "text": "🔝 Возвышение (49)", "callback_data": "elevation"}],
                 [{ "text": "💰 Монеточный (19)", "callback_data": "money_game"}, { "text": "⬅️ Назад", "callback_data": "mini_games"}]
             ]

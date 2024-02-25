@@ -7,7 +7,7 @@ const bot = new Telegraf(token)
 
 composer.action("withdraw", async (ctx) => {
     try {
-        const user = await utils.getUserData(ctx.chat.id)
+        const user = await utils.getUserData(ctx.from.id)
 
         if (!user.items || user.items === 0) {
             await ctx.editMessageText('У вас нет предметов для вывода.', kb.withdraw_back);
@@ -38,9 +38,9 @@ composer.action("withdraw", async (ctx) => {
 
 composer.action("confirm_withdrawal", async (ctx) => {
     try {
-        const user = await utils.getUserData(ctx.chat.id)
+        const user = await utils.getUserData(ctx.from.id)
       
-        await utils.updateUserData(ctx.chat.id, 'items', 0);
+        await utils.updateUserData(ctx.from.id, 'items', 0);
       
         const withdrawalRequest = `Запрос вывода от пользователя ${user.nickname}: ${user.items} лун (уточните в какую именно игру он хочет получить вывод)`;
       

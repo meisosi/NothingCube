@@ -7,7 +7,7 @@ composer.use(require('./profile.stages'))
 
 const getProfile = async (ctx) => {
     try { 
-        const user = await utils.getUserData(ctx.chat.id);
+        const user = await utils.getUserData(ctx.from.id);
         let txt = `${user.nickname}, вот, что у тебя есть:\n\n`;
         txt += `Твой баланс: ${user.coins} 💰\n`;
         txt += `Твои броски: ${user.rolls} 🎲\n\n`;

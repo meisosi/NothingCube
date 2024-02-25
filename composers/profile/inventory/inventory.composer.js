@@ -27,6 +27,6 @@ composer.action("inventory", async (ctx) => {
 });
 
 composer.use(require("./withdrawals.composer"));
-composer.use(require("./craft.composer"));
+composer.use(require("../../mini_games/cases/craft.composer"));
 
 module.exports = composer;

@@ -5,7 +5,7 @@ const utils = require('../../../../utils')
 const back = async (ctx, edit = true) => {
     try {
         await ctx.scene.leave()
-        const stat = await utils.getUserStats(ctx.chat.id)
+        const stat = await utils.getUserStats(ctx.from.id)
 
         let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
         txt += 'Здесь кейсы на любой вкус и выбор\n'
@@ -32,7 +32,7 @@ const wizard_scenes = new Scenes.WizardScene(
     "high_risk",
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
 
             let txt = 'Кто не рискует, тот не пьёт шампанское🍾\n'
             txt += 'Или не получает луну 🌙\n\n'
@@ -51,7 +51,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
             const cb_data = ctx.callbackQuery.data
             console.log(cb_data)
 
@@ -59,13 +59,13 @@ const wizard_scenes = new Scenes.WizardScene(
 
                 if (user.coins >= 99) {
                     const updatedCoins = user.coins - 99;
-                    await utils.updateUserData(ctx.chat.id, 'coins', updatedCoins);
+                    await utils.updateUserData(ctx.from.id, 'coins', updatedCoins);
 
                     const possRes = [
                         { result: 'Благословение полой луны 🌙', chance: 0.1 },
                         { result: 'lose', chance: 99.9 },
                     ]
-                    await utils.increaseUserCaseOpened(ctx.chat.id)
+                    await utils.increaseUserCaseOpened(ctx.from.id)
                     const result = await utils.getRandomResult(possRes);
                     if (result.result == 'lose') {
                         let txt = 'Увы, тебе досталось Nothing..\n'
@@ -77,7 +77,7 @@ const wizard_scenes = new Scenes.WizardScene(
                         }
                         return ctx.wizard.next()
                     } else {
-                        await utils.updateUserData(ctx.chat.id, 'items', user.items + 1); // Обновляем предметы в базе данных
+                        await utils.updateUserData(ctx.from.id, 'items', user.items + 1); // Обновляем предметы в базе данных
 
                         let txt = 'Вы только посмотрите на этого счастливчика!\n'
                         txt += 'Невероятно, 🌙 твоя! 🍾'
@@ -112,7 +112,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
             cb_data = ctx.callbackQuery.data
 
             if ( (cb_data === 'try_again')) {

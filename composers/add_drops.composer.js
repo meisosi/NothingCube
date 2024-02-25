@@ -45,7 +45,7 @@ composer.action("check_check_subscription", async (ctx) => {
   try {
     const requiredChannels = await utils.getNewRollsChannels();
 
-    const userId = ctx.chat.id;
+    const userId = ctx.from.id;
     const user = await utils.getUserData(userId);
     const currentSubscriptions = user.subscribe_at; //Текущие подписки пользователя
     const currentSubscriptionsCount = currentSubscriptions.filter(value => value === true).length;

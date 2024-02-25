@@ -7,7 +7,7 @@ const setTimeoutP = require('timers/promises').setTimeout
 const back = async (ctx, edit = true) => {
     try {
         await ctx.scene.leave()
-        const stat = await utils.getUserStats(ctx.chat.id)
+        const stat = await utils.getUserStats(ctx.from.id)
 
         let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
         txt += 'Здесь кейсы на любой вкус и выбор\n'
@@ -34,10 +34,10 @@ const wizard_scenes = new Scenes.WizardScene(
     "lucky_drop",
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
 
             let txt = 'Всегда хотел увидеть эту фразу?😉\n\n'
-            txt += `${ctx.chat.username}, кидай кубик - этот раздел для тебя! ⚡️\n\n`
+            txt += `${ctx.from.username}, кидай кубик - этот раздел для тебя! ⚡️\n\n`
             txt += `Твой баланс: ${user.coins} 💰`
             const mes = await ctx.editMessageText(txt, kb.lucky_drop_start)
 
@@ -52,7 +52,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
             cb_data = ctx.callbackQuery.data
 
             if (user.coins < 1999) {
@@ -78,25 +78,25 @@ const wizard_scenes = new Scenes.WizardScene(
                 await new Promise(resolve => setTimeout(resolve, 5000)); // Задержка в 5 секунд
 
                 await ctx.deleteMessage(ctx.wizard.state.mid)
-                await utils.increaseUserCaseOpened(ctx.chat.id);
+                await utils.increaseUserCaseOpened(ctx.from.id);
 
                 const rewardInfo = rewards[selectedResult];
 
                 if (rewardInfo.type === "gems") {
-                    await utils.updateUserData(ctx.chat.id, 'gems', user['gems'] ? user['gems'] + rewardInfo.amount : rewardInfo.amount);
+                    await utils.updateUserData(ctx.from.id, 'gems', user['gems'] ? user['gems'] + rewardInfo.amount : rewardInfo.amount);
                 } else if (rewardInfo.type === "items") {
-                    await utils.updateUserData(ctx.chat.id, 'items',  user['items'] ? user['items'] + rewardInfo.amount : rewardInfo.amount);
+                    await utils.updateUserData(ctx.from.id, 'items',  user['items'] ? user['items'] + rewardInfo.amount : rewardInfo.amount);
                 } else if (rewardInfo.type === "combined") {
                     for (const item of rewardInfo.items) {
                         if (item.includes("Благословение полой луны 🌙")) {
-                            await utils.updateUserData(ctx.chat.id, 'items', user['items'] ? user['items'] + rewardInfo.amount : rewardInfo.amount);
+                            await utils.updateUserData(ctx.from.id, 'items', user['items'] ? user['items'] + rewardInfo.amount : rewardInfo.amount);
                         } else if (item.includes("60 гемов")) {
-                            await utils.updateUserData(ctx.chat.id, 'gems', user['gems'] ? user['gems'] + rewardInfo.amount : rewardInfo.amount);
+                            await utils.updateUserData(ctx.from.id, 'gems', user['gems'] ? user['gems'] + rewardInfo.amount : rewardInfo.amount);
                         }
                     }
                 }
 
-                await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] - 1999);
+                await utils.updateUserData(ctx.from.id, 'coins', user['coins'] - 1999);
 
                 let txt = `Поздравляем! Тебе выпало: ${rewardInfo.name}\n`
                 txt += 'Предмет находится у тебя в инвентаре.\n\n'
@@ -118,7 +118,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
             const cb_data = ctx.callbackQuery?.data;
 
             if (cb_data === 'try_again') {

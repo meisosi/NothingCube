@@ -82,7 +82,7 @@ composer.action("subscription_confirm", async (ctx) => {
 // Функция для успешного завершения подписки
 const subscriptionSuccess = async (ctx, days, price) => {
   try {
-    const user = await utils.getUserData(ctx.chat.id)
+    const user = await utils.getUserData(ctx.from.id)
 
     let txt = `Благодарим Вас за поддержку проекта ❤️\n\n`;
     txt += `Вы выбрали подписку на ${days} дней за ${price} рублей\n\n`;

@@ -5,7 +5,7 @@ const utils = require("../../../utils");
 const back = async (ctx, edit = true) => {
   try {
     await ctx.scene.leave();
-    const user = await utils.getUserData(ctx.chat.id);
+    const user = await utils.getUserData(ctx.from.id);
     let txt = `${user.nickname}, вот, что у тебя есть:\n\n`;
     txt += `Твой баланс: ${user.coins} 💰\n`;
     txt += `Твои броски: ${user.rolls} 🎲\n`;
@@ -45,7 +45,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
   async (ctx) => {
     try {
-      const user = await utils.getUserData(ctx.chat.id);
+      const user = await utils.getUserData(ctx.from.id);
 
       if (ctx.message) {
         await ctx.deleteMessage(ctx.wizard.state.mid);
@@ -61,7 +61,7 @@ const wizard_scenes = new Scenes.WizardScene(
           return ctx.wizard.next();
         }
 
-        if (await utils.findPromocodeUses(ctx.chat.id, promo_name)) {
+        if (await utils.findPromocodeUses(ctx.from.id, promo_name)) {
           const txt =
             "Ты уже вводил этот промокод!\nСоветуем включить уведомления на канале @genshinnothing, чтобы не пропустить новые промокоды!";
           await ctx.reply(txt, kb.promocodes_start);
@@ -69,8 +69,8 @@ const wizard_scenes = new Scenes.WizardScene(
         }
 
         await utils.decreasePromoActivations(promo_name);
-        await utils.updateUserData(ctx.chat.id,promo.type,user[promo.type] + promo.count);
-        await utils.addUserPromoUse(ctx.chat.id, promo_name);
+        await utils.updateUserData(ctx.from.id,promo.type,user[promo.type] + promo.count);
+        await utils.addUserPromoUse(ctx.from.id, promo_name);
 
         if (promo.type === "vip_status") {
           const rollsToAdd =
@@ -86,8 +86,8 @@ const wizard_scenes = new Scenes.WizardScene(
               ? parseInt(process.env.COINS_ON_365)
               : 0;
 
-          await utils.updateUserData(ctx.chat.id,"rolls",user.rolls + rollsToAdd);
-          await utils.updateUserData(ctx.chat.id,"coins",user.coins + coinsToAdd);
+          await utils.updateUserData(ctx.from.id,"rolls",user.rolls + rollsToAdd);
+          await utils.updateUserData(ctx.from.id,"coins",user.coins + coinsToAdd);
         }
 
         let txt = "Успех!\n";
