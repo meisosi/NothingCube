@@ -42,13 +42,13 @@ class Queue {
         });
     }
     onCommand(context, parameters) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, async function* () {
             if (parameters.length &&
                 ['gems', 'moons', 'big_gems'].includes(parameters[0])) {
                 const promocode = yield this.mysql.tryPutQueue({
                     userId: context.from.id,
                     waitingType: parameters[0],
-                }, getUserData(context.from.id).vip_status > 0 ? 'premium' : 'default');
+                }, await getUserData(context.from.id).vip_status > 0 ? 'premium' : 'default');
                 if (promocode &&
                     context.from.id === promocode.userId) {
                     sendGiveMessage(context.from.id, promocode);
@@ -83,7 +83,6 @@ class Queue {
 }
 exports.Queue = Queue;
 Queue.QUEUE_REGEX = /__queue_(.+)_(\d+)/;
-const MESSAGE_CONFIG = new yaml_1.DefaultConfigCreator().create('./messages.yaml');
 function sendGiveMessage(id, promocode) {
     return __awaiter(this, void 0, void 0, function* () {
         this.bot.Telegraf.telegram.sendMessage(id, this.getMessage('giveCodeMessage'), {

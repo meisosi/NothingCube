@@ -8,8 +8,8 @@ const bot = new Telegraf(token)
 const queue_1 = require("./queue/queue");
 
 new queue_1.Queue(
-    '',                         // Время в формате `cron`
-    '',                         // Часовой пояс или `UTC(\d)`
+    '0 0 * * *',                         // Время в формате `cron`
+    'UTC',                         // Часовой пояс или `UTC(\d)`
     bot
 );
 

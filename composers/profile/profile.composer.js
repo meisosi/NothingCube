@@ -8,7 +8,7 @@ composer.use(require('./profile.stages'))
 const getProfile = async (ctx) => {
     try { 
         const user = await utils.getUserData(ctx.from.id);
-        const stst = await utils.getUserStats(ctx.from.id);
+        const stat = await utils.getUserStats(ctx.from.id);
         if (!stat) {
             await utils.createUserStats(ctx.from.id)
             stat = await utils.getUserStats(ctx.from.id)
