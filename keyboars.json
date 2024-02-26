@@ -205,8 +205,8 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🔮 Сделать луну", "callback_data": "start_craft"}, { "text": "🔝 Возвышение", "callback_data": "elevation"}],
-                [{ "text": "🎒 Мои предметы", "callback_data": "inventory"}, { "text": "🏠 Домой", "callback_data": "back_to_menu"}]
+                [{ "text": "🔮 Сделать луну", "callback_data": "start_craft"}],
+                [{ "text": "Назад", "callback_data": "cases_menu"}]
             ]
         }
     },
@@ -216,7 +216,7 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "🔝 Возвышение", "callback_data": "elevation"}],
-                [{ "text": "🎒 Мои предметы", "callback_data": "inventory"}, { "text": "🏠 Домой", "callback_data": "back_to_menu"}]
+                [{ "text": "Назад", "callback_data": "cases_menu"}]
             ]
         }
     },
@@ -225,7 +225,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🎒 Мои предметы", "callback_data": "inventory"}, { "text": "🏠 Домой", "callback_data": "back_to_menu"}]
+                [ { "text": "Назад", "callback_data": "cases_menu"}]
             ]
         }
     },

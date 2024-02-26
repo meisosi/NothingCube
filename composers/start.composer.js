@@ -42,100 +42,99 @@ const getMenu = async (ctx, arg = null, edit = false) => {
           : "К сожалению, этого промокода не существует...\nСоветуем включить уведомления на канале @genshinnothing, чтобы не пропустить новые промокоды!";
 
         await ctx.reply(txt, kb.promocodes_start);
-        return ctx.wizard.next();
       }
 
       if (await utils.findPromocodeUses(ctx.from.id, code)) {
         const txt =
           "Ты уже вводил этот промокод!\nСоветуем включить уведомления на канале @genshinnothing, чтобы не пропустить новые промокоды!";
         await ctx.reply(txt, kb.promocodes_start);
-        return ctx.wizard.next();
       }
-
-      await utils.decreasePromoActivations(code);
-      await utils.updateUserData(ctx.from.id,promo.type,user[promo.type] + promo.count);
-      await utils.addUserPromoUse(ctx.from.id, code);
-
-      if (promo.type === "vip_status") {
-        const rollsToAdd =
-          promo.count >= 7 ? parseInt(process.env.ROLLS_ON_SUB) - 1 : 0;
-        const coinsToAdd =
-          promo.count >= 7
-            ? parseInt(process.env.COINS_ON_7)
-            : promo.count >= 30
-            ? parseInt(process.env.COINS_ON_30)
-            : promo.count >= 183
-            ? parseInt(process.env.COINS_ON_183)
-            : promo.count >= 365
-            ? parseInt(process.env.COINS_ON_365)
-            : 0;
-
-        await utils.updateUserData(ctx.from.id,"rolls",user.rolls + rollsToAdd);
-        await utils.updateUserData(ctx.from.id,"coins",user.coins + coinsToAdd);
-      }
-
-      let txt = "Успех!\n";
-      let txtType = "";
-      switch (promo.type) {
-        case "coins":
-          txtType = await utils.getDeclension(
-            promo.count,
-            "монетку",
-            "монетки",
-            "монеток"
-          );
-          break;
-        case "gems":
-          txtType = await utils.getDeclension(
-            promo.count,
-            "пакет по 60 гемов",
-            "пакета по 60 гемов",
-            "пакетов по 60 гемов"
-          );
-          break;
-        case "rolls":
-          txtType = await utils.getDeclension(
-            promo.count,
-            "бросок",
-            "броска",
-            "бросков"
-          );
-          break;
-        case "items":
-          txtType = await utils.getDeclension(
-            promo.count,
-            "благословение полной луны",
-            "благословения полной луны",
-            "благословений полной луны"
-          );
-          break;
-        case "vip_status":
-          txtType = await utils.getDeclension(
-            promo.count,
-            "день подписки",
-            "дня подписки",
-            "дней подписки"
-          );
-          break;
-        case "friend_coin":
-          txtType = await utils.getDeclension(
-            promo.count,
-            "монетку друга",
-            "монетки друга",
-            "монеток друга"
-          );
+      else {
+        await utils.decreasePromoActivations(code);
+        await utils.updateUserData(ctx.from.id,promo.type,user[promo.type] + promo.count);
+        await utils.addUserPromoUse(ctx.from.id, code);
+  
+        if (promo.type === "vip_status") {
+          const rollsToAdd =
+            promo.count >= 7 ? parseInt(process.env.ROLLS_ON_SUB) - 1 : 0;
+          const coinsToAdd =
+            promo.count >= 7
+              ? parseInt(process.env.COINS_ON_7)
+              : promo.count >= 30
+              ? parseInt(process.env.COINS_ON_30)
+              : promo.count >= 183
+              ? parseInt(process.env.COINS_ON_183)
+              : promo.count >= 365
+              ? parseInt(process.env.COINS_ON_365)
+              : 0;
+  
+          await utils.updateUserData(ctx.from.id,"rolls",user.rolls + rollsToAdd);
+          await utils.updateUserData(ctx.from.id,"coins",user.coins + coinsToAdd);
+        }
+  
+        let txt = "Успех!\n";
+        let txtType = "";
+        switch (promo.type) {
+          case "coins":
+            txtType = await utils.getDeclension(
+              promo.count,
+              "монетку",
+              "монетки",
+              "монеток"
+            );
             break;
-        default:
-          txtType = await getDeclension(
-            promo.count,
-            "монетку",
-            "монетки",
-            "монеток"
-          );
-          break;
+          case "gems":
+            txtType = await utils.getDeclension(
+              promo.count,
+              "пакет по 60 гемов",
+              "пакета по 60 гемов",
+              "пакетов по 60 гемов"
+            );
+            break;
+          case "rolls":
+            txtType = await utils.getDeclension(
+              promo.count,
+              "бросок",
+              "броска",
+              "бросков"
+            );
+            break;
+          case "items":
+            txtType = await utils.getDeclension(
+              promo.count,
+              "благословение полной луны",
+              "благословения полной луны",
+              "благословений полной луны"
+            );
+            break;
+          case "vip_status":
+            txtType = await utils.getDeclension(
+              promo.count,
+              "день подписки",
+              "дня подписки",
+              "дней подписки"
+            );
+            break;
+          case "friend_coin":
+            txtType = await utils.getDeclension(
+              promo.count,
+              "монетку друга",
+              "монетки друга",
+              "монеток друга"
+            );
+              break;
+          default:
+            txtType = await getDeclension(
+              promo.count,
+              "монетку",
+              "монетки",
+              "монеток"
+            );
+            break;
+        }
+        txt += `За активацию промокода мы начислили тебе: ${promo.count} ${txtType}`;
+        await ctx.reply(txt, kb.promocodes_start);
       }
-      txt += `За активацию промокода мы начислили тебе: ${promo.count} ${txtType}`;
-      await ctx.reply(txt, kb.promocodes_start);
     }
     else if(action == 'ref') {
       let referal = arg.slice(arg.indexOf('_') + 1);
@@ -197,8 +196,14 @@ const getMenu = async (ctx, arg = null, edit = false) => {
 
 composer.command("start", async (ctx) => {
   try {
-    const userDB = await utils.getUserData(ctx.from.id)
-    if(ctx.chat.id != ctx.from.id) {
+    let userDB = await utils.getUserData(ctx.from.id)
+    if(ctx.chat.type == 'private') {
+      if(!userDB) {
+        await utils.createUser(ctx.from.id, ctx.from.first_name);
+        userDB = await utils.getUserData(ctx.from.id);
+      }
+    }
+    else {
       if(!userDB) {
         let txt = ctx.from.first_name + ", что бы броскать кубик надо зарегестрироваться!\n"
         txt += "Нажми на кнопку ниже и присоединяйся!"
@@ -241,7 +246,7 @@ composer.command("roll", async (ctx) => {
     if(!userDB) {
       let txt = ctx.from.first_name + ", что бы броскать кубик надо зарегестрироваться!\n"
       txt += "Нажми на кнопку ниже и присоединяйся!"
-      await ctx.reply(txt, kb.to_bot);
+      return await ctx.reply(txt, kb.to_bot);
     }
     let count = parseInt(ctx.args[0]);
     if(isNaN(count) || !userDB.vip_status) {

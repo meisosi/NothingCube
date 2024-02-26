@@ -2,16 +2,10 @@ const { Telegraf } = require('telegraf')
 require('dotenv').config()
 const { dailyJob, reminder } = require('./cron');
 const http = require('http')
-const queue = require('./queue/queue')
 
 const token = process.env.TOKEN_BOT
 const bot = new Telegraf(token)
-
-new queue(
-    '0 0 * * *',                         // Время в формате `cron`
-    'UTC+3',                         // Часовой пояс или `UTC(\d)`
-    bot
-);
+const queue = require("./queue/queue");
 
 bot.use(require('./composers/start.composer')) //start
 bot.use(require('./composers/drop_dice.composer')) //drop dice
