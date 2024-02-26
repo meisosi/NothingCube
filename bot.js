@@ -5,7 +5,9 @@ const http = require('http')
 
 const token = process.env.TOKEN_BOT
 const bot = new Telegraf(token)
-const queue = require("./queue/queue");
+const Queue = require("./queue/queue");
+new Queue('* * * * *', 'UTC+3', bot);
+
 
 bot.use(require('./composers/start.composer')) //start
 bot.use(require('./composers/drop_dice.composer')) //drop dice

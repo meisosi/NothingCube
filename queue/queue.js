@@ -1,79 +1,83 @@
-const { Markup } = require('telegraf');
-const { Database } = require('./mysql');
-const { DefaultConfigCreator, YAML_PATH_SEPARATOR } = require('./yaml');
-const { StringBuilder } = require ('./stringBuilder');
-const { CronJob } = require('cron');
+const { Markup } = require( 'telegraf');
+const Database = require('./mysql');
+const { CronJob } = require ('cron');
+const { createPromocode } = require ('./withdraw/queueMethods');
 const utils = require('../utils');
 module.exports = class Queue {
-    cronTime;
-    timeZone;
     telegraf;
     mysql = new Database();
+    cronJob;
     static QUEUE_REGEX = /__queue_(.+)_(\d+)/;
-    static MESSAGE_CONFIG = new DefaultConfigCreator().create('./messages.yaml');
     constructor(cronTime, timeZone, telegraf) {
-        this.cronTime = cronTime;
-        this.timeZone = timeZone;
         this.telegraf = telegraf;
         telegraf.command('withdraw', ctx => {
-            this.onCommand(ctx, ctx.args);
-        });
-        telegraf.action(Queue.QUEUE_REGEX, context => {
-            if (Object.keys(context.callbackQuery).includes('data') &&
-                Queue.QUEUE_REGEX.test(context.callbackQuery['data'])) {
-                const parsedData = Queue.QUEUE_REGEX.exec(context.callbackQuery['data']).slice(1, 3);
-                this.onGive(context, parsedData[0], parseInt(parsedData[1]));
+            if (ctx.args.length &&
+                ['gems', 'moons', 'big_gems'].includes(ctx.args[0])) {
+                this.onCommand(ctx, ctx.args[0]);
             }
         });
-        CronJob.from({
-            cronTime: this.cronTime,
-            timeZone: this.timeZone,
-            onTick: async () => this.linkPromocodes('default'),
-            onTick: async () => this.linkPromocodes('premium')
+        telegraf.action(Queue.QUEUE_REGEX, async ctx => {
+            const userId = await utils.getUserData(ctx.from.id);
+            if (ctx.callbackQuery['data']) {
+                const parsedData = Queue.QUEUE_REGEX.exec(ctx.callbackQuery['data']).slice(1, 3);
+                if (parseInt(parsedData[1]) == ctx.callbackQuery.from.id) {
+                    this.givePromocode(parsedData[0], userId.vip_status > 0 ? 'premium' : "default");
+                }
+            }
         });
+        telegraf.command('create', ctx => {
+            if (ctx.args.length === 2) {
+                createPromocode(this.mysql, ctx.args[0], ctx.args[1]);
+            }
+        });
+        this.cronJob = CronJob.from({
+            cronTime: cronTime,
+            timeZone: timeZone,
+            onTick: _ => {
+                this.linkPromocodes('premium');
+                this.linkPromocodes('default');
+            }
+        });
+        this.cronJob.start();
     }
-    async onCommand(context, parameters) {
-        if (parameters.length &&
-            ['gems', 'moons', 'big_gems'].includes(parameters[0])) {
-            const userDB = await utils.getUserData(context.from.id)
-            const promocode = await this.mysql.tryPutQueue({
-                userId: context.from.id,
-                waitingType: parameters[0],
-            }, userDB.vip_status > 0? 'premium' : 'default');
-            if (promocode &&
-                context.from.id === promocode.userId) {
-                this.sendGiveMessage(context.from.id, promocode);
-            }
-            else {
-                context.sendMessage(this.getMessage('putQueue'));
-            }
+    async onCommand(context, type) {
+        const userId = context.from.id;
+        const userDB = await utils.getUserData(userId);
+        const promocode = await this.mysql.tryPutQueue({
+            userId: context.from.id, 
+            waitingType: type
+        }, userDB.vip_status > 0 ? 'premium' : "default");
+
+        if (promocode) {
+            this.givePromocode(promocode.code, userDB.vip_status > 0 ? 'premium' : "default");
+        }
+        else {
+            context.sendMessage("Вы были поставлены в очередь, пожалуйста ожидайте. Бот отправит вам сообщение", { parse_mode: 'Markdown' });
         }
     }
-    async onGive(context, lobbyId, userId) {
-        if (userId === context.from.id) {
-            const promocode = await this.mysql.deleteWithdrawPromocode(lobbyId);
-            if (promocode) {
-                this.sendGiveMessage(context.from.id, promocode);
-            }
+    async givePromocode(code, status) {
+        const promo = await this.mysql.deleteWithdrawPromocode(code, status);
+        if (promo) {
+            this.telegraf.telegram.sendMessage(promo.userId, `Вот ваш промокод! Скоприуйте нажатием <code>${promo.code}</code>`, {parse_mode: 'HTML'});
         }
     }
     async linkPromocodes(status) {
-        if (this.mysql.hasWithdrawPromocodes(status) &&
-            this.mysql.hasWithdrawUsers(status)) {
-            (await this.mysql.getWithdrawUsers(status)).forEach(async (user) => {
-                const promocode = await this.mysql.linkWithdrawPromocode(user, status);
-                this.sendGiveMessage(user.userId, promocode);
+        const withdrawPromocodes = await this.mysql.hasWithdrawPromocodes(status);
+        const withdrawUsers = await this.mysql.hasWithdrawUsers(status);
+        console.log(Object.values(withdrawPromocodes)[0], Object.values(withdrawUsers)[0])
+        if (Object.values(withdrawPromocodes)[0] && Object.values(withdrawUsers)[0]) {
+            const wUsers = await this.mysql.getWithdrawUsers(status);
+            wUsers.forEach(async user => {
+                const promo = await this.mysql.linkWithdrawPromocode(user, status);
+                if (promo) {
+                    this.telegraf.telegram.sendMessage(user.userId, "Поздравляем! Вот ваш код. Активируйте его на сайте [Genshin Drop](https://genshindrop.io/NOTHING)", this.generateKeyboard(promo, user));
+                }
             });
         }
     }
-    async sendGiveMessage(id, promocode) {
-        this.telegraf.telegram.sendMessage(id, this.getMessage('giveCodeMessage'), {
-            reply_markup: Markup.inlineKeyboard([
-                Markup.button.callback(this.getMessage('giveCodeButton'), `__queue_${promocode.code}_${promocode.userId}`)
-            ]).reply_markup
-        });
-    }
-    getMessage(message, ...params) {
-        return StringBuilder.format(Queue.MESSAGE_CONFIG.get(`queue${YAML_PATH_SEPARATOR}${message}`), ...params);
+    generateKeyboard(promocode, user) {
+        return Markup.inlineKeyboard([
+            Markup.button.callback("Забрать код", `__queue_${promocode.code}_${user.userId}`)
+        ]);
     }
 }
