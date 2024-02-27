@@ -72,7 +72,7 @@ const wizard_scenes = new Scenes.WizardScene(
                     3: { name: "60 гемов 💎 3 раза", type: "gems", amount: 3 },
                     4: { name: "60 гемов 💎 4 раза", type: "gems", amount: 4 },
                     5: { name: "Благословение полой луны 🌙", type: "items", amount: 1 },
-                    6: { name: "Благословение полой луны 🌙 и 60 гемов 💎", type: "combined", items: ["Благословение полой луны 🌙", "60 гемов"], amount:1 },
+                    6: { name: "Благословение полой луны 🌙 и 60 гемов 💎", type: "combined", items: ["Благословение полой луны 🌙", "60 гемов"], amount: 1 },
                 };
 
                 await new Promise(resolve => setTimeout(resolve, 5000)); // Задержка в 5 секунд
@@ -85,7 +85,7 @@ const wizard_scenes = new Scenes.WizardScene(
                 if (rewardInfo.type === "gems") {
                     await utils.updateUserData(ctx.chat.id, 'gems', user['gems'] ? user['gems'] + rewardInfo.amount : rewardInfo.amount);
                 } else if (rewardInfo.type === "items") {
-                    await utils.updateUserData(ctx.chat.id, 'items',  user['items'] ? user['items'] + rewardInfo.amount : rewardInfo.amount);
+                    await utils.updateUserData(ctx.chat.id, 'items', user['items'] ? user['items'] + rewardInfo.amount : rewardInfo.amount);
                 } else if (rewardInfo.type === "combined") {
                     for (const item of rewardInfo.items) {
                         if (item.includes("Благословение полой луны 🌙")) {
