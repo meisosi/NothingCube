@@ -10,11 +10,12 @@ module.exports = class Queue {
     cronJob;
     constructor(cronTime, timeZone, telegraf) {
         this.telegraf = telegraf;
-        telegraf.command('withdraw', ctx => {
-            if (ctx.args.length &&
-                ['gems', 'items', 'big_gems'].includes(ctx.args[0])) {
-                this.onCommand(ctx, ctx.args[0]);
-            }
+        telegraf.hears('🚀 Вывод предметов', ctx => {
+            //if (ctx.args.length &&
+            //    ['gems', 'items', 'big_gems'].includes(ctx.args[0])) {
+            //    this.onCommand(ctx, ctx.args[0]);
+            //}
+            this.onCommand(ctx, 'items');
         });
         telegraf.action(QUEUE_REGEX, async ctx => {
             const userDB = await utils.getUserData(ctx.from.id);
@@ -23,11 +24,6 @@ module.exports = class Queue {
                 if (parseInt(parsedData[1]) == ctx.callbackQuery.from.id) {
                     this.givePromocode(parsedData[0], userDB.vip_status > 0 ? 'premium' : "default");
                 }
-            }
-        });
-        telegraf.command('create', ctx => {
-            if (ctx.args.length === 2) {
-                createPromocode(this.mysql, ctx.args[0], ctx.args[1]);
             }
         });
         this.cronJob = CronJob.from({
@@ -49,10 +45,10 @@ module.exports = class Queue {
         const userPrem = userDB.vip_status > 0;
         if(!userPrem) {
             if(userDB.coins < 2000) {
-                return context.sendMessage("У вас недостаточно монет для вывода...\nНакопите 2000 монетили купите подписку для бесплатных выводов!");
+                return context.sendMessage(`Стоимость вывода предметов: 2000 монеток 💰\n\nУ вас сейчас: ${userDB.coins} 💰\n\nВы можете накопить баланс или приобрести подписку, для быстрого вывода.`);
             }
             else {
-                await utils.updateUserData(user_id, coins, userDB.coins - 2000);
+                await utils.updateUserData(user_id, 'coins', userDB.coins - 2000);
             }
         }
         userDB[type] = userDB[type] - 1;
@@ -72,7 +68,10 @@ module.exports = class Queue {
     async givePromocode(code, status) {
         const promo = await this.mysql.deleteWithdrawPromocode(code, status);
         if (promo) {
-            this.telegraf.telegram.sendMessage(promo.user_id, `Вот ваш промокод! Скоприуйте нажатием <code>${promo.code}</code>`, {parse_mode: 'HTML'});
+            let txt = `Вот ваш промокод (нажмите на него, чтобы скопировать):\`${promo.code}\`\n\n`;
+            txt += "Активировать на сайте [Genshindrop](https://genshindrop.io/NOTHING), в разделе профиль - активировать бонус код";
+            txt += "Отзыв можете оставить [тут](https://t.me/cube_updates/124), нам будет очень приятно❤️"
+            this.telegraf.telegram.sendMessage(promo.user_id, txt, {parse_mode: 'MarkdownV2'});
         }
     }
     async linkPromocodes(status) {
