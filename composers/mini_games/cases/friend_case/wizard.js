@@ -68,7 +68,7 @@ const wizard_scenes = new Scenes.WizardScene(
         return ctx.wizard.next()
       }
 
-      if (cb_data && cb_data === 'friend_drop') {
+      if (cb_data && cb_data === 'drop_friend') {
         const diceResult = await ctx.replyWithDice();
         const selectedResult = diceResult.dice.value;
         const rewards = {
