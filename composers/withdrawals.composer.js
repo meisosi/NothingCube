@@ -5,12 +5,12 @@ const utils = require('../utils')
 const token = process.env.TOKEN_BOT
 const bot = new Telegraf(token)
 
-composer.action("withdraw", async (ctx) => {
+composer.hears("🚀 Вывод предметов", async (ctx) => {
     try {
         const user = await utils.getUserData(ctx.from.id)
 
         if (!user.items || user.items === 0) {
-            await ctx.editMessageText('У вас нет предметов для вывода.', kb.withdraw_back);
+            await ctx.sendMessage('У вас нет предметов для вывода.', kb.withdraw_back);
             return;
         }
 
@@ -29,7 +29,7 @@ composer.action("withdraw", async (ctx) => {
         txtNow += 'Более подробную информацию вы можете получить в канале кубика: @cube_updates.\n\n'
         txtNow += 'ВАШИ ЛУНЫ И ПРОПУСКА НИКУДА НЕ ПРОПАДУТ, НЕ ПЕРЕЖИВАЙТЕ!'
 
-        await ctx.editMessageText(txtNow, kb.not_confirm_withdraw);
+        await ctx.sendMessage(txtNow, kb.not_confirm_withdraw);
 
     } catch (e) {
         console.log(e)

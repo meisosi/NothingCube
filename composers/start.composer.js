@@ -189,7 +189,6 @@ const getMenu = async (ctx, arg = null, edit = false) => {
       else ctx.editMessageText(txt, kb.menu);
     } catch (e) {}
   } else {
-    console.log(kb.vip_menu)
     if (user.vip_status > 0) await ctx.replyWithHTML(txt, kb.vip_menu);
     else await ctx.replyWithHTML(txt, kb.menu);
   }

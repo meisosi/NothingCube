@@ -3,19 +3,27 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "❓ F.A.Q", "callback_data": "FAQ"}, { "text": "🎯 Доп. броски", "callback_data": "add_drops"}],
-                [{ "text": "🎒 Профиль", "callback_data": "profile"}, { "text": "🎰 Мини-игры", "callback_data": "mini_games"}],
-                [{ "text": "👑 Подписка", "callback_data": "shop_subscription"}, {"text": "🚀 Вывод предметов", "callback_data": "withdraw"}],
+                [{ "text": "🎲 Кидай кубик", "callback_data": "drop_dice"}, { "text": "🎯 Доп. броски", "callback_data": "add_drops"}],
+                [{ "text": "🪪 Профиль", "callback_data": "profile"}, { "text": "👑 Подписка", "callback_data": "shop_subscription"}],
                 [{ "text": "💚 Магазин гемов", "callback_data": "gems_shop"}]
             ]
         }
     },
 
     "menu_kb": {
-        "keyboard": [
-            [{ "text": "🎲 Кидай кубик", "callback_data": "drop_dice"}, {"text": "🌟 Промокод", "callback_data": "promocode"}]
-        ],
-        "resize_keyboard": true
+        "reply_markup": {
+            "keyboard": [
+                [
+                { "text": "❓ F.A.Q" },
+                { "text": "🌟 Промокод" }
+                ],
+                [
+                { "text": "🚀 Вывод предметов" },
+                { "text": "🎰 Мини-игры" }
+                ]
+            ],
+            "resize_keyboard": true
+        }
     },
 
     "vip_menu": {
@@ -23,10 +31,8 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "🎲 Кинуть все", "callback_data": "drop_all_dice"}],
-                [{ "text": "❓ F.A.Q", "callback_data": "FAQ"}, { "text": "🎯 Доп. броски", "callback_data": "add_drops"}],
-                [{ "text": "🎒 Профиль", "callback_data": "profile"}, { "text": "🎰 Мини-игры", "callback_data": "mini_games"}],
-                [{ "text": "👑 Подписка", "callback_data": "shop_subscription"}, {"text": "🚀 Вывод предметов", "callback_data": "withdraw"}],
-                [{ "text": "💚 Магазин гемов", "callback_data": "gems_shop"}]
+                [{ "text": "🪪 Профиль", "callback_data": "profile"}, { "text": "🎯 Доп. броски", "callback_data": "add_drops"}],
+                [{ "text": "💚 Магазин гемов", "callback_data": "gems_shop"}, { "text": "👑 Подписка", "callback_data": "shop_subscription"}]
             ]
         }
     },
@@ -281,7 +287,7 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "✅ Подтвердить", "callback_data": "confirm_withdrawal" }],
-                [{ "text": "🎒 Мои предметы", "callback_data": "inventory" }, { "text": "🏠 Домой", "callback_data": "back_to_menu" }]
+                [{ "text": "🪪 Профиль", "callback_data": "profile" }, { "text": "🏠 Домой", "callback_data": "back_to_menu" }]
             ]
         }
     },
@@ -290,7 +296,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🎒 Мои предметы", "callback_data": "inventory" }, { "text": "🏠 Домой", "callback_data": "back_to_menu" }]
+                [{ "text": "🪪 Профиль", "callback_data": "profile" }, { "text": "🏠 Домой", "callback_data": "back_to_menu" }]
             ]
         }
     },
@@ -317,7 +323,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🔙 Назад", "callback_data": "inventory" }]
+                [{ "text": "🔙 Назад", "callback_data": "🪪 Профиль" }]
             ]
         }
     },
