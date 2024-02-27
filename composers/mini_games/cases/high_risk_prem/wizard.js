@@ -52,8 +52,7 @@ const wizard_scenes = new Scenes.WizardScene(
     async (ctx) => {
         try {
             const user = await utils.getUserData(ctx.chat.id)
-            const cb_data = ctx.callbackQuery?.data
-            console.log(cb_data)
+            const cb_data = ctx.callbackQuery?.data || null
 
             if (cb_data === 'start_case') {
 

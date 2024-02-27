@@ -1,7 +1,6 @@
 const { Scenes } = require('telegraf')
 const kb = require('../../../../keyboars.json')
 const utils = require('../../../../utils')
-const setTimeoutP = require('timers/promises').setTimeout
 
 
 const back = async (ctx, edit = true) => {
