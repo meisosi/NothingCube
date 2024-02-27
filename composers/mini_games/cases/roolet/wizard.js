@@ -59,7 +59,7 @@ const russianRouletteScene = new Scenes.WizardScene(
     const isLost = Math.random() * 100 < lossChances[attempt];
 
     if (isLost) {
-      await ctx.replyWithSticker(''); // ID стикера
+      await ctx.replyWithSticker('CAACAgIAAxkBAAELkQtl3g8BQCI1NB1Y4O7QrcwyI30nLAACGi0AAiEL6ElPYSE3ilVrDTQE'); // ID стикера
       setTimeout(async () => {
         await ctx.deleteMessage();
         await ctx.reply('К сожалению, вы проиграли. Попробуйте еще раз!');
@@ -91,8 +91,7 @@ const russianRouletteScene = new Scenes.WizardScene(
 
   async (ctx) => {
     try {
-      const user = await utils.getUserData(ctx.chat.id)
-      cb_data = ctx.callbackQuery.data
+      cb_data = ctx.callbackQuery?.data
   
       if ((cb_data === 'try_again')) {
         ctx.scene.reenter()

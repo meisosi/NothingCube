@@ -52,7 +52,7 @@ const wizard_scenes = new Scenes.WizardScene(
     async (ctx) => {
         try {
             const user = await utils.getUserData(ctx.chat.id)
-            const cb_data = ctx.callbackQuery.data
+            const cb_data = ctx.callbackQuery?.data
             console.log(cb_data)
 
             if (cb_data === 'start_case') {
@@ -112,8 +112,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
-            cb_data = ctx.callbackQuery.data
+            cb_data = ctx.callbackQuery?.data
 
             if ( (cb_data === 'try_again')) {
                 ctx.scene.reenter()
