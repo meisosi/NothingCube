@@ -5,21 +5,20 @@ const utils = require('../../../utils')
 
 composer.use(session())
 composer.use(require('./cases.stage'))
-composer.use(require('./craft.composer'))
 
 composer.action("cases_menu", async (ctx) => {
     try {
-        let user = await utils.getUserData(ctx.from.id)
-        let stat = await utils.getUserStats(ctx.from.id)
+        let user = await utils.getUserData(ctx.chat.id)
+        let stat = await utils.getUserStats(ctx.chat.id)
 
         if (!user) {
-            await utils.createUser(ctx.from.id, ctx.from.username)
-            user = await utils.getUserData(ctx.from.id)
+            await utils.createUser(ctx.chat.id, ctx.chat.username)
+            user = await utils.getUserData(ctx.chat.id)
         }
 
         if (!stat) {
-            await utils.createUserStats(ctx.from.id)
-            stat = await utils.getUserStats(ctx.from.id)
+            await utils.createUserStats(ctx.chat.id)
+            stat = await utils.getUserStats(ctx.chat.id)
         }
 
 
@@ -33,13 +32,7 @@ composer.action("cases_menu", async (ctx) => {
     }
 })
 
-composer.action("on_dev", async (ctx) => {
-    try {
-        await ctx.scene.enter('on_dev')
-    } catch (e) {
-        console.log(e)
-    }
-})
+
 
 composer.action("lucky_drop", async (ctx) => {
     try {
@@ -57,17 +50,49 @@ composer.action("high_risk", async (ctx) => {
     }
 })
 
-composer.action("elevation", async (ctx) => {
+composer.action("friend_case", async (ctx) => {
     try {
-        await ctx.scene.enter('elevation')
+        await ctx.scene.enter('friend_case')
     } catch (e) {
         console.log(e)
     }
 })
 
-composer.action("money_game", async (ctx) => {
+composer.action("high_risk_prem", async (ctx) => {
     try {
-        await ctx.scene.enter('money_game')
+        await ctx.scene.enter('high_risk_prem')
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+composer.action("lucky_drop_prem", async (ctx) => {
+    try {
+        await ctx.scene.enter('lucky_drop_prem')
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+composer.action("nt_case", async (ctx) => {
+    try {
+        await ctx.scene.enter('nt_case')
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+composer.action("pepsa_case", async (ctx) => {
+    try {
+        await ctx.scene.enter('pepsa_case')
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+composer.action("russian_roulette", async (ctx) => {
+    try {
+        await ctx.scene.enter('russian_roulette')
     } catch (e) {
         console.log(e)
     }

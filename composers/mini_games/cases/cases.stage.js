@@ -1,11 +1,15 @@
 const { Scenes } = require('telegraf')
 
-const on_dev = require('./on_dev/wizard')
 const lucky_drop = require('./lucky_drop/wizard')
 const high_risk = require('./high_risk/wizard')
-const elevation = require('./elevation/wizard')
-const money_game = require('./money_game/wizard')
+const friend_case = require('./friend_case/wizard')
+const high_risk_prem = require('./high_risk_prem/wizard')
+const lucky_drop_prem = require('./lucky_drop_prem/wizard')
+const nt_case = require('./nt_case/wizard')
+const pepsa_case = require('./pepsa_case/wizard')
+const roolet = require('./roolet/wizard')
 
-const stage = new Scenes.Stage([on_dev, lucky_drop, high_risk, elevation, money_game])
+
+const stage = new Scenes.Stage([lucky_drop, high_risk, friend_case, high_risk_prem, lucky_drop_prem, nt_case, pepsa_case, roolet])
 
 module.exports = stage
