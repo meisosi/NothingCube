@@ -39,7 +39,7 @@ const wizard_scenes = new Scenes.WizardScene(
       let txt = 'Всегда хотел увидеть эту фразу?😉\n\n'
       txt += `${ctx.chat.username}, кидай кубик - этот раздел для тебя! ⚡️\n\n`
       txt += `Твой баланс: ${user.coins} 💰`
-      const mes = await ctx.editMessageText(txt, kb.friend_case)
+      const mes = await ctx.editMessageText(txt, kb.friend_case_start)
 
       ctx.wizard.state.mid = mes.message_id
       return ctx.wizard.next()
