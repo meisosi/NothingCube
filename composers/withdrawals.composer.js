@@ -5,7 +5,7 @@ const utils = require('../utils')
 const token = process.env.TOKEN_BOT
 const bot = new Telegraf(token)
 
-composer.hears("🚀 Вывод предметов", async (ctx) => {
+composer.hears("🚀 Вывод предмето в", async (ctx) => {
     try {
         const user = await utils.getUserData(ctx.from.id)
 
