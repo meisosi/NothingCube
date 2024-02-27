@@ -53,7 +53,7 @@ const wizard_scenes = new Scenes.WizardScene(
   async (ctx) => {
     try {
       const user = await utils.getUserData(ctx.chat.id)
-      cb_data = ctx.callbackQuery.data
+      cb_data = ctx.callbackQuery?.data
 
       if (user.coins < 10) {
         let txt = 'К сожалению, у тебя не хватает монеток или гемов для открытия..\n\n'
@@ -115,7 +115,6 @@ const wizard_scenes = new Scenes.WizardScene(
 
   async (ctx) => {
     try {
-      const user = await utils.getUserData(ctx.chat.id)
       const cb_data = ctx.callbackQuery?.data;
 
       if (cb_data === 'try_again') {
