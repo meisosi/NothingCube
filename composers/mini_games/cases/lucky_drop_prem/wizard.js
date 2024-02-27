@@ -63,7 +63,7 @@ const wizard_scenes = new Scenes.WizardScene(
                 return ctx.wizard.next()
             }
 
-            if (cb_data && cb_data === 'drop_lucky_prem') {
+            if (cb_data && cb_data === 'drop_lucky') {
                 const diceResult = await ctx.replyWithDice();
                 const selectedResult = diceResult.dice.value;
                 const rewards = {
