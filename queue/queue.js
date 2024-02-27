@@ -69,9 +69,9 @@ module.exports = class Queue {
         const promo = await this.mysql.deleteWithdrawPromocode(code, status);
         if (promo) {
             let txt = `Вот ваш промокод (нажмите на него, чтобы скопировать):\`${promo.code}\`\n\n`;
-            txt += "Активировать на сайте [Genshindrop](https://genshindrop.io/NOTHING), в разделе профиль - активировать бонус код";
+            txt += "Активировать на сайте [Genshindrop](https://genshindrop.io/NOTHING), в разделе профиль - активировать бонус код\n\n";
             txt += "Отзыв можете оставить [тут](https://t.me/cube_updates/124), нам будет очень приятно❤️"
-            this.telegraf.telegram.sendMessage(promo.user_id, txt, {parse_mode: 'MarkdownV2'});
+            this.telegraf.telegram.sendMessage(promo.user_id, txt, {parse_mode: 'Markdown'});
         }
     }
     async linkPromocodes(status) {
