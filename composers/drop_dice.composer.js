@@ -12,7 +12,15 @@ const rewards = {
     6: 25
 };
 
+composer.hears("🎲 Кидай кубик", async (ctx) => {
+    dropDice(ctx);
+})
+
 composer.action("drop_dice", async (ctx) => {
+    dropDice(ctx);
+});
+
+async function dropDice(ctx) {
     try {
         const user = await utils.getUserData(ctx.from.id);
         const stat = await utils.getUserStats(ctx.from.id);
@@ -54,6 +62,6 @@ composer.action("drop_dice", async (ctx) => {
     } catch (e) {
         console.log(e);
     }
-});
+}
 
 module.exports = composer;

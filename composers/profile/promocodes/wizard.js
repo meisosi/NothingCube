@@ -31,7 +31,7 @@ const wizard_scenes = new Scenes.WizardScene(
       let txt = "У тебя есть 🌟 Промокод ?\n";
       txt += "Отлично, напиши его сюда, а мы начислим награду!";
 
-      const mes = await ctx.editMessageText(txt, kb.promocodes_start);
+      const mes = await ctx.sendMessage(txt, kb.promocodes_start);
       ctx.wizard.state.mid = mes.message_id;
       return ctx.wizard.next();
     } catch (e) {

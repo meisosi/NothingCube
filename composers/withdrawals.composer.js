@@ -1,7 +1,7 @@
 const { Composer, Telegraf } = require('telegraf')
 const composer = new Composer()
-const kb = require('../../../keyboars.json')
-const utils = require('../../../utils')
+const kb = require('../keyboars.json')
+const utils = require('../utils')
 const token = process.env.TOKEN_BOT
 const bot = new Telegraf(token)
 

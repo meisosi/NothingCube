@@ -166,7 +166,7 @@ const getMenu = async (ctx, arg = null, edit = false) => {
             ctx.telegram.sendMessage(referalId, `У вас новый реферал! Поприветсвуйте ${ctx.from.username || ctx.from.first_name}`)
           }
         }
-        utils.updateUserData(userId, 'coins', userDB.coins)
+        await utils.updateUserData(userId, 'coins', userDB.coins)
       }
     }
   }
@@ -189,6 +189,7 @@ const getMenu = async (ctx, arg = null, edit = false) => {
       else ctx.editMessageText(txt, kb.menu);
     } catch (e) {}
   } else {
+    console.log(kb.vip_menu)
     if (user.vip_status > 0) await ctx.replyWithHTML(txt, kb.vip_menu);
     else await ctx.replyWithHTML(txt, kb.menu);
   }
@@ -202,6 +203,7 @@ composer.command("start", async (ctx) => {
         await utils.createUser(ctx.from.id, ctx.from.first_name);
         userDB = await utils.getUserData(ctx.from.id);
       }
+      await ctx.replyWithHTML("Установка меню", kb.menu_kb);
     }
     else {
       if(!userDB) {
@@ -295,9 +297,9 @@ composer.command("roll", async (ctx) => {
 });
 
 
-composer.action(/back_to_menu(?:-[\w\d]+)?/, async (ctx) => {
+composer.action(/back_to_menu(?:-[\w\d]+)?\b/, async (ctx) => {
   try {
-    const matchedText = ctx.match[1];
+    const matchedText = ctx.match[1] || null;
     const chatMember = await bot.telegram.getChatMember(
       `@${process.env.MAIN_CHANEL}`,
       ctx.from.id

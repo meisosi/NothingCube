@@ -46,6 +46,15 @@ composer.action("promocode", async (ctx) => {
     }
 })
 
+composer.hears("🌟 Промокод", async (ctx) => {
+    try {
+        await ctx.scene.enter('promocodes')
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+
 composer.use(require('./referal.composer'))
 composer.use(require('./exchange.composer'))
 

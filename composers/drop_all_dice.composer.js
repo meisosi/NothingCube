@@ -21,6 +21,10 @@ composer.action("drop_all_dice", async (ctx) => {
             await utils.createUserStats(ctx.from.id);
         }
 
+        if(user.vip_status <= 0) {
+            return;
+        }
+
         if (user.rolls <= 0) {
             ctx.reply('У вас недостаточно бросков', kb.drop_dice_menu);
             return;

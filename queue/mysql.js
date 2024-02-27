@@ -60,7 +60,6 @@ module.exports = class Database {
             const connection = await this._pool.getConnection();
             const [rows] = await connection.execute(sqlQuery, params);
             connection.release();
-            console.log(rows, rows.length)
             if (Array.isArray(rows))
                 return rows.length > 0 ? rows : null;
             else
