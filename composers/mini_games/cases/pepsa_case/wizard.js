@@ -31,7 +31,7 @@ const back = async (ctx, edit = true) => {
 }
 
 const wizard_scenes = new Scenes.WizardScene(
-    "lucky_drop",
+    "pepsa_case",
     async (ctx) => {
         try {
             const user = await utils.getUserData(ctx.chat.id)
@@ -39,7 +39,7 @@ const wizard_scenes = new Scenes.WizardScene(
             let txt = 'Всегда хотел увидеть эту фразу?😉\n\n'
             txt += `${ctx.chat.username}, кидай кубик - этот раздел для тебя! ⚡️\n\n`
             txt += `Твой баланс: ${user.coins} 💰`
-            const mes = await ctx.editMessageText(txt, kb.lucky_drop_start)
+            const mes = await ctx.editMessageText(txt, kb.pepsa_case_start)
 
             ctx.wizard.state.mid = mes.message_id
             return ctx.wizard.next()
@@ -63,37 +63,29 @@ const wizard_scenes = new Scenes.WizardScene(
                 return ctx.wizard.next()
             }
 
-            if (cb_data && cb_data === 'drop_lucky') {
+            if (cb_data && cb_data === 'drop_pepsa') {
                 const diceResult = await ctx.replyWithDice();
                 const selectedResult = diceResult.dice.value;
                 const rewards = {
-                    1: { name: "60 гемов 💎", type: "gems", amount: 1 },
-                    2: { name: "60 гемов 💎 2 раза", type: "gems", amount: 2 },
-                    3: { name: "60 гемов 💎 3 раза", type: "gems", amount: 3 },
-                    4: { name: "60 гемов 💎 4 раза", type: "gems", amount: 4 },
-                    5: { name: "Благословение полой луны 🌙", type: "items", amount: 1 },
-                    6: { name: "Благословение полой луны 🌙 и 60 гемов 💎", type: "combined", items: ["Благословение полой луны 🌙", "60 гемов"], amount:1 },
+                    1: { name: "5 монет 💰", type: "coins", amount: 5 },
+                    2: { name: "25 монет 💰", type: "coins", amount: 25 },
+                    3: { name: "50 монет 💰", type: "coins", amount: 50 },
+                    4: { name: "75 монет 💰", type: "coins", amount: 75 },
+                    5: { name: "100 монет 💰", type: "coins", amount: 100 },
+                    6: { name: "60 гемов 💎", type: "gems", amount: 1 },
                 };
 
                 await new Promise(resolve => setTimeout(resolve, 5000)); // Задержка в 5 секунд
 
-                await ctx.deleteMessage(ctx.wizard.state.mid)
+                await ctx.deleteMessage(ctx.wizard.state.mid);
                 await utils.increaseUserCaseOpened(ctx.chat.id);
 
                 const rewardInfo = rewards[selectedResult];
 
                 if (rewardInfo.type === "gems") {
-                    await utils.updateUserData(ctx.chat.id, 'gems', user['gems'] ? user['gems'] + rewardInfo.amount : rewardInfo.amount);
-                } else if (rewardInfo.type === "items") {
-                    await utils.updateUserData(ctx.chat.id, 'items',  user['items'] ? user['items'] + rewardInfo.amount : rewardInfo.amount);
-                } else if (rewardInfo.type === "combined") {
-                    for (const item of rewardInfo.items) {
-                        if (item.includes("Благословение полой луны 🌙")) {
-                            await utils.updateUserData(ctx.chat.id, 'items', user['items'] ? user['items'] + rewardInfo.amount : rewardInfo.amount);
-                        } else if (item.includes("60 гемов")) {
-                            await utils.updateUserData(ctx.chat.id, 'gems', user['gems'] ? user['gems'] + rewardInfo.amount : rewardInfo.amount);
-                        }
-                    }
+                    await utils.updateUserData(ctx.chat.id, 'gems', user.gems + rewardInfo.amount);
+                } else if (rewardInfo.type === "coins") {
+                    await utils.updateUserData(ctx.chat.id, 'coins',  user.coins + rewardInfo.amount);
                 }
 
                 await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] - 6000);
