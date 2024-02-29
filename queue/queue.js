@@ -4,6 +4,28 @@ const { CronJob } = require ('cron');
 const { createPromocode } = require ('./withdraw/queueMethods');
 const utils = require('../utils');
 const QUEUE_REGEX = /__queue_(.+)_(\d+)/;
+var Commands = {};
+function setCallDown(command, userId, timeout) {
+    if (timeout === void 0) { timeout = 10000; }
+    if (!Object.keys(Commands).includes(command)) {
+        Commands[command] = [];
+    }
+    if (Commands[command].includes(userId)) {
+        return false;
+    }
+    else {
+        Commands[command].push(userId);
+        setTimeout(function (_) {
+            removeCallDown(command, userId);
+        }, timeout);
+        return true;
+    }
+}
+function removeCallDown(command, userId) {
+    var index = Commands[command].findIndex(function (value) { return value === userId; });
+    Commands[command].splice(index, 1);
+}
+
 module.exports = class Queue {
     telegraf;
     mysql = new Database();
@@ -15,7 +37,12 @@ module.exports = class Queue {
             //    ['gems', 'items', 'big_gems'].includes(ctx.args[0])) {
             //    this.onCommand(ctx, ctx.args[0]);
             //}
-            this.onCommand(ctx, 'items');
+            const calldownState = setCallDown('withdraw', ctx.from.id, 1000);
+            if(calldownState) {
+                this.onCommand(ctx, 'items');
+            } else {
+                ctx.reply('Слишком быстро!');
+            }
         });
         telegraf.action(QUEUE_REGEX, async ctx => {
             const userDB = await utils.getUserData(ctx.from.id);
@@ -39,20 +66,22 @@ module.exports = class Queue {
     async onCommand(context, type) {
         const user_id = context.from.id;
         const userDB = await utils.getUserData(user_id);
-        if(userDB[type] < 1) {
-            return context.sendMessage("У вас недостаточно предметов для вывода...");
-        }
         const userPrem = userDB.vip_status > 0;
+        if(!userDB) {
+            await utils.createUser(user_id, context.from.first_name)
+        }
         if(!userPrem) {
             if(userDB.coins < 2000) {
                 return context.sendMessage(`Стоимость вывода предметов: 2000 монеток 💰\n\nУ вас сейчас: ${userDB.coins} 💰\n\nВы можете накопить баланс или приобрести подписку, для быстрого вывода.`);
             }
-            else {
-                await utils.updateUserData(user_id, 'coins', userDB.coins - 2000);
-            }
+        }
+        if(userDB[type] < 1) {
+            return context.sendMessage("У вас недостаточно предметов для вывода...");
         }
         userDB[type] = userDB[type] - 1;
+        userDB.coins = userDB.coins - 2000;
         await utils.updateUserData(user_id, type, userDB[type]);
+        await utils.updateUserData(user_id, 'coins', userDB.coins);
         const promocode = await this.mysql.tryPutQueue({
             id: context.from.id, 
             waitingType: type

@@ -8,8 +8,15 @@ const back = async (ctx, edit = true) => {
         const stat = await utils.getUserStats(ctx.chat.id)
 
         let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
-        txt += 'Здесь кейсы на любой вкус и выбор\n'
-        txt += 'В скобках указана цена за кейс в 💰\n\n'
+        txt += 'Здесь кейсы на любой вкус и выбор\n\n'
+        txt += 'Стоимость кейсов 💰:\n'
+        txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
+        txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Кейс Пепсы: 300 💰\n'
+        txt += '▫️ HIGH RISK: 100 💰\n'
+        txt += '▫️ HIGH RISK Premium: 1000 💰\n'
+        txt += '▫️ СД (счастливый дроп): 6000💰\n'
+        txt += '▫️ СД премиум: 20000💰\n\n'
         txt += `Всего кейсов открыто: ${stat.cases_opened}`
         
         if (edit) {
@@ -32,14 +39,12 @@ const wizard_scenes = new Scenes.WizardScene(
     "high_risk_prem",
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
-
             let txt = 'Кто не рискует, тот не пьёт шампанское🍾\n'
-            txt += 'Или не получает луну 🌙\n\n'
+            txt += 'Или не получает 1090 гемов\n\n'
             txt += 'Аналог всеми любимого кейса "Всё или Ничего"\n'
             txt += 'Испытаешь удачу?😉'
             
-            const mes = await ctx.editMessageText(txt, kb.high_risk_prem_start)
+            const mes = await ctx.reply(txt, kb.high_risk_prem_start)
             ctx.wizard.state.mid = mes.message_id
             return ctx.wizard.next()
         }catch (e) {
@@ -52,12 +57,12 @@ const wizard_scenes = new Scenes.WizardScene(
     async (ctx) => {
         try {
             const user = await utils.getUserData(ctx.chat.id)
-            const cb_data = ctx.callbackQuery?.data || null
+            const cb_data = ctx.callbackQuery?.data;
 
             if (cb_data === 'start_case') {
 
-                if (user.coins >= 100) {
-                    const updatedCoins = user.coins - 100;
+                if (user.coins >= 1000) {
+                    const updatedCoins = user.coins - 1000;
                     await utils.updateUserData(ctx.chat.id, 'coins', updatedCoins);
 
                     const possRes = [
@@ -76,10 +81,10 @@ const wizard_scenes = new Scenes.WizardScene(
                         }
                         return ctx.wizard.next()
                     } else {
-                        await utils.updateUserData(ctx.chat.id, 'items', user.items + 1); // Обновляем предметы в базе данных
+                        await utils.updateUserData(ctx.chat.id, 'big_gems', user.big_gems + 1); // Обновляем предметы в базе данных
 
                         let txt = 'Вы только посмотрите на этого счастливчика!\n'
-                        txt += 'Невероятно, 🌙 твоя! 🍾'
+                        txt += 'Невероятно, 1090 гемов твои! 🍾'
                         try {
                             await ctx.editMessageText(txt, kb.back_try_again_cases_menu);
                         }catch (e) {

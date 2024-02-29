@@ -10,8 +10,15 @@ const back = async (ctx, edit = true) => {
         const stat = await utils.getUserStats(ctx.chat.id)
 
         let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
-        txt += 'Здесь кейсы на любой вкус и выбор\n'
-        txt += 'В скобках указана цена за кейс в 💰\n\n'
+        txt += 'Здесь кейсы на любой вкус и выбор\n\n'
+        txt += 'Стоимость кейсов 💰:\n'
+        txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
+        txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Кейс Пепсы: 300 💰\n'
+        txt += '▫️ HIGH RISK: 100 💰\n'
+        txt += '▫️ HIGH RISK Premium: 1000 💰\n'
+        txt += '▫️ СД (счастливый дроп): 6000💰\n'
+        txt += '▫️ СД премиум: 20000💰\n\n'
         txt += `Всего кейсов открыто: ${stat.cases_opened}`
 
         if (edit) {
@@ -39,7 +46,7 @@ const wizard_scenes = new Scenes.WizardScene(
             let txt = 'Всегда хотел увидеть эту фразу?😉\n\n'
             txt += `${ctx.chat.username}, кидай кубик - этот раздел для тебя! ⚡️\n\n`
             txt += `Твой баланс: ${user.coins} 💰`
-            const mes = await ctx.editMessageText(txt, kb.lucky_drop_prem_start)
+            const mes = await ctx.reply(txt, kb.lucky_drop_prem_start)
 
             ctx.wizard.state.mid = mes.message_id
             return ctx.wizard.next()
@@ -103,7 +110,7 @@ const wizard_scenes = new Scenes.WizardScene(
                 let txt = `Поздравляем! Тебе выпало: ${rewardInfo.name}\n`
                 txt += 'Предмет находится у тебя в инвентаре.\n\n'
                 txt += 'Если у тебя есть 60 гемов - можешь попробовать возвышение до луны!\n\n'
-                txt += `Твой баланс: ${user.coins - 6000} 💰`
+                txt += `Твой баланс: ${user.coins - 20000} 💰`
 
                 await ctx.reply(txt, kb.back_try_again_cases_menu);
                 return ctx.wizard.next()

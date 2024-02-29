@@ -2,7 +2,7 @@ const { Composer } = require('telegraf')
 const composer = new Composer()
 const kb = require('../keyboars.json')
 
-composer.action("FAQ", async (ctx) => {
+composer.hears("❓ F.A.Q", async (ctx) => {
     try {
         let txt = '❓ F.A.Q. Кубика-бота.\n\n'
         txt += 'Общие понятия и условия:\n\n'
@@ -33,7 +33,7 @@ composer.action("FAQ", async (ctx) => {
         txt += '@nothingtg - Владелец 🥷\n'
         txt += '@Any_Sing - Менеджер по рекламе 💼\n'
 
-        await ctx.editMessageText(txt, kb.faq_bot)
+        await ctx.reply(txt, kb.faq_bot)
     } catch (e) {
         console.log(e)
     }

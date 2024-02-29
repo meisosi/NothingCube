@@ -10,8 +10,15 @@ const back = async (ctx, edit = true) => {
         const stat = await utils.getUserStats(ctx.chat.id)
 
         let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
-        txt += 'Здесь кейсы на любой вкус и выбор\n'
-        txt += 'В скобках указана цена за кейс в 💰\n\n'
+        txt += 'Здесь кейсы на любой вкус и выбор\n\n'
+        txt += 'Стоимость кейсов 💰:\n'
+        txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
+        txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Кейс Пепсы: 300 💰\n'
+        txt += '▫️ HIGH RISK: 100 💰\n'
+        txt += '▫️ HIGH RISK Premium: 1000 💰\n'
+        txt += '▫️ СД (счастливый дроп): 6000💰\n'
+        txt += '▫️ СД премиум: 20000💰\n\n'
         txt += `Всего кейсов открыто: ${stat.cases_opened}`
 
         if (edit) {
@@ -39,7 +46,7 @@ const wizard_scenes = new Scenes.WizardScene(
             let txt = 'Всегда хотел увидеть эту фразу?😉\n\n'
             txt += `${ctx.chat.username}, кидай кубик - этот раздел для тебя! ⚡️\n\n`
             txt += `Твой баланс: ${user.coins} 💰`
-            const mes = await ctx.editMessageText(txt, kb.pepsa_case_start)
+            const mes = await ctx.reply(txt, kb.pepsa_case_start)
 
             ctx.wizard.state.mid = mes.message_id
             return ctx.wizard.next()
@@ -55,13 +62,14 @@ const wizard_scenes = new Scenes.WizardScene(
             const user = await utils.getUserData(ctx.chat.id)
             cb_data = ctx.callbackQuery?.data
 
-            if (user.coins < 6000) {
-                let txt = 'К сожалению, у тебя не хватает монеток или гемов для открытия..\n\n'
+            if (user.coins < 300) {
+                let txt = 'К сожалению, у тебя не хватает монеток для открытия..\n\n'
                 txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n'
                 txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"'
                 await ctx.editMessageText(txt, kb.back_cases_menu);
                 return ctx.wizard.next()
             }
+            await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] - 300);
 
             if (cb_data && cb_data === 'drop_pepsa') {
                 const diceResult = await ctx.replyWithDice();
@@ -83,17 +91,19 @@ const wizard_scenes = new Scenes.WizardScene(
                 const rewardInfo = rewards[selectedResult];
 
                 if (rewardInfo.type === "gems") {
+                    user.gems += rewardInfo.amount;
                     await utils.updateUserData(ctx.chat.id, 'gems', user.gems + rewardInfo.amount);
                 } else if (rewardInfo.type === "coins") {
+                    user.coins += rewardInfo.amount;
                     await utils.updateUserData(ctx.chat.id, 'coins',  user.coins + rewardInfo.amount);
                 }
 
-                await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] - 6000);
+                await utils.updateUserData(ctx.chat.id, rewardInfo.type, user[rewardInfo.type]);
 
                 let txt = `Поздравляем! Тебе выпало: ${rewardInfo.name}\n`
                 txt += 'Предмет находится у тебя в инвентаре.\n\n'
                 txt += 'Если у тебя есть 60 гемов - можешь попробовать возвышение до луны!\n\n'
-                txt += `Твой баланс: ${user.coins - 6000} 💰`
+                txt += `Твой баланс: ${user.coins - 300} 💰`
 
                 await ctx.reply(txt, kb.back_try_again_cases_menu);
                 return ctx.wizard.next()

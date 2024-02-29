@@ -152,7 +152,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🎒 Рефералка", "callback_data": "referal"}, { "text": "🌟 Промокод", "callback_data": "promocode"}],
+                [{ "text": "🌟 Рефералка", "callback_data": "referal"}, { "text": "🎒 Инвентарь", "callback_data": "inventory"}],
                 [{ "text": "🏠 Домой", "callback_data": "back_to_menu"}]
             ]
         }
@@ -162,7 +162,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🚀 Вывод предметов", "callback_data": "withdraw"}, { "text": "🔗 Крафт", "callback_data": "craft"}],
+                [{ "text": "🔗 Крафт", "callback_data": "craft"}],
                 [{ "text": "🪪 Профиль", "callback_data": "profile"}, { "text": "🏠 Домой", "callback_data": "back_to_menu"}]
             ]
         }
@@ -173,7 +173,7 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "🔮 Сделать луну", "callback_data": "start_craft"}],
-                [{ "text": "Назад", "callback_data": "cases_menu"}]
+                [{ "text": "Назад", "callback_data": "inventory"}]
             ]
         }
     },
@@ -183,7 +183,7 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "🔝 Возвышение", "callback_data": "elevation"}],
-                [{ "text": "Назад", "callback_data": "cases_menu"}]
+                [{ "text": "Назад", "callback_data": "inventory"}]
             ]
         }
     },
@@ -192,7 +192,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [ { "text": "Назад", "callback_data": "cases_menu"}]
+                [ { "text": "Назад", "callback_data": "inventory"}]
             ]
         }
     },
@@ -221,16 +221,6 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "🔙 Назад", "callback_data": "support"}, { "text": "🪪 Профиль", "callback_data": "profile"}]
-            ]
-        }
-    },
-
-    "exchange_menu": {
-        "parse_mode": "HTML",
-        "reply_markup": {
-            "inline_keyboard": [
-                [{ "text": "🌙", "callback_data": "genshin_pass"}],
-                [{ "text": "🪪 Профиль", "callback_data": "profile" },{ "text": "🏠 Домой", "callback_data": "back_to_menu" }]
             ]
         }
     },

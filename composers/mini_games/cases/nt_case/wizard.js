@@ -8,9 +8,16 @@ const back = async (ctx, edit = true) => {
     const stat = await utils.getUserStats(ctx.chat.id)
 
     let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
-    txt += 'Здесь кейсы на любой вкус и выбор\n'
-    txt += 'В скобках указана цена за кейс в 💰\n\n'
-    txt += `Всего кейсов открыто: ${stat.cases_opened}`
+        txt += 'Здесь кейсы на любой вкус и выбор\n\n'
+        txt += 'Стоимость кейсов 💰:\n'
+        txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
+        txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Кейс Пепсы: 300 💰\n'
+        txt += '▫️ HIGH RISK: 100 💰\n'
+        txt += '▫️ HIGH RISK Premium: 1000 💰\n'
+        txt += '▫️ СД (счастливый дроп): 6000💰\n'
+        txt += '▫️ СД премиум: 20000💰\n\n'
+        txt += `Всего кейсов открыто: ${stat.cases_opened}`
 
     if (edit) {
       try {
@@ -36,7 +43,7 @@ const wizard_scenes = new Scenes.WizardScene(
 
       let txt = 'Тут будет текст, МАКСИМ ПИДОРАС'
 
-      const mes = await ctx.editMessageText(txt, kb.nt_case_start)
+      const mes = await ctx.reply(txt, kb.nt_case_start)
       ctx.wizard.state.mid = mes.message_id
       return ctx.wizard.next()
     } catch (e) {
@@ -53,8 +60,8 @@ const wizard_scenes = new Scenes.WizardScene(
 
       if (cb_data === 'start_case') {
 
-        if (user.coins >= 100) {
-          const updatedCoins = user.coins - 100;
+        if (user.coins >= 10) {
+          const updatedCoins = user.coins - 10;
           await utils.updateUserData(ctx.chat.id, 'coins', updatedCoins);
 
           const possRes = [

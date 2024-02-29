@@ -38,7 +38,7 @@ composer.action("drop_all_dice", async (ctx) => {
         while (userRolls > 0 && rollCount < 5) {
             const diceResult = await ctx.replyWithDice();
             userRolls -= 1;
-            const selectedResult = diceResult.dice.value;
+            const selectedResult = diceResult?.dice.value;
             const reward = rewards[selectedResult];
         
             if (reward === undefined) {
