@@ -18,7 +18,7 @@
                 { "text": "🌟 Промокод" }
                 ],
                 [
-                { "text": "🚀 Вывод предметов" },
+                { "text": "✏️ Тех. поддержка" },
                 { "text": "🎰 Мини-игры" }
                 ]
             ],
@@ -152,8 +152,8 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🌟 Рефералка", "callback_data": "referal"}, { "text": "🎒 Инвентарь", "callback_data": "inventory"}],
-                [{ "text": "🏠 Домой", "callback_data": "back_to_menu"}]
+                [{ "text": "🌟 Рефералка", "callback_data": "referal"}, {"text": "🚀 Вывод предметов", "callback_data": "withdraw"}],
+                [{ "text": "🎒 Инвентарь", "callback_data": "inventory"}, { "text": "🏠 Домой", "callback_data": "back_to_menu"}]
             ]
         }
     },
@@ -230,15 +230,6 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "✅ Подтвердить", "callback_data": "confirm_withdrawal" }],
-                [{ "text": "🪪 Профиль", "callback_data": "profile" }, { "text": "🏠 Домой", "callback_data": "back_to_menu" }]
-            ]
-        }
-    },
-
-    "not_confirm_withdraw": {
-        "parse_mode": "HTML",
-        "reply_markup": {
-            "inline_keyboard": [
                 [{ "text": "🪪 Профиль", "callback_data": "profile" }, { "text": "🏠 Домой", "callback_data": "back_to_menu" }]
             ]
         }

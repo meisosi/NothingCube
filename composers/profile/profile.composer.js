@@ -56,6 +56,7 @@ composer.hears("🌟 Промокод", async (ctx) => {
 
 composer.use(require('./inventory/inventory.composer'))
 composer.use(require('./referal.composer'))
+composer.use(require("./withdrawals.composer"));
 
 
 module.exports = composer

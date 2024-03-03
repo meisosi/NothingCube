@@ -18,7 +18,7 @@ bot.use(require('./composers/faq.composer')) //FAQ
 bot.use(require('./composers/gems_shop.composer')) //gems shop
 bot.use(require('./composers/shop_subscription.composer')) //shop_subscription
 bot.use(require('./composers/profile/profile.composer')) //profile
-//bot.use(require("./composers/withdrawals.composer"));
+bot.use(require('./composers/support.composer'))
 
 if (process.env.STATUS === "DEBUG") {
     bot.launch()
