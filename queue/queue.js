@@ -1,7 +1,7 @@
 const { Markup } = require( 'telegraf');
 const Database = require('./mysql');
 const { CronJob } = require ('cron');
-const { createPromocode } = require ('./withdraw/queueMethods');
+const { hasWithdrawUser } = require ('./withdraw/queueMethods');
 const utils = require('../utils');
 const QUEUE_REGEX = /__queue_(.+)_(\d+)/;
 var Commands = {};
@@ -74,18 +74,26 @@ module.exports = class Queue {
         if(!userDB) {
             await utils.createUser(user_id, context.from.first_name)
         }
-        if(!userPrem) {
-            if(userDB.coins < 2000) {
-                return context.sendMessage(`Стоимость вывода предметов: 2000 монеток 💰\n\nУ вас сейчас: ${userDB.coins} 💰\n\nВы можете накопить баланс или приобрести подписку, для быстрого вывода.`);
-            }
+        const withdrawUser = {
+            id: context.from.id, 
+            waitingType: type
+        }
+        const hasWithdraw = await this.mysql.hasWithdrawUser(withdrawUser)
+        if(Object.values(hasWithdraw)[0] && !userPrem) {
+            return context.sendMessage("У вас уже стоит предмет на выводе...\nДождитесь вашего прошлого вывода!");
         }
         if(userDB[type] < 1) {
             return context.sendMessage("У вас недостаточно предметов для вывода...");
         }
+        if(!userPrem) {
+            if(userDB.coins < 2000) {
+                return context.sendMessage(`Стоимость вывода предметов: 2000 монеток 💰\n\nУ вас сейчас: ${userDB.coins} 💰\n\nВы можете накопить баланс или приобрести подписку, для быстрого вывода.`);
+            }
+            userDB.coins = userDB.coins - 2000;
+            await utils.updateUserData(user_id, 'coins', userDB.coins);
+        }
         userDB[type] = userDB[type] - 1;
-        userDB.coins = userDB.coins - 2000;
         await utils.updateUserData(user_id, type, userDB[type]);
-        await utils.updateUserData(user_id, 'coins', userDB.coins);
         const promocode = await this.mysql.tryPutQueue({
             id: context.from.id, 
             waitingType: type

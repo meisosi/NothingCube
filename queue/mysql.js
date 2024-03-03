@@ -1,6 +1,6 @@
 const mysql = require("mysql2/promise");
 const { tryPutQueue, deleteWithdrawPromocode, linkWithdrawPromocode,
-    hasWithdrawUsers, hasWithdrawPromocodes, getWithdrawUsers
+    hasWithdrawUsers, hasWithdrawPromocodes, getWithdrawUsers, hasWithdrawUser
 } = require("./withdraw/queueMethods");
 const { stat } = require("fs");
 module.exports = class Database {
@@ -19,6 +19,9 @@ module.exports = class Database {
     }
     async tryPutQueue(user, status = 'default') {
         return await tryPutQueue(this, user, status);
+    }
+    async hasWithdrawUser(user, status = 'default') {
+        return await hasWithdrawUser(this, user, status);
     }
     async deleteWithdrawPromocode(code, status = 'default') {
         return await deleteWithdrawPromocode(this, code, status);
