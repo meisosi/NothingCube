@@ -6,6 +6,7 @@ const utils = require('../../../../utils')
 const back = async (ctx, edit = true) => {
   try {
     await ctx.scene.leave()
+    const user = await utils.getUserData(ctx.chat.id);
     const stat = await utils.getUserStats(ctx.chat.id)
 
     let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
@@ -13,13 +14,16 @@ const back = async (ctx, edit = true) => {
         txt += 'Стоимость кейсов 💰:\n'
         txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
         txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Рулетка: 100 💰\n'
         txt += '▫️ Кейс Пепсы: 300 💰\n'
         txt += '▫️ HIGH RISK: 100 💰\n'
         txt += '▫️ HIGH RISK Premium: 1000 💰\n'
-        txt += '▫️ СД (счастливый дроп): 6000💰\n'
-        txt += '▫️ СД премиум: 20000💰\n\n'
-        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}`
-
+        txt += '▫️ СД (счастливый дроп): 6000 💰\n'
+        txt += '▫️ СД премиум: 20000 💰\n'
+        txt += '▫️ Возвышение: 0 💰\n\n'
+        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}🧨\n`
+        txt += `Твой баланс: ${user.coins} 💰\n`
+        
     if (edit) {
       try {
         await ctx.editMessageText(txt, kb.cases_menu);
@@ -42,9 +46,9 @@ const wizard_scenes = new Scenes.WizardScene(
     try {
       const user = await utils.getUserData(ctx.chat.id)
 
-      let txt = 'Всегда хотел увидеть эту фразу?😉\n\n'
-      txt += `${ctx.chat.username}, кидай кубик - этот раздел для тебя! ⚡️\n\n`
-      txt += `Твой баланс: ${user.coins} 💰`
+      let txt = 'Здесь ты можешь забрать монетки за друзей!\n'
+      txt += `Приводи 10 друзей и открывай кейс!\n\n`
+      txt += `Кидай кубик, этот кейс для тебя⚡️`
       const mes = await ctx.reply(txt, kb.friend_case_start)
 
       ctx.wizard.state.mid = mes.message_id
@@ -61,29 +65,30 @@ const wizard_scenes = new Scenes.WizardScene(
       const user = await utils.getUserData(ctx.chat.id)
       cb_data = ctx.callbackQuery?.data
 
-      if (user.coins < 10) {
-        let txt = 'К сожалению, у тебя не хватает монеток или гемов для открытия..\n\n'
-        txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n'
-        txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"'
-        await ctx.editMessageText(txt, kb.back_cases_menu);
-        return ctx.wizard.next()
-      }
-
-      if (user.friend_coin < 10) {
-        let txt = 'У тебя недостаточно рефералов\n'
-        await ctx.editMessageText(txt, kb.back_cases_menu);
-        return ctx.wizard.next()
-      }
-
       if (cb_data && cb_data === 'drop_friend') {
+
+        if (user.coins < 10) {
+          let txt = 'К сожалению, у тебя не хватает монеток для открытия..\n\n'
+          txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n'
+          txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"'
+          await ctx.editMessageText(txt, kb.back_cases_menu);
+          return ctx.wizard.next()
+        }
+  
+        if (user.friend_coin < 10) {
+          let txt = 'У тебя недостаточно рефералов\n'
+          await ctx.editMessageText(txt, kb.back_cases_menu);
+          return ctx.wizard.next()
+        }
+
         const diceResult = await ctx.replyWithDice();
         const selectedResult = diceResult.dice.value;
         const rewards = {
-          1: { name: "10 монет 💰", type: "coins", amount: 5 },
-          2: { name: "30 монет 💰", type: "coins", amount: 25 },
-          3: { name: "100 монет 💰", type: "coins", amount: 50 },
-          4: { name: "200 монет 💰", type: "coins", amount: 75 },
-          5: { name: "500 монет 💰", type: "coins", amount: 100 },
+          1: { name: "10 монет 💰", type: "coins", amount: 10 },
+          2: { name: "30 монет 💰", type: "coins", amount: 30 },
+          3: { name: "100 монет 💰", type: "coins", amount: 100 },
+          4: { name: "200 монет 💰", type: "coins", amount: 200 },
+          5: { name: "500 монет 💰", type: "coins", amount: 500 },
           6: { name: "1000 монет 💰", type: "coins", amount: 1000 },
         };
 

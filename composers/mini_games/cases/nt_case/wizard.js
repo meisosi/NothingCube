@@ -5,6 +5,7 @@ const utils = require('../../../../utils')
 const back = async (ctx, edit = true) => {
   try {
     await ctx.scene.leave()
+    const user = await utils.getUserData(ctx.chat.id);
     const stat = await utils.getUserStats(ctx.chat.id)
 
     let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
@@ -12,12 +13,15 @@ const back = async (ctx, edit = true) => {
         txt += 'Стоимость кейсов 💰:\n'
         txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
         txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Рулетка: 100 💰\n'
         txt += '▫️ Кейс Пепсы: 300 💰\n'
         txt += '▫️ HIGH RISK: 100 💰\n'
         txt += '▫️ HIGH RISK Premium: 1000 💰\n'
-        txt += '▫️ СД (счастливый дроп): 6000💰\n'
-        txt += '▫️ СД премиум: 20000💰\n\n'
-        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}`
+        txt += '▫️ СД (счастливый дроп): 6000 💰\n'
+        txt += '▫️ СД премиум: 20000 💰\n'
+        txt += '▫️ Возвышение: 0 💰\n\n'
+        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}🧨\n`
+        txt += `Твой баланс: ${user.coins} 💰\n`
 
     if (edit) {
       try {
@@ -39,7 +43,15 @@ const wizard_scenes = new Scenes.WizardScene(
   "nt_case",
   async (ctx) => {
     try {
-      let txt = 'Тут будет текст, МАКСИМ ПИДОРАС'
+      const user = await utils.getUserData(ctx.chat.id);
+
+      let txt = 'Это кейс от нашей команды Nothing Team!\n'
+      txt += 'Здесь ты можешь получить 1000 💰 !\n\n'
+      txt += `Но есть одно но.. Шанс выпадения всего 1%\n`
+      txt += 'Удачи 🍀\n\n'
+      txt += `Твой баланс: ${user.coins} 💰`
+      
+
 
       const mes = await ctx.reply(txt, kb.nt_case_start)
       ctx.wizard.state.mid = mes.message_id
@@ -81,7 +93,7 @@ const wizard_scenes = new Scenes.WizardScene(
           } else {
             await utils.updateUserData(ctx.chat.id, 'coins', user.coins + 1000); // Обновляем предметы в базе данных
 
-            let txt = 'МАКСИМ ВСЁ ЕЩЁ ПИДОР'
+            let txt = 'Сегодня вам выпало благославение Игоря и вы выиграли 1000 💰'
 
             try {
               await ctx.editMessageText(txt, kb.back_try_again_cases_menu);

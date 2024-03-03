@@ -344,10 +344,10 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🍀 СД", "callback_data": "lucky_drop"}, { "text": "Кейс Пепсы", "callback_data": "pepsa_case"}],
-                [{ "text": "NT Кейс", "callback_data": "nt_case"}, { "text": "💥 High risk Premium", "callback_data": "high_risk_prem"}],
-                [{ "text": "Кейс за друзей", "callback_data": "friend_case"}, { "text": "🍀 СД премиум", "callback_data": "lucky_drop_prem"}],
-                [{ "text": "💥 High risk", "callback_data": "high_risk"}, { "text": "Рулетка", "callback_data": "russian_roulette"}],
+                [{ "text": "NT Кейс", "callback_data": "nt_case"}, { "text": "Кейс за друзей", "callback_data": "friend_case"}],
+                [{ "text": "Кейс Пепсы", "callback_data": "pepsa_case"}, { "text": "Рулетка", "callback_data": "russian_roulette"}],
+                [{ "text": "💥 High risk", "callback_data": "high_risk"},  { "text": "💥 High risk Premium", "callback_data": "high_risk_prem"}],
+                [{ "text": "🍀 СД", "callback_data": "lucky_drop"}, { "text": "🍀 СД премиум", "callback_data": "lucky_drop_prem"}],
                 [{ "text": "Возвышение", "callback_data": "elevation"}],
                 [{ "text": "⬅️ Назад", "callback_data": "mini_games"}]
 

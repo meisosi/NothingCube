@@ -7,19 +7,23 @@ const setTimeoutP = require('timers/promises').setTimeout
 const back = async (ctx, edit = true) => {
     try {
         await ctx.scene.leave()
-        const stat = await utils.getUserStats(ctx.chat.id)
+        const user = await utils.getUserData(ctx.chat.id);
+        const stat = await utils.getUserStats(ctx.chat.id);
 
         let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
         txt += 'Здесь кейсы на любой вкус и выбор\n\n'
         txt += 'Стоимость кейсов 💰:\n'
         txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
         txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Рулетка: 100 💰\n'
         txt += '▫️ Кейс Пепсы: 300 💰\n'
         txt += '▫️ HIGH RISK: 100 💰\n'
         txt += '▫️ HIGH RISK Premium: 1000 💰\n'
-        txt += '▫️ СД (счастливый дроп): 6000💰\n'
-        txt += '▫️ СД премиум: 20000💰\n\n'
-        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}`
+        txt += '▫️ СД (счастливый дроп): 6000 💰\n'
+        txt += '▫️ СД премиум: 20000 💰\n'
+        txt += '▫️ Возвышение: 0 💰\n\n'
+        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}🧨\n`
+        txt += `Твой баланс: ${user.coins} 💰\n`
 
         if (edit) {
             try {

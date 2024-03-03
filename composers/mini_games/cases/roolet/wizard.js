@@ -5,6 +5,7 @@ const utils = require('../../../../utils');
 const back = async (ctx, edit = true) => {
   try {
     await ctx.scene.leave()
+    const user = await utils.getUserData(ctx.chat.id);
     const stat = await utils.getUserStats(ctx.chat.id)
 
     let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
@@ -12,12 +13,15 @@ const back = async (ctx, edit = true) => {
         txt += 'Стоимость кейсов 💰:\n'
         txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
         txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Рулетка: 100 💰\n'
         txt += '▫️ Кейс Пепсы: 300 💰\n'
         txt += '▫️ HIGH RISK: 100 💰\n'
         txt += '▫️ HIGH RISK Premium: 1000 💰\n'
-        txt += '▫️ СД (счастливый дроп): 6000💰\n'
-        txt += '▫️ СД премиум: 20000💰\n\n'
-        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}`
+        txt += '▫️ СД (счастливый дроп): 6000 💰\n'
+        txt += '▫️ СД премиум: 20000 💰\n'
+        txt += '▫️ Возвышение: 0 💰\n\n'
+        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}🧨\n`
+        txt += `Твой баланс: ${user.coins} 💰\n`
 
     if (edit) {
       try {
@@ -75,12 +79,12 @@ const russianRouletteScene = new Scenes.WizardScene(
         await utils.increaseUserCaseOpened(ctx.from.id);
       }
       else if (cb_data == 'shoot') {
-        const lossChances = [16, 32, 48, 64];
+        const lossChances = [1, 1, 99, 99];
         const attempt = ctx.wizard.state.attempts;
         const isLost = Math.random() * 100 < lossChances[attempt];
   
         if (isLost) {
-          await ctx.replyWithSticker('CAACAgIAAxkBAAELkQtl3g8BQCI1NB1Y4O7QrcwyI30nLAACGi0AAiEL6ElPYSE3ilVrDTQE'); // ID стикера
+          await ctx.replyWithSticker('CAACAgIAAxkBAAED3SRl5FGz7lDC8jy6M3TJ8ya0xJmvsQACjlAAAoY1EEtnS4RS9ahPMzQE'); // ID стикера
           await ctx.deleteMessage();
           await ctx.reply('К сожалению, вы проиграли. Попробуйте еще раз!');
           return await back(ctx, false);
