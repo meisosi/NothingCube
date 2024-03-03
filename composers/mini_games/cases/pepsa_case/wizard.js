@@ -63,18 +63,18 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
-            cb_data = ctx.callbackQuery?.data
-
-            if (user.coins < 300) {
-                let txt = 'К сожалению, у тебя не хватает монеток для открытия..\n\n'
-                txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n'
-                txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"'
+            const user = await utils.getUserData(ctx.chat.id);
+            const cb_data = ctx.callbackQuery?.data;
+            const cost = user.vip_status > 0 ? 150 : 300; // Стоимость для VIP-пользователей в 2 раза меньше
+    
+            if (user.coins < cost) {
+                let txt = `К сожалению, у тебя не хватает монеток для открытия. Тебе нужно ${cost} монеток.\n\n`;
+                txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n';
+                txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"';
                 await ctx.editMessageText(txt, kb.back_cases_menu);
-                return ctx.wizard.next()
+                return ctx.wizard.next();
             }
-            await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] - 300);
-
+        
             if (cb_data && cb_data === 'drop_pepsa') {
                 const diceResult = await ctx.replyWithDice();
                 const selectedResult = diceResult.dice.value;
@@ -86,14 +86,14 @@ const wizard_scenes = new Scenes.WizardScene(
                     5: { name: "100 монет 💰", type: "coins", amount: 100 },
                     6: { name: "60 гемов 💎", type: "gems", amount: 1 },
                 };
-
+    
                 await new Promise(resolve => setTimeout(resolve, 5000)); // Задержка в 5 секунд
-
+    
                 await ctx.deleteMessage(ctx.wizard.state.mid);
                 await utils.increaseUserCaseOpened(ctx.chat.id);
-
+    
                 const rewardInfo = rewards[selectedResult];
-
+    
                 if (rewardInfo.type === "gems") {
                     user.gems += rewardInfo.amount;
                     await utils.updateUserData(ctx.chat.id, 'gems', user.gems + rewardInfo.amount);
@@ -101,24 +101,23 @@ const wizard_scenes = new Scenes.WizardScene(
                     user.coins += rewardInfo.amount;
                     await utils.updateUserData(ctx.chat.id, 'coins',  user.coins + rewardInfo.amount);
                 }
-
-                await utils.updateUserData(ctx.chat.id, rewardInfo.type, user[rewardInfo.type]);
-
-                let txt = `Поздравляем! Тебе выпало: ${rewardInfo.name}\n`
-                txt += 'Предмет находится у тебя в инвентаре.\n\n'
-                txt += 'Если у тебя есть 60 гемов - можешь попробовать возвышение до луны!\n\n'
-                txt += `Твой баланс: ${user.coins - 300} 💰`
-
+    
+                await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] - cost);
+    
+                let txt = `Поздравляем! Тебе выпало: ${rewardInfo.name}\n`;
+                txt += 'Предмет находится у тебя в инвентаре.\n\n';
+                txt += 'Если у тебя есть 60 гемов - можешь попробовать возвышение до луны!\n\n';
+                txt += `Твой баланс: ${user.coins - cost} 💰`;
+    
                 await ctx.reply(txt, kb.back_try_again_cases_menu);
-                return ctx.wizard.next()
-
+                return ctx.wizard.next();
             } else {
-                await back(ctx)
+                await back(ctx);
             }
         } catch (e) {
-            console.log(e)
-            await ctx.reply('Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot')
-            await back(ctx, false)
+            console.log(e);
+            await ctx.reply('Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot');
+            await back(ctx, false);
         }
     },
 
