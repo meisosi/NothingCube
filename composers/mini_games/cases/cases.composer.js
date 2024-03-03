@@ -105,4 +105,13 @@ composer.action("russian_roulette", async (ctx) => {
     }
 })
 
+composer.action("elevation", async (ctx) => {
+    try {
+        await ctx.scene.enter('elevation')
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+
 module.exports = composer

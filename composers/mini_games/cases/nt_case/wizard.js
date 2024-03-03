@@ -17,7 +17,7 @@ const back = async (ctx, edit = true) => {
         txt += '▫️ HIGH RISK Premium: 1000 💰\n'
         txt += '▫️ СД (счастливый дроп): 6000💰\n'
         txt += '▫️ СД премиум: 20000💰\n\n'
-        txt += `Всего кейсов открыто: ${stat.cases_opened}`
+        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}`
 
     if (edit) {
       try {
@@ -39,8 +39,6 @@ const wizard_scenes = new Scenes.WizardScene(
   "nt_case",
   async (ctx) => {
     try {
-      const user = await utils.getUserData(ctx.chat.id)
-
       let txt = 'Тут будет текст, МАКСИМ ПИДОРАС'
 
       const mes = await ctx.reply(txt, kb.nt_case_start)

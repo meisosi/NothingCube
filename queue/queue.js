@@ -65,8 +65,12 @@ module.exports = class Queue {
     }
     async onCommand(context, type) {
         const user_id = context.from.id;
-        const userDB = await utils.getUserData(user_id);
-        const userPrem = userDB.vip_status > 0;
+        let userDB = await utils.getUserData(user_id);
+        if(!userDB) {
+            await utils.createUser(user_id, context.from.first_name);
+            userDB = await utils.getUserData(user_id);
+        }
+        const userPrem = userDB?.vip_status > 0;
         if(!userDB) {
             await utils.createUser(user_id, context.from.first_name)
         }

@@ -8,8 +8,9 @@ const lucky_drop_prem = require('./lucky_drop_prem/wizard')
 const nt_case = require('./nt_case/wizard')
 const pepsa_case = require('./pepsa_case/wizard')
 const roolet = require('./roolet/wizard')
+const elevation = require('./elevation/wizard')
 
 
-const stage = new Scenes.Stage([lucky_drop, high_risk, friend_case, high_risk_prem, lucky_drop_prem, nt_case, pepsa_case, roolet])
+const stage = new Scenes.Stage([lucky_drop, high_risk, friend_case, high_risk_prem, lucky_drop_prem, nt_case, pepsa_case, roolet, elevation])
 
 module.exports = stage
