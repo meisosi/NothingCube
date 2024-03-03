@@ -32,7 +32,7 @@ module.exports = class Queue {
     cronJob;
     constructor(cronTime, timeZone, telegraf) {
         this.telegraf = telegraf;
-        telegraf.hears('🚀 Вывод предметов', ctx => {
+        telegraf.action('confirm_withdrawal', ctx => {
             //if (ctx.args.length &&
             //    ['gems', 'items', 'big_gems'].includes(ctx.args[0])) {
             //    this.onCommand(ctx, ctx.args[0]);
