@@ -79,7 +79,7 @@ const russianRouletteScene = new Scenes.WizardScene(
         await utils.increaseUserCaseOpened(ctx.from.id);
       }
       else if (cb_data == 'shoot') {
-        const lossChances = [1, 1, 99, 99];
+        const lossChances = [16, 33, 51, 69];
         const attempt = ctx.wizard.state.attempts;
         const isLost = Math.random() * 100 < lossChances[attempt];
   
