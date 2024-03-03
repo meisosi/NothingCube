@@ -67,11 +67,12 @@ const wizard_scenes = new Scenes.WizardScene(
     try {
       const user = await utils.getUserData(ctx.chat.id)
       const cb_data = ctx.callbackQuery?.data;
+      const cost = user.vip_status > 0 ? 5 : 10;
 
       if (cb_data === 'start_case') {
 
         if (user.coins >= 10) {
-          const updatedCoins = user.coins - 10;
+          const updatedCoins = user.coins - cost;
           await utils.updateUserData(ctx.chat.id, 'coins', updatedCoins);
 
           const possRes = [
@@ -104,9 +105,9 @@ const wizard_scenes = new Scenes.WizardScene(
           }
 
         } else {
-          let txt = 'К сожалению, у тебя не хватает монеток или гемов для открытия..\n\n'
-          txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n'
-          txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"'
+          let txt = `К сожалению, у тебя не хватает монеток для открытия. Тебе нужно ${cost} монеток.\n\n`;
+          txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n';
+          txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"';
           try {
             await ctx.editMessageText(txt, kb.back_cases_menu);
           } catch (e) {

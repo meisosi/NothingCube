@@ -65,11 +65,13 @@ const wizard_scenes = new Scenes.WizardScene(
         try {
             const user = await utils.getUserData(ctx.chat.id)
             cb_data = ctx.callbackQuery?.data
+            const cost = user.vip_status > 0 ? 10000 : 20000;
 
-            if (user.coins < 20000) {
-                let txt = 'К сожалению, у тебя не хватает монеток или гемов для открытия..\n\n'
-                txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n'
-                txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"'
+
+            if (user.coins < cost) {
+                let txt = `К сожалению, у тебя не хватает монеток для открытия. Тебе нужно ${cost} монеток.\n\n`;
+                txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n';
+                txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"';
                 await ctx.editMessageText(txt, kb.back_cases_menu);
                 return ctx.wizard.next()
             }
@@ -109,12 +111,12 @@ const wizard_scenes = new Scenes.WizardScene(
                     }
                 }
 
-                await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] - 20000);
+                await utils.updateUserData(ctx.chat.id, 'coins', user['coins'] - cost);
 
                 let txt = `Поздравляем! Тебе выпало: ${rewardInfo.name}\n`
                 txt += 'Предмет находится у тебя в инвентаре.\n\n'
                 txt += 'Если у тебя есть 60 гемов - можешь попробовать возвышение до луны!\n\n'
-                txt += `Твой баланс: ${user.coins - 20000} 💰`
+                txt += `Твой баланс: ${user.coins - cost} 💰`
 
                 await ctx.reply(txt, kb.back_try_again_cases_menu);
                 return ctx.wizard.next()
