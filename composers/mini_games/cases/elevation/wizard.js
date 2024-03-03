@@ -6,7 +6,7 @@ const back = async (ctx, edit = true) => {
     try {
         await ctx.scene.leave()
         const user = await utils.getUserData(ctx.chat.id);
-        const stat = await utils.getUserStats(ctx.chat.id)
+        const stat = await utils.getUserStats(ctx.from.id)
 
         let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
         txt += 'Здесь кейсы на любой вкус и выбор\n\n'
@@ -40,15 +40,14 @@ const back = async (ctx, edit = true) => {
 }
 
 const wizard_scenes = new Scenes.WizardScene(
-    "high_risk_prem",
+    "elevation",
     async (ctx) => {
         try {
-            let txt = 'Кто не рискует, тот не пьёт шампанское🍾\n'
-            txt += 'Или не получает 1090 гемов\n\n'
-            txt += 'Аналог всеми любимого кейса "Всё или Ничего"\n'
+            let txt = '60 гемов - тоже гемы...\n'
+            txt += 'Но видимо ты другого мнения'
             txt += 'Испытаешь удачу?😉'
             
-            const mes = await ctx.reply(txt, kb.high_risk_prem_start)
+            const mes = await ctx.reply(txt, kb.elevation_start)
             ctx.wizard.state.mid = mes.message_id
             return ctx.wizard.next()
         }catch (e) {
@@ -60,64 +59,64 @@ const wizard_scenes = new Scenes.WizardScene(
 
     async (ctx) => {
         try {
-            const user = await utils.getUserData(ctx.chat.id)
+            const user = await utils.getUserData(ctx.from.id)
             const cb_data = ctx.callbackQuery?.data;
-            const cost = user.vip_status > 0 ? 500 : 1000;
-    
+
             if (cb_data === 'start_case') {
-                if (user.coins >= cost) {
-                    const updatedCoins = user.coins - cost;
-                    await utils.updateUserData(ctx.chat.id, 'coins', updatedCoins);
-    
+
+                if (user.gems >= 1) {
+                    const updatedGems = user.gems - 1;
+                    await utils.updateUserData(ctx.from.id, 'gems', updatedGems);
+
                     const possRes = [
-                        { result: '1090 💎', chance: 0.1 },
-                        { result: 'lose', chance: 99.9 },
+                        { result: 'Благословение полой луны 🌙', chance: 10 },
+                        { result: 'lose', chance: 90 },
                     ]
-                    await utils.increaseUserCaseOpened(ctx.chat.id)
+                    await utils.increaseUserCaseOpened(ctx.from.id)
                     const result = await utils.getRandomResult(possRes);
                     if (result.result == 'lose') {
-                        let txt = 'Увы, тебе досталось Nothing..\n'
+                        let txt = 'Увы, эти гемы Nothing съел на обед..\n'
                         txt += 'Попробуем ещё раз?😉'
                         try {
                             await ctx.editMessageText(txt, kb.back_try_again_cases_menu)
-                        } catch (e) {
-                            // Обработка возможной ошибки
+                        }catch (e) {
+
                         }
                         return ctx.wizard.next()
                     } else {
-                        await utils.updateUserData(ctx.chat.id, 'big_gems', user.big_gems + 1); // Обновляем количество больших гемов
-    
+                        await utils.updateUserData(ctx.chat.id, 'items', user.items + 1); // Обновляем предметы в базе данных
+
                         let txt = 'Вы только посмотрите на этого счастливчика!\n'
-                        txt += 'Невероятно, 1090 гемов твои! 🍾'
+                        txt += 'Невероятно, 🌙 твоя! 🍾'
                         try {
                             await ctx.editMessageText(txt, kb.back_try_again_cases_menu);
-                        } catch (e) {
-                            // Обработка возможной ошибки
+                        }catch (e) {
+
                         }
                         return ctx.wizard.next()
                     }
-    
+
                 } else {
-                    let txt = `К сожалению, у тебя не хватает монеток для открытия. Тебе нужно ${cost} монеток.\n\n`;
-                    txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n';
-                    txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"';
+                    let txt = 'К сожалению, у тебя не хватает гемов для открытия..\n\n'
+                    txt += 'Ты можешь продолжить копить, либо попробовать другие мини-игры.\n\n'
+                    txt += 'P.S. Если же не хочешь ждать - можешь заглянуть в "❤️ Поддержать"'
                     try {
                         await ctx.editMessageText(txt, kb.back_cases_menu);
-                    } catch (e) {
-                        // Обработка возможной ошибки
+                    }catch (e) {
+
                     }
                     return ctx.wizard.next()
                 }
             } else {
                 await back(ctx)
             }
-        } catch (e) {
+        }catch (e) {
             console.log(e)
             await ctx.reply('Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot')
             await back(ctx, false)
         }
     },
-    
+
     async (ctx) => {
         try {
             cb_data = ctx.callbackQuery?.data

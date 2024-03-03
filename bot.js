@@ -18,7 +18,7 @@ bot.use(require('./composers/faq.composer')) //FAQ
 bot.use(require('./composers/gems_shop.composer')) //gems shop
 bot.use(require('./composers/shop_subscription.composer')) //shop_subscription
 bot.use(require('./composers/profile/profile.composer')) //profile
-bot.use(require("./composers/withdrawals.composer"));
+bot.use(require('./composers/support.composer'))
 
 if (process.env.STATUS === "DEBUG") {
     bot.launch()
@@ -32,8 +32,8 @@ if (process.env.STATUS === "DEBUG") {
             console.log("Бот да")
             const server = http.createServer(bot.webhookCallback('/webhook'))
 
-            server.listen(8443, () => {
-                console.log('Webhook server started at port 8443')
+            server.listen(9393, () => {
+                console.log('Webhook server started at port 9393')
             })
 
             bot.telegram.setWebhook('https://nothingcube.ru/webhook', { drop_pending_updates: "True" })

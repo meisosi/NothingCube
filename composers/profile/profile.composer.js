@@ -8,7 +8,7 @@ composer.use(require('./profile.stages'))
 const getProfile = async (ctx) => {
     try { 
         const user = await utils.getUserData(ctx.from.id);
-        const stat = await utils.getUserStats(ctx.from.id);
+        let stat = await utils.getUserStats(ctx.from.id);
         if (!stat) {
             await utils.createUserStats(ctx.from.id)
             stat = await utils.getUserStats(ctx.from.id)
@@ -54,9 +54,9 @@ composer.hears("🌟 Промокод", async (ctx) => {
     }
 })
 
-
+composer.use(require('./inventory/inventory.composer'))
 composer.use(require('./referal.composer'))
-composer.use(require('./exchange.composer'))
+composer.use(require("./withdrawals.composer"));
 
 
 module.exports = composer

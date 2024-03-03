@@ -14,11 +14,16 @@ const rewards = {
 
 composer.action("drop_all_dice", async (ctx) => {
     try {
-        const user = await utils.getUserData(ctx.from.id);
-        const stat = await utils.getUserStats(ctx.from.id);
+        let user = await utils.getUserData(ctx.from.id);
+        let stat = await utils.getUserStats(ctx.from.id);
 
         if (!stat) {
             await utils.createUserStats(ctx.from.id);
+            stat = await utils.getUserStats(ctx.from.id);
+        }
+        if (!user) {
+            await utils.createUser(ctx.from.id, ctx.from.first_name);
+            user = await utils.getUserData(ctx.from.id);
         }
 
         if(user.vip_status <= 0) {
@@ -38,7 +43,7 @@ composer.action("drop_all_dice", async (ctx) => {
         while (userRolls > 0 && rollCount < 5) {
             const diceResult = await ctx.replyWithDice();
             userRolls -= 1;
-            const selectedResult = diceResult.dice.value;
+            const selectedResult = diceResult?.dice.value;
             const reward = rewards[selectedResult];
         
             if (reward === undefined) {

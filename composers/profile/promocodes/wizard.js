@@ -2,7 +2,7 @@ const { Scenes } = require("telegraf");
 const kb = require("../../../keyboars.json");
 const utils = require("../../../utils");
 
-const back = async (ctx, edit = true) => {
+const back = async (ctx) => {
   try {
     await ctx.scene.leave();
     const user = await utils.getUserData(ctx.from.id);
@@ -11,13 +11,13 @@ const back = async (ctx, edit = true) => {
     txt += `Твои броски: ${user.rolls} 🎲\n`;
 
     try {
-      await ctx[edit ? "editMessageText" : "reply"](txt, kb.profile_menu);
+      await ctx.reply(txt, kb.profile_menu);
     } catch (e) {
       console.log(e);
       await ctx.reply(
         "Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot"
       );
-      await back(ctx, false);
+      await back(ctx);
     }
   } catch (e) {
     console.log(e);
@@ -39,7 +39,7 @@ const wizard_scenes = new Scenes.WizardScene(
       await ctx.reply(
         "Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot"
       );
-      await back(ctx, false);
+      await back(ctx);
     }
   },
 
@@ -161,13 +161,13 @@ const wizard_scenes = new Scenes.WizardScene(
       await ctx.reply(
         "Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot"
       );
-      await back(ctx, false);
+      await back(ctx);
     }
   },
 
   async (ctx) => {
     try {
-      cb_data = ctx.callbackQuery.data || null;
+      cb_data = ctx.callbackQuery?.data || null;
 
       if (cb_data === "try_again") {
         ctx.scene.reenter();
@@ -179,7 +179,7 @@ const wizard_scenes = new Scenes.WizardScene(
       await ctx.reply(
         "Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot"
       );
-      await back(ctx, false);
+      await back(ctx);
     }
   }
 );

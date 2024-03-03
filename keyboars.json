@@ -18,7 +18,7 @@
                 { "text": "🌟 Промокод" }
                 ],
                 [
-                { "text": "🚀 Вывод предметов" },
+                { "text": "✏️ Тех. поддержка" },
                 { "text": "🎰 Мини-игры" }
                 ]
             ],
@@ -134,7 +134,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🔝 Возвысить", "callback_data": "start_case"}, { "text": "🔙 Назад", "callback_data": "cases_menu"}]
+                [{ "text": "💥 Открыть кейс!", "callback_data": "start_case"}, { "text": "🔙 Назад", "callback_data": "cases_menu"}]
             ]
         }
     },
@@ -152,8 +152,8 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🎒 Рефералка", "callback_data": "referal"}, { "text": "🌟 Промокод", "callback_data": "promocode"}],
-                [{ "text": "🏠 Домой", "callback_data": "back_to_menu"}]
+                [{ "text": "🌟 Рефералка", "callback_data": "referal"}, {"text": "🚀 Вывод предметов", "callback_data": "withdraw"}],
+                [{ "text": "🎒 Инвентарь", "callback_data": "inventory"}, { "text": "🏠 Домой", "callback_data": "back_to_menu"}]
             ]
         }
     },
@@ -162,7 +162,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🚀 Вывод предметов", "callback_data": "withdraw"}, { "text": "🔗 Крафт", "callback_data": "craft"}],
+                [{ "text": "🔗 Крафт", "callback_data": "craft"}],
                 [{ "text": "🪪 Профиль", "callback_data": "profile"}, { "text": "🏠 Домой", "callback_data": "back_to_menu"}]
             ]
         }
@@ -173,7 +173,7 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "🔮 Сделать луну", "callback_data": "start_craft"}],
-                [{ "text": "Назад", "callback_data": "cases_menu"}]
+                [{ "text": "Назад", "callback_data": "inventory"}]
             ]
         }
     },
@@ -183,7 +183,7 @@
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "🔝 Возвышение", "callback_data": "elevation"}],
-                [{ "text": "Назад", "callback_data": "cases_menu"}]
+                [{ "text": "Назад", "callback_data": "inventory"}]
             ]
         }
     },
@@ -192,7 +192,7 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [ { "text": "Назад", "callback_data": "cases_menu"}]
+                [ { "text": "Назад", "callback_data": "inventory"}]
             ]
         }
     },
@@ -225,30 +225,11 @@
         }
     },
 
-    "exchange_menu": {
-        "parse_mode": "HTML",
-        "reply_markup": {
-            "inline_keyboard": [
-                [{ "text": "🌙", "callback_data": "genshin_pass"}],
-                [{ "text": "🪪 Профиль", "callback_data": "profile" },{ "text": "🏠 Домой", "callback_data": "back_to_menu" }]
-            ]
-        }
-    },
-
     "confirm_withdraw": {
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
                 [{ "text": "✅ Подтвердить", "callback_data": "confirm_withdrawal" }],
-                [{ "text": "🪪 Профиль", "callback_data": "profile" }, { "text": "🏠 Домой", "callback_data": "back_to_menu" }]
-            ]
-        }
-    },
-
-    "not_confirm_withdraw": {
-        "parse_mode": "HTML",
-        "reply_markup": {
-            "inline_keyboard": [
                 [{ "text": "🪪 Профиль", "callback_data": "profile" }, { "text": "🏠 Домой", "callback_data": "back_to_menu" }]
             ]
         }
@@ -354,10 +335,12 @@
         "parse_mode": "HTML",
         "reply_markup": {
             "inline_keyboard": [
-                [{ "text": "🍀 СД", "callback_data": "lucky_drop"}, { "text": "Кейс Пепсы", "callback_data": "pepsa_case"}],
-                [{ "text": "NT Кейс", "callback_data": "nt_case"}, { "text": "💥 High risk Premium", "callback_data": "high_risk_prem"}],
-                [{ "text": "Кейс за друзей", "callback_data": "friend_case"}, { "text": "🍀 СД премиум", "callback_data": "lucky_drop_prem"}],
-                [{ "text": "💥 High risk", "callback_data": "high_risk"}, { "text": "Рулетка", "callback_data": "russian_roulette"}],
+                [{ "text": "NT Кейс", "callback_data": "nt_case"}, { "text": "Кейс за друзей", "callback_data": "friend_case"}],
+                [{ "text": "Кейс Пепсы", "callback_data": "pepsa_case"}, { "text": "Рулетка", "callback_data": "russian_roulette"}],
+                [{ "text": "💥 High risk", "callback_data": "high_risk"},  { "text": "💥 High risk Premium", "callback_data": "high_risk_prem"}],
+                [{ "text": "🍀 СД", "callback_data": "lucky_drop"}, { "text": "🍀 СД премиум", "callback_data": "lucky_drop_prem"}],
+
+                [{ "text": "Возвышение", "callback_data": "elevation"}],
                 [{ "text": "⬅️ Назад", "callback_data": "mini_games"}]
 
             ]

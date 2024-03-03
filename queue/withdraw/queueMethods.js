@@ -67,7 +67,7 @@ async function hasWithdrawUsers(db, status = 'default') {
 }
 
 async function hasWithdrawUser(db, user, status = 'default') {
-    return await db.executeQuery(HAS_USER_QUERY.replace('{0}', status), Object.values(user));
+    return await db.executeQuery(HAS_USER_QUERY.replace('{0}', status), [user.id, user.waitingType]);
 }
 
 async function hasWithdrawPromocodes(db, status = 'default') {

@@ -27,12 +27,16 @@ composer.action("cases_menu", async (ctx) => {
         txt += 'Стоимость кейсов 💰:\n'
         txt += '▫️ NT (Nothing Team) Кейс: 10 💰\n'
         txt += '▫️ Кейс за друзей: 10 💰\n'
+        txt += '▫️ Рулетка: 100 💰\n'
         txt += '▫️ Кейс Пепсы: 300 💰\n'
         txt += '▫️ HIGH RISK: 100 💰\n'
         txt += '▫️ HIGH RISK Premium: 1000 💰\n'
-        txt += '▫️ СД (счастливый дроп): 6000💰\n'
-        txt += '▫️ СД премиум: 20000💰\n\n'
-        txt += `Всего кейсов открыто: ${stat.cases_opened}`
+        txt += '▫️ СД (счастливый дроп): 6000 💰\n'
+        txt += '▫️ СД премиум: 20000 💰\n'
+        txt += '▫️ Возвышение: 0 💰\n\n'
+        txt += `Всего кейсов открыто: ${stat?.cases_opened ? stat.cases_opened : 0}🧨\n`
+        txt += `Твой баланс: ${user.coins} 💰\n`
+
         await ctx.editMessageText(txt, kb.cases_menu);
     } catch (e) {
         console.log(e)
@@ -104,5 +108,14 @@ composer.action("russian_roulette", async (ctx) => {
         console.log(e)
     }
 })
+
+composer.action("elevation", async (ctx) => {
+    try {
+        await ctx.scene.enter('elevation')
+    } catch (e) {
+        console.log(e)
+    }
+})
+
 
 module.exports = composer
