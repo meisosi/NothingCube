@@ -6,7 +6,7 @@ const http = require('http')
 const token = process.env.TOKEN_BOT
 const bot = new Telegraf(token)
 const Queue = require("./queue/queue");
-new Queue('* * * * *', 'UTC+3', bot);
+new Queue('0 0 * * *', 'UTC+3', bot);
 
 
 bot.use(require('./composers/start.composer')) //start
@@ -32,8 +32,8 @@ if (process.env.STATUS === "DEBUG") {
             console.log("Бот да")
             const server = http.createServer(bot.webhookCallback('/webhook'))
 
-            server.listen(9393, () => {
-                console.log('Webhook server started at port 9393')
+            server.listen(8443, () => {
+                console.log('Webhook server started at port 8443')
             })
 
             bot.telegram.setWebhook('https://nothingcube.ru/webhook', { drop_pending_updates: "True" })
