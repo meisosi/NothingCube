@@ -426,5 +426,14 @@
                 [{ "text": "🎲 Кидай кубик", "callback_data": "drop_friend"}, { "text": "🔙 Назад", "callback_data": "cases_menu"}]
             ]
         }
+    },
+
+    "rullete": {
+        "parse_mode": "HTML",
+        "reply_markup": {
+            "inline_keyboard": [
+                [{ "text": "Выстрелить", "callback_data": "shoot"}]
+            ]
+        }
     }
 }
