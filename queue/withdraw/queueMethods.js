@@ -51,12 +51,13 @@ async function deleteWithdrawPromocode(db, code, status = 'default') {
  * @param { WithdrawUser } user Пользователь, к которому линкуется промокод.
  */
 async function linkWithdrawPromocode(db, user, status = 'default') {
-    if (await hasWithdrawUser(db, user, status)) {
+    const isUsers = await hasWithdrawUser(db, user, status)
+    if (Object.values(isUsers)[0]) {
         const promocode = await getWithdrawPromocode(db, user.waitingType, false, status);
         if (promocode) {
+            await db.executeQuery(LINK_PROMOCODE_QUERY.replace('{0}', status), [user.id, promocode.code])
             await db.executeQuery(KICK_USER_QUERY.replace('{0}', status), [user.id])
             promocode.user_id = user.id;
-            await db.executeQuery(LINK_PROMOCODE_QUERY.replace('{0}', status), [user.id, promocode.code])
             return promocode;
         }
     }

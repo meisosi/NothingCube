@@ -17,8 +17,9 @@ composer.action("inventory", async (ctx) => {
     let inventoryMessage = `🎒 В Вашем инвентаре:\n\n`;
     inventoryMessage += `Монетки 💰: ${user.coins ? user.coins : 0}\n`;
     inventoryMessage += `60 гемов 💎: ${user.gems ? user.gems : 0}\n`;
+    inventoryMessage += `1090 гемов 💎: ${user.big_gems ? user.big_gems : 0}\n`;
     inventoryMessage += `Благословений полной луны 🌙: ${user.items ? user.items : 0}\n`;
-    inventoryMessage += `1090 гемов 💎: ${user.big_gems ? user.big_gems : 0}`;
+    inventoryMessage += `Монетки друзей 🫧: ${user.friend_coin ? user.friend_coin : 0}`;
 
     await ctx.editMessageText(inventoryMessage, kb.inventory_menu);
   } catch (e) {

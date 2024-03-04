@@ -72,7 +72,7 @@ const russianRouletteScene = new Scenes.WizardScene(
         }
         ctx.wizard.state.attempts = 0;
         
-        await ctx.reply('Игра началась! Делаем первый выстрел...', Markup.inlineKeyboard([
+        ctx.wizard.state.playmes = await ctx.reply('Игра началась! Делаем первый выстрел...', Markup.inlineKeyboard([
           Markup.button.callback('Выстрелить', 'shoot')
         ]));
         await utils.updateUserData(ctx.from.id, 'coins', user.coins - 100);
@@ -91,11 +91,14 @@ const russianRouletteScene = new Scenes.WizardScene(
         }
   
         ctx.wizard.state.attempts += 1;
+
+        let keyb = kb.rullete;
+        keyb.message_id = ctx.wizard.state.playmes.message_id;
   
         if (ctx.wizard.state.attempts < 3) {
-          await ctx.reply(`Вы выжили, но патрон всё ещё в барабане.. Стреляй, у тебя ещё ${3 - ctx.wizard.state.attempts} выстрела!`, Markup.inlineKeyboard([
-            Markup.button.callback('Выстрелить', 'shoot')
-          ]));
+          await ctx.editMessageText(`Вы выжили, но патрон всё ещё в барабане.. Стреляй, у тебя ещё ${3 - ctx.wizard.state.attempts} выстрела!`, 
+            kb.rullete 
+          );
           return;
         } else if (ctx.wizard.state.attempts === 3) {
           let winTxt = 'Дрожащими руками ты нажал на курок и снова удача оказалась на твоей стороне! Ты выжил..\n\n'

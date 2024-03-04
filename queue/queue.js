@@ -49,7 +49,7 @@ module.exports = class Queue {
             if (ctx.callbackQuery['data']) {
                 const parsedData = QUEUE_REGEX.exec(ctx.callbackQuery['data']).slice(1, 3);
                 if (parseInt(parsedData[1]) == ctx.callbackQuery.from.id) {
-                    this.givePromocode(parsedData[0], userDB.vip_status > 0 ? 'premium' : "default");
+                    this.givePromocode(parsedData[0], userDB.vip_status > 4 ? 'premium' : "default");
                 }
             }
         });
@@ -70,7 +70,7 @@ module.exports = class Queue {
             await utils.createUser(user_id, context.from.first_name);
             userDB = await utils.getUserData(user_id);
         }
-        const userPrem = userDB?.vip_status > 0;
+        const userPrem = userDB?.vip_status > 4;
         if(!userDB) {
             await utils.createUser(user_id, context.from.first_name)
         }
@@ -97,10 +97,10 @@ module.exports = class Queue {
         const promocode = await this.mysql.tryPutQueue({
             id: context.from.id, 
             waitingType: type
-        }, userDB.vip_status > 0 ? 'premium' : "default");
+        }, userDB.vip_status > 4 ? 'premium' : "default");
 
         if (promocode) {
-            this.givePromocode(promocode.code, userPrem > 0 ? 'premium' : "default");
+            this.givePromocode(promocode.code, userPrem? 'premium' : "default");
         }
         else {
             context.sendMessage("Вы были поставлены в очередь, пожалуйста ожидайте. Бот отправит вам сообщение", { parse_mode: 'Markdown' });
@@ -120,12 +120,16 @@ module.exports = class Queue {
         const withdrawUsers = await this.mysql.hasWithdrawUsers(status);
         if (Object.values(withdrawPromocodes)[0] && Object.values(withdrawUsers)[0]) {
             const wUsers = await this.mysql.getWithdrawUsers(status);
-            wUsers.forEach(async user => {
+            for(let i = 0; i < wUsers.length; ++i) {
+                const user = wUsers[i];
                 const promo = await this.mysql.linkWithdrawPromocode(user, status);
                 if (promo) {
-                    this.telegraf.telegram.sendMessage(user.id, "Поздравляем! Вот ваш код.\nНажмите на кнокпу в течении недели чтобы забрать его, иначе он пропадёт!", this.generateKeyboard(promo, user));
+                    await this.telegraf.telegram.sendMessage(user.id, "Поздравляем! Вот ваш код.\nНажмите на кнокпу в течении недели чтобы забрать его, иначе он пропадёт!", this.generateKeyboard(promo, user));
                 }
-            });
+                else {
+                    break;
+                }
+            }
         }
     }
     generateKeyboard(promocode, user) {
