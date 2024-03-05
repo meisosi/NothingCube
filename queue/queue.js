@@ -94,17 +94,12 @@ module.exports = class Queue {
         }
         userDB[type] = userDB[type] - 1;
         await utils.updateUserData(user_id, type, userDB[type]);
-        const promocode = await this.mysql.tryPutQueue({
+        await this.mysql.tryPutQueue({
             id: context.from.id, 
             waitingType: type
         }, userDB.vip_status > 4 ? 'premium' : "default");
 
-        if (promocode) {
-            this.givePromocode(promocode.code, userPrem? 'premium' : "default");
-        }
-        else {
-            context.sendMessage("Вы были поставлены в очередь, пожалуйста ожидайте. Бот отправит вам сообщение", { parse_mode: 'Markdown' });
-        }
+        context.sendMessage("Вы были поставлены в очередь, пожалуйста ожидайте. Бот отправит вам сообщение", { parse_mode: 'Markdown' });
     }
     async givePromocode(code, status) {
         const promo = await this.mysql.deleteWithdrawPromocode(code, status);

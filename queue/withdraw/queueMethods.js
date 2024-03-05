@@ -2,7 +2,7 @@ const LINK_PROMOCODE_QUERY = 'UPDATE `withdraw_{0}_promocodes` SET user_id = ? W
 const USER_ADD_QUERY = 'INSERT INTO `withdraw_{0}_users` VALUES (?, ?, NOW())';
 const GIVE_PROMOCODE_QUERY = 'SELECT * FROM `withdraw_{0}_promocodes` WHERE code = ? ORDER BY `data` ASC LIMIT 1';
 const DELETE_PROMOCODE_QUERY = 'DELETE FROM `withdraw_{0}_promocodes` WHERE code = ?';
-const KICK_USER_QUERY = 'DELETE FROM `withdraw_{0}_users` WHERE id = ?';
+const KICK_USER_QUERY = 'DELETE FROM `withdraw_{0}_users` WHERE id = id ORDER BY data LIMIT 1;';
 const HAS_USERS_QUERY = 'SELECT EXISTS(SELECT * FROM `withdraw_{0}_users` LIMIT 1)';
 const HAS_USER_QUERY = 'SELECT EXISTS(SELECT * FROM `withdraw_{0}_users` WHERE id = ? AND waitingType = ? LIMIT 1)';
 const HAS_PROMOCODES_QUERY = 'SELECT EXISTS(SELECT * FROM `withdraw_{0}_promocodes` WHERE `user_id` IS NULL)';
@@ -19,14 +19,7 @@ const CREATE_PROMOCODE = 'INSERT INTO `withdraw_{0}_promocodes` (code, type) VAL
  * @param { WithdrawUser } user Пользователь, пытающийся получить промокод.
  */
 async function tryPutQueue(db, user, status = 'default') {
-    const promocode = await getWithdrawPromocode(db, user.waitingType, false, status);
-    if (promocode) {
-        await db.executeQuery(LINK_PROMOCODE_QUERY.replace('{0}', status), [user.id, (await promocode).code]);
-    }
-    else {
-        await db.executeQuery(USER_ADD_QUERY.replace('{0}', status), [user.id, user.waitingType]);
-    }
-    return promocode;
+    await db.executeQuery(USER_ADD_QUERY.replace('{0}', status), [user.id, user.waitingType]);
 }
 /**
  * Удаляет промокод с заданным айди и возвращает
@@ -56,7 +49,7 @@ async function linkWithdrawPromocode(db, user, status = 'default') {
         const promocode = await getWithdrawPromocode(db, user.waitingType, false, status);
         if (promocode) {
             await db.executeQuery(LINK_PROMOCODE_QUERY.replace('{0}', status), [user.id, promocode.code])
-            await db.executeQuery(KICK_USER_QUERY.replace('{0}', status), [user.id])
+            await db.executeQuery(KICK_USER_QUERY.replace(/\{0\}/g, status), [user.id])
             promocode.user_id = user.id;
             return promocode;
         }
