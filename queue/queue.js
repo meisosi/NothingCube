@@ -79,7 +79,9 @@ module.exports = class Queue {
             waitingType: type
         }
         const hasWithdraw = await this.mysql.hasWithdrawUser(withdrawUser)
-        if(Object.values(hasWithdraw)[0] && !userPrem) {
+        const hasWithdrawPrem = await this.mysql.hasWithdrawUser(withdrawUser, 'premium')
+
+        if(Object.values(hasWithdraw)[0] || Object.values(hasWithdrawPrem)[0] ) {
             return context.sendMessage("У вас уже стоит предмет на выводе...\nДождитесь вашего прошлого вывода!");
         }
         if(userDB[type] < 1) {
