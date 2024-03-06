@@ -6,7 +6,7 @@ const http = require('http')
 const token = process.env.TOKEN_BOT
 const bot = new Telegraf(token)
 const Queue = require("./queue/queue");
-new Queue('* 18 * * *', 'UTC+3', bot);
+new Queue('* 03 * * *', 'UTC+3', bot);
 
 
 bot.use(require('./composers/start.composer')) //start

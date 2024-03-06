@@ -8,7 +8,8 @@ composer.action("mini_games", async (ctx) => {
         txt += "Здесь ты можешь попытать удачу и получить ещё больше монеток, доп. броски и даже гемы!\n\n"
         txt += "Можешь играть в одиночные игры, а можешь играть в сражения!\n\n"
         txt += "⚠️ <b>Перед использованием -  обязательно ознакомься с FAQ мини-игр!</b>\n\n"
-        await ctx.editMessageText(txt, kb.mini_games_menu);
+        await ctx.answerCbQuery();
+        return await ctx.editMessageText(txt, kb.mini_games_menu);
     } catch (e) {
         console.log(e)
     }

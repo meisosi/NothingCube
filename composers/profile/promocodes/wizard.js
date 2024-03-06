@@ -2,22 +2,37 @@ const { Scenes } = require("telegraf");
 const kb = require("../../../keyboars.json");
 const utils = require("../../../utils");
 
-const back = async (ctx) => {
+const back = async (ctx, edit = false) => {
   try {
     await ctx.scene.leave();
     const user = await utils.getUserData(ctx.from.id);
-    let txt = `${user.nickname}, вот, что у тебя есть:\n\n`;
+    let stat = await utils.getUserStats(ctx.from.id);
+    if (!stat) {
+        await utils.createUserStats(ctx.from.id)
+        stat = await utils.getUserStats(ctx.from.id)
+    }
+    const today = new Date()
+    const delta_days = parseInt(Math.floor((today - user.created_at)) / (1000 * 60 * 60 * 24))
+    let txt = `${ctx.from.first_name}, мы с тобой кидаем кубик уже ${delta_days} дней.\n\n`
+    txt += `Бросков кубика: ${stat.rolls} раз\n`
+    txt += `Кейсов открыто: ${stat.cases_opened} раз\n`
+    txt += `Выпало: ${stat.earned} 💰.\n\n`
+    txt += `Вот, что у тебя есть:\n\n`;
     txt += `Твой баланс: ${user.coins} 💰\n`;
-    txt += `Твои броски: ${user.rolls} 🎲\n`;
-
+    txt += `Твои броски: ${user.rolls} 🎲\n\n`;
+    txt += 'Спасибо за пользование кубиком❤️!'
     try {
-      await ctx.reply(txt, kb.profile_menu);
+      if(edit) {
+        await ctx.editMessageText(txt, kb.profile_menu)
+      }
+      else {
+        await ctx.reply(txt, kb.profile_menu);
+      }
     } catch (e) {
       console.log(e);
       await ctx.reply(
         "Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot"
       );
-      await back(ctx);
     }
   } catch (e) {
     console.log(e);
@@ -152,27 +167,13 @@ const wizard_scenes = new Scenes.WizardScene(
         }
         txt += `За активацию промокода мы начислили тебе: ${promo.count} ${txtType}`;
         await ctx.reply(txt, kb.promocodes_start);
-        return ctx.wizard.next();
-      } else {
-        await back(ctx);
+        return await back(ctx);
+      } else if(ctx?.callbackQuery){
+        ctx.answerCbQuery();
+        return await back(ctx, true);
       }
-    } catch (e) {
-      console.log(e);
-      await ctx.reply(
-        "Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot"
-      );
-      await back(ctx);
-    }
-  },
-
-  async (ctx) => {
-    try {
-      cb_data = ctx.callbackQuery?.data || null;
-
-      if (cb_data === "try_again") {
-        ctx.scene.reenter();
-      } else {
-        await back(ctx);
+      else {
+        return await back(ctx);
       }
     } catch (e) {
       console.log(e);

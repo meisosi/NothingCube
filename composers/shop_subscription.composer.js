@@ -21,6 +21,7 @@ composer.action("shop_subscription", async (ctx) => {
     txt += "Спасибо, что помогаете развитию проекта❤️"
 
     await ctx.editMessageText(txt, kb.subscription_menu)
+    await ctx.answerCbQuery();
   } catch (e) {
     console.log(e)
   }
@@ -29,6 +30,7 @@ composer.action("shop_subscription", async (ctx) => {
 // Добавляем обработчик для подписок
 composer.action("subscription_7d", async (ctx) => {
   try {
+    await ctx.answerCbQuery();
     await subscriptionConfirmation(ctx, 30, 199);
   } catch (e) {
     console.log(e);
@@ -37,6 +39,7 @@ composer.action("subscription_7d", async (ctx) => {
 
 composer.action("subscription_30d", async (ctx) => {
   try {
+    await ctx.answerCbQuery();
     await subscriptionConfirmation(ctx, 60, 349);
   } catch (e) {
     console.log(e);
@@ -45,6 +48,7 @@ composer.action("subscription_30d", async (ctx) => {
 
 composer.action("subscription_180d", async (ctx) => {
   try {
+    await ctx.answerCbQuery();
     await subscriptionConfirmation(ctx, 120, 599);
   } catch (e) {
     console.log(e);
@@ -53,6 +57,7 @@ composer.action("subscription_180d", async (ctx) => {
 
 composer.action("subscription_365d", async (ctx) => {
   try {
+    await ctx.answerCbQuery();
     await subscriptionConfirmation(ctx, 180, 799);
   } catch (e) {
     console.log(e);
@@ -77,6 +82,7 @@ composer.action("subscription_confirm", async (ctx) => {
   try {
     const days = ctx.scene.state.days;
     const price = ctx.scene.state.price;
+    await ctx.answerCbQuery();
     await subscriptionSuccess(ctx, days, price);
   } catch (e) {
     console.log(e);

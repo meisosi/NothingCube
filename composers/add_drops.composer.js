@@ -35,6 +35,7 @@ composer.action("add_drops", async (ctx) => {
     const keyboard = await createAddDropsKeyboard(requiredChannels);
     const text =
       "Здесь список наших спонсоров. ✍️\nПодписка на каждый канал, даёт один 🎯 Доп. Бросок";
+    await ctx.answerCbQuery()
     await ctx.editMessageText(text, keyboard);
   } catch (error) {
     console.error("Ошибка при обработке запроса:", error);
@@ -63,6 +64,7 @@ composer.action("check_check_subscription", async (ctx) => {
         const addRolls = userSubscribedCount - currentSubscriptionsCount; //Сколько новых подписок
         if (addRolls === 0) {
           //Если новых подписок нет
+          await ctx.answerCbQuery();
           return await ctx.editMessageText(
             `Подпишитесь на все каналы, чтобы получить максимум бросков!\nСейчас вы подписаны на ${currentSubscriptionsCount} каналов`,
             keyboard
@@ -70,13 +72,15 @@ composer.action("check_check_subscription", async (ctx) => {
         }
 
         const newRolls = user.rolls + addRolls;
-        await utils.updateUserData(userId, "rolls", newRolls); //Обновляем броски пользователя
+        utils.updateUserData(userId, "rolls", newRolls);
         await utils.updateUserData(userId, "subscribe_at", JSON.stringify(userSubscribed)); //Обновляем подписки пользователя
 
         const text = `Успешно! Мы начислили тебе ${addRolls} бросков!\n\nСкорее кидай кубик 🎲, потому что броски нельзя накопить!`;
-        await ctx.editMessageText(text, kb.add_tryes_success);
+        await ctx.answerCbQuery();
+        return await ctx.editMessageText(text, kb.add_tryes_success);
       } else {
         //Если уже подписался на всех
+        await ctx.answerCbQuery();
         return await ctx.editMessageText(
           "Вы уже собрали все броски на сегодня!\nСпасибо за поддержку бота❤️",
           kb.back_add_tryes
@@ -84,6 +88,7 @@ composer.action("check_check_subscription", async (ctx) => {
       }
     } else {
       //Если не подписан ни на кого
+      await ctx.answerCbQuery();
       const text =
         "Ты не подписался ни на одного из спонсоров :(\nПопробуй ещё раз!";
       return await ctx.editMessageText(text, kb.back_add_tryes);

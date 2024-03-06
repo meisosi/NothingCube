@@ -10,6 +10,7 @@ composer.action("gems_shop", async (ctx) => {
         extra = kb.gem_shop
         extra['caption'] = txt
         await ctx.replyWithPhoto({ source: fs.createReadStream('./img/shop_gems.jpg')}, extra)
+        await ctx.answerCbQuery();
         await ctx.deleteMessage()
     } catch (e) {
         console.log(e)

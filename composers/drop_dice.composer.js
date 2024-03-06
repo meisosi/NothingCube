@@ -17,6 +17,7 @@ composer.hears("🎲 Кидай кубик", async (ctx) => {
 })
 
 composer.action("drop_dice", async (ctx) => {
+    await ctx.answerCbQuery();
     dropDice(ctx);
 });
 

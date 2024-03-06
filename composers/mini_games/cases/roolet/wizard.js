@@ -5,8 +5,16 @@ const utils = require('../../../../utils');
 const back = async (ctx, edit = true) => {
   try {
     await ctx.scene.leave()
-    const user = await utils.getUserData(ctx.chat.id);
-    const stat = await utils.getUserStats(ctx.chat.id)
+    let user = await utils.getUserData(ctx.chat.id);
+    if(!user) {
+        await utils.createUser(ctx.from.id, ctx.from.first_name);
+        user = await utils.getUserData(ctx.from.id);
+    }
+    let stat = await utils.getUserStats(ctx.chat.id);
+    if(!stat) {
+        await utils.createUserStats(ctx.from.id);
+        stat = await utils.getUserStats(ctx.chat.id);
+    }
 
     let txt = '🤫Перед использованием - внимательно прочтите F.A.Q.\n\n'
         txt += 'Здесь кейсы на любой вкус и выбор\n\n'
@@ -47,16 +55,15 @@ const russianRouletteScene = new Scenes.WizardScene(
         startTxt += 'У вас будет три попытки, чтобы выжить и забрать 200 монеток 💰. После трех попыток - вы можете использовать последнюю попытку и сорвать куш в 400 монеток 💰\n\n!';
         startTxt += 'Но, если проиграешь - твои монетки сгорят, а дни будут сочтены..☠️\n\n'
         startTxt += 'Начинаем или вернуться назад? 🔫.'
-      const mes = await ctx.reply(startTxt, Markup.inlineKeyboard([
+      await ctx.reply(startTxt, Markup.inlineKeyboard([
         Markup.button.callback('Начать игру', 'start_game'),
         Markup.button.callback('Вернуться назад', 'cases_menu')
       ]));
-
-      ctx.wizard.state.mid = mes.message_id;
+      await ctx.answerCbQuery();
       return ctx.wizard.next()
     } catch (e) {
         console.log(e)
-        await ctx.reply('Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot')
+        ctx.reply('Произошла ошибка, пожалуйста сделайте скрин ваших действий и перешлите его @GameNothingsupport_bot')
         await back(ctx, false)
     }
   },
@@ -67,16 +74,15 @@ const russianRouletteScene = new Scenes.WizardScene(
       const cb_data = ctx.callbackQuery?.data;
       if(cb_data == 'start_game') {
         if (user.coins < 100) {
-          await ctx.reply('К сожалению, у Вас недостаточно монет для игры.');
-          return await back(ctx);
+          await ctx.answerCbQuery("Недостаточно монет");
+          return await back(ctx, true)
         }
         ctx.wizard.state.attempts = 0;
         
-        await ctx.reply('Игра началась! Делаем первый выстрел...', Markup.inlineKeyboard([
-          Markup.button.callback('Выстрелить', 'shoot')
-        ]));
-        await utils.updateUserData(ctx.from.id, 'coins', user.coins - 100);
-        await utils.increaseUserCaseOpened(ctx.from.id);
+        await ctx.editMessageText('Игра началась! Делаем первый выстрел...', kb.rullete);
+        await ctx.answerCbQuery()
+        utils.updateUserData(ctx.from.id, 'coins', user.coins - 100);
+        utils.increaseUserCaseOpened(ctx.from.id);
       }
       else if (cb_data == 'shoot') {
         const lossChances = [16, 33, 51, 69];
@@ -84,38 +90,39 @@ const russianRouletteScene = new Scenes.WizardScene(
         const isLost = Math.random() * 100 < lossChances[attempt];
   
         if (isLost) {
-          await ctx.replyWithSticker('CAACAgIAAxkBAAED3SRl5FGz7lDC8jy6M3TJ8ya0xJmvsQACjlAAAoY1EEtnS4RS9ahPMzQE'); // ID стикера
-          await ctx.deleteMessage();
-          await ctx.reply('К сожалению, вы проиграли. Попробуйте еще раз!');
+          ctx.deleteMessage();
+          await ctx.replyWithSticker('CAACAgIAAxkBAAED3SRl5FGz7lDC8jy6M3TJ8ya0xJmvsQACjlAAAoY1EEtnS4RS9ahPMzQE');
+          // await ctx.reply('К сожалению, вы проиграли. Попробуйте еще раз!'); // Бесполезное сообщение лол
+          await ctx.answerCbQuery()
           return await back(ctx, false);
         }
   
         ctx.wizard.state.attempts += 1;
   
         if (ctx.wizard.state.attempts < 3) {
-          await ctx.reply(`Вы выжили, но патрон всё ещё в барабане.. Стреляй, у тебя ещё ${3 - ctx.wizard.state.attempts} выстрела!`, Markup.inlineKeyboard([
-            Markup.button.callback('Выстрелить', 'shoot')
-          ]));
-          return;
+          await ctx.answerCbQuery()
+          return await ctx.editMessageText(`Вы выжили, но патрон всё ещё в барабане.. Стреляй, у тебя ещё ${3 - ctx.wizard.state.attempts} выстрела!`, kb.rullete);
         } else if (ctx.wizard.state.attempts === 3) {
-          let winTxt = 'Дрожащими руками ты нажал на курок и снова удача оказалась на твоей стороне! Ты выжил..\n\n'
+          let winTxt = 'Дрожащими руками ты нажал на курок и снова удача оказалась на твоей стороне! Ты выжил.\n\n'
           winTxt += 'У тебя есть возможность забрать 200 монеток 💰 или сделать последний выстрел и забрать 400 монеток 💰'
           winTxt += 'Идём до конца?☠️';
 
-          await ctx.reply(winTxt, Markup.inlineKeyboard([
+          await ctx.editMessageText(winTxt, Markup.inlineKeyboard([
             Markup.button.callback('Забрать 200 монеток', 'take_200'),
             Markup.button.callback('Рискнуть', 'shoot')
           ]));
-          return;
+          return await ctx.answerCbQuery();
         } else if (ctx.wizard.state.attempts === 4){
           // Пользователь выиграл 400 монеток
           const user = await utils.getUserData(ctx.chat.id);
           await utils.updateUserData(ctx.chat.id, 'coins', user.coins + 400);
-          await ctx.reply('Поздравляем, вы выиграли 400 монеток!');
-          return ctx.scene.leave();
+          await ctx.editMessageText('Поздравляем, вы выиграли 400 монеток!');
+          await ctx.answerCbQuery()
+          return await back(ctx);
         }
       } 
       else if(cb_data == 'cases_menu'){
+        await ctx.answerCbQuery()
         return await back(ctx)
       }
     } catch (e) {
@@ -146,7 +153,7 @@ russianRouletteScene.action('shoot', (ctx) => ctx.wizard.steps[1](ctx));
 russianRouletteScene.action('take_200', async (ctx) => {
   const user = await utils.getUserData(ctx.chat.id);
   await utils.updateUserData(ctx.chat.id, 'coins', user.coins + 200);
-  await ctx.reply('Вы забрали 200 монеток!');
+  await ctx.editMessageText('Вы забрали 200 монеток!');
   await back(ctx, false)
 });
 

@@ -24,7 +24,7 @@ const getProfile = async (ctx) => {
         txt += `Твои броски: ${user.rolls} 🎲\n\n`;
         txt += 'Спасибо за пользование кубиком❤️!'
         // txt += `Твоя дата рождения: ${user.birthday_at} 🎂\n`;
-        await ctx.editMessageText(txt, kb.profile_menu);
+        return await ctx.editMessageText(txt, kb.profile_menu);
     } catch (e) {
         console.log(e);
     }
@@ -32,6 +32,7 @@ const getProfile = async (ctx) => {
 
 composer.action("profile", async (ctx) => {
     try {
+        ctx.answerCbQuery()
         await getProfile(ctx);
     } catch (e) {
         console.log(e)
