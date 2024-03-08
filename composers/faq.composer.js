@@ -55,6 +55,7 @@ composer.action("faq_profile", async (ctx) => {
         '▫️ Как только очередь доходит до Вас - Вы получаете бонус-код для сайта GenshinDrop (https://genshindrop.io/NOTHING). Там Вы сможете превратить луну в пропуск для Honkai: Star Rail или же скрафтить в гемы и вывести на любой Ваш аккаунт в игре\n'
 
         await ctx.editMessageText(txt, kb.faq_profile)
+        await ctx.answerCbQuery();
     } catch (e) {
         console.log(e)
     }

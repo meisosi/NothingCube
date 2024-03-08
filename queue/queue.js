@@ -37,7 +37,7 @@ module.exports = class Queue {
             //    ['gems', 'items', 'big_gems'].includes(ctx.args[0])) {
             //    this.onCommand(ctx, ctx.args[0]);
             //}
-            const calldownState = setCallDown('withdraw', ctx.from.id, 1000);
+            const calldownState = setCallDown('withdraw', ctx.from.id, 5000);
             if(calldownState) {
                 this.onCommand(ctx, 'items');
             } else {

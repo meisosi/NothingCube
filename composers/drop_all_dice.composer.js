@@ -55,11 +55,12 @@ composer.action("drop_all_dice", async (ctx) => {
             userCoins += reward;
             rollCount += 1;
 
-            await utils.increaseUserRolls(ctx.from.id);
+            utils.increaseUserRolls(ctx.from.id);
         }
-        await utils.increaseUserEarned(ctx.from.id, allResult);
+        utils.increaseUserEarned(ctx.from.id, allResult);
         await utils.updateUserData(ctx.from.id, 'coins', userCoins);
         await utils.updateUserData(ctx.from.id, 'rolls', userRolls);
+        await ctx.answerCbQuery();
 
         setTimeout(async () => {
             let resultMessage = `Ты бросил ${rollCount} кубиков 🎲\n\n`;

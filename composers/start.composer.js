@@ -163,7 +163,7 @@ const getMenu = async (ctx, arg = null, edit = false) => {
             refInventory.friend_coin = refInventory.friend_coin + 1;
             await utils.updateUserData(referalId, 'rolls', refInventory.rolls);
             await utils.updateUserData(referalId, 'friend_coin', refInventory.friend_coin);
-            ctx.telegram.sendMessage(referalId, `У вас новый реферал! Поприветсвуйте ${ctx.from.username || ctx.from.first_name}`)
+            ctx.telegram.sendMessage(referalId, `У вас новый реферал! Поприветсвуйте ${ctx.from?.username || ctx.from.first_name}`)
           }
         }
         await utils.updateUserData(userId, 'coins', userDB.coins)
@@ -202,7 +202,7 @@ const getMenu = async (ctx, arg = null, edit = false) => {
 
 composer.command("start", async (ctx) => {
   try {
-    let userDB = await utils.getUserData(ctx.from.id)
+    let userDB = await utils.getUserData(ctx.from.id);
     if(ctx.chat.type == 'private') {
       if(!userDB) {
         await utils.createUser(ctx.from.id, ctx.from.first_name);
@@ -309,13 +309,10 @@ composer.action(/back_to_menu(?:-[\w\d]+)?\b/, async (ctx) => {
       `@${process.env.MAIN_CHANEL}`,
       ctx.from.id
     );
-    if (
-      chatMember.status !== "member" &&
-      chatMember.status !== "administrator" &&
-      chatMember.status !== "creator"
-    ) {
-      return;
+    if (chatMember.status !== "member" && chatMember.status !== "administrator" &&chatMember.status !== "creator") {
+      return await ctx.answerCbQuery("Вы не подписались на канал!", {show_alert: true});
     } else {
+      await ctx.answerCbQuery();
       if (ctx.callbackQuery.message.photo) {
         try {
           await ctx.deleteMessage();
