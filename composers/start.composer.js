@@ -232,7 +232,6 @@ composer.command("start", async (ctx) => {
     ) {
       return await utils.sendSubscribeKeyboard(ctx, ctx.args[0]);
     }
-
     await getMenu(ctx, ctx.args[0]);
   } catch (e) {
     console.log(e);
@@ -302,7 +301,7 @@ composer.command("roll", async (ctx) => {
 });
 
 
-composer.action(/back_to_menu(?:-[\w\d]+)?\b/, async (ctx) => {
+composer.action(/back_to_menu(?:-([\w\d]+))?\b/, async (ctx) => {
   try {
     const matchedText = ctx.match[1] || null;
     const chatMember = await bot.telegram.getChatMember(
