@@ -126,6 +126,7 @@ module.exports = class Queue {
                 else {
                     break;
                 }
+                await new Promise((resolve) => setTimeout(resolve, 5000)); 
             }
         }
     }
