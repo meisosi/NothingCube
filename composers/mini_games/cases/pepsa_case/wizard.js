@@ -140,6 +140,8 @@ async function dropCase(ctx) {
     6: { name: "60 гемов 💎", type: "gems", amount: 1 },
   };
   await ctx.answerCbQuery();
+  user.coins = user.coins - cost;
+  await utils.updateUserData(ctx.chat.id, "coins", user.coins );
   await new Promise((resolve) => setTimeout(resolve, 5000)); // Задержка в 5 секунд
 
   ctx.deleteMessage(ctx.wizard.state.mid);
@@ -149,21 +151,12 @@ async function dropCase(ctx) {
 
   if (rewardInfo.type === "gems") {
     user.gems += rewardInfo.amount;
-    await utils.updateUserData(
-      ctx.chat.id,
-      "gems",
-      user.gems + rewardInfo.amount
-    );
+    await utils.updateUserData(ctx.from.id, "gems", user.gems);
   } else if (rewardInfo.type === "coins") {
     user.coins += rewardInfo.amount;
-    await utils.updateUserData(
-      ctx.chat.id,
-      "coins",
-      user.coins + rewardInfo.amount
-    );
+    await utils.updateUserData(ctx.from.id, "coins", user.coins);
   }
 
-  await utils.updateUserData(ctx.chat.id, "coins", user["coins"] - cost);
 
   let txt = `Поздравляем! Тебе выпало: ${rewardInfo.name}\n`;
   txt += "Предмет находится у тебя в инвентаре.\n\n";
