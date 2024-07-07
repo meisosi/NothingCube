@@ -44,7 +44,7 @@ const getMenu = async (ctx, arg = null, edit = false) => {
         await ctx.reply(txt, kb.promocodes_start);
       }
 
-      if (await utils.findPromocodeUses(ctx.from.id, code)) {
+      else if (await utils.findPromocodeUses(ctx.from.id, code)) {
         const txt =
           "Ты уже вводил этот промокод!\nСоветуем включить уведомления на канале @genshinnothing, чтобы не пропустить новые промокоды!";
         await ctx.reply(txt, kb.promocodes_start);
